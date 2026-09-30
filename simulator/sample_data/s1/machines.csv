@@ -1,0 +1,3 @@
+id,site,kind,rate_min_tph,rate_max_tph,reachable_spaces,rail,travel_speed_m_min,setup_min,min_separation_m,start_stop_limit_per_h,available,position_x,work_area,physical_tag,lifecycle,planning_enabled,rate_design_tph,source,evidence_status,confidence
+M17-RC01,MPH,reclaimer,200,1100,"[""M17-CLOSED-1""]",closed-store,30.0,10.0,50.0,8.0,True,100.0,{},,EXISTING,True,0.0,Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3],CONFIRMED,H
+M17-ST01,MPH,stacker,300,2500,"[""M17-OPEN-1"", ""M17-OPEN-2""]",open-store,30.0,10.0,50.0,0.0,True,0.0,{},,EXISTING,True,0.0,Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3],CONFIRMED,H

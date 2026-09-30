@@ -1,0 +1,2431 @@
+{
+ "name": "S2 \u2014 MPH M16 hub only (simulated corridor arrivals)",
+ "description": "M16-only demonstration. Upstream corridor arrivals are SIMULATED inputs \u2014 the Louta/Benguerir mine yards are NOT modelled here; use S3 for the complete three-site phosphate value chain. Confirmed: storage/machine/conveyor figures. ASSUMED: pile contents, specs, drying intake, gate split, incoming profile.",
+ "quality_params": [
+  {
+   "name": "BPL",
+   "unit": "%",
+   "description": "Bone Phosphate of Lime"
+  },
+  {
+   "name": "Cd",
+   "unit": "ppm",
+   "description": "cadmium"
+  },
+  {
+   "name": "MgO",
+   "unit": "%",
+   "description": "magnesium oxide"
+  },
+  {
+   "name": "SiO2",
+   "unit": "%",
+   "description": "silica"
+  },
+  {
+   "name": "SiO2_R",
+   "unit": "%",
+   "description": "reactive silica"
+  },
+  {
+   "name": "F",
+   "unit": "%",
+   "description": "fluorine"
+  },
+  {
+   "name": "P2O5_SC",
+   "unit": "%",
+   "description": "P2O5 S,C (source-table assay)"
+  },
+  {
+   "name": "CO2",
+   "unit": "%",
+   "description": "carbon dioxide"
+  },
+  {
+   "name": "CaO_CO2",
+   "unit": "ratio",
+   "description": "CaO/CO2 ratio"
+  },
+  {
+   "name": "moisture",
+   "unit": "%",
+   "description": "H2O"
+  }
+ ],
+ "sites": [
+  {
+   "id": "MPH",
+   "name": "M'zinda Phosphate Hub",
+   "role": "hub",
+   "sms_endpoint": "simulated",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": ""
+   },
+   "same_pile_concurrency_allowed": true,
+   "concurrency_evidence": "USER_CONFIRMED (project team, 15-Jul-2026): stacking and reclaiming may occur simultaneously on the same stockpile; the scheduler prevents collisions/overlapping work zones, never same-pile concurrency categorically. Numerical separation limits TBC (demonstration values ASSUMED)",
+   "min_machine_separation_m": 50.0,
+   "work_zone_buffer_m": 25.0,
+   "travel_clearance_m": 10.0,
+   "machine_envelope_m": 15.0,
+   "concurrent_route_allowed": true,
+   "exclusive_machine_groups": [],
+   "exclusivity_evidence": "",
+   "material_profiles": {}
+  }
+ ],
+ "grades": [
+  {
+   "id": "TBT",
+   "name": "TBT \u2014 demonstration quality vector; assay TBC",
+   "quality": {
+    "BPL": 63.0,
+    "Cd": 35.0,
+    "MgO": 1.4,
+    "SiO2": 3.5,
+    "moisture": 12.0
+   },
+   "rock_value": 65.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "simulation-only vector; corrected to the BoD semantic order TBT < BT < MT; numeric assays still require the project Grade/SQP register. Benguerir B02 beneficiation yield is documented; 12% raw moisture and 17.5% wet-product moisture are planning assumptions."
+   },
+   "source_grade_id": "RAW-BT",
+   "beneficiation_yield": 0.6264,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "BT",
+   "name": "BT \u2014 demonstration quality vector; assay TBC",
+   "quality": {
+    "BPL": 68.0,
+    "Cd": 30.0,
+    "MgO": 1.1,
+    "SiO2": 2.8,
+    "moisture": 12.0
+   },
+   "rock_value": 80.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "simulation-only vector; corrected TBT < BT < MT semantic order; numeric assay remains TBC. Benguerir B02 beneficiation yield is documented; 12% raw moisture and 17.5% wet-product moisture are planning assumptions."
+   },
+   "source_grade_id": "RAW-BT",
+   "beneficiation_yield": 0.6663,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "MT",
+   "name": "MT \u2014 demonstration quality vector; assay TBC",
+   "quality": {
+    "BPL": 74.0,
+    "Cd": 22.0,
+    "MgO": 0.8,
+    "SiO2": 2.0,
+    "moisture": 12.0
+   },
+   "rock_value": 100.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "simulation-only vector; corrected to the BoD semantic order TBT < BT < MT; numeric assay remains TBC. Benguerir B02 beneficiation yield is documented; 12% raw moisture and 17.5% wet-product moisture are planning assumptions."
+   },
+   "source_grade_id": "RAW-BT",
+   "beneficiation_yield": 0.7573,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "RAW-TBC",
+   "name": "Raw/screened phosphate \u2014 chemical grade TBC",
+   "quality": {},
+   "rock_value": 0.0,
+   "material_class": "raw_screened",
+   "profile_id": "",
+   "evidence": {
+    "source": "mine assay register not received",
+    "status": "TBC",
+    "confidence": "M",
+    "note": "placeholder classification only; never use the washed TBT/BT/MT vectors for raw ore"
+   },
+   "source_grade_id": "",
+   "beneficiation_yield": null,
+   "raw_moisture_pct": null,
+   "product_moisture_pct": null,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "HWP-22",
+   "name": "Humid washed product \u2014 serves PAP G10 and BG-22 export",
+   "quality": {
+    "BPL": 69.0,
+    "Cd": 6.0,
+    "MgO": 0.55,
+    "SiO2": 4.0,
+    "CO2": 6.2,
+    "moisture": 12.0
+   },
+   "rock_value": 82.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Demonstration vector positioned inside the stated receiving window; M16 holds received washed product, so post-beneficiation chemistry is the physically correct basis. Numeric assays still require the project Grade/SQP register. Satisfies G10 and BG-22 together."
+   },
+   "source_grade_id": "",
+   "beneficiation_yield": null,
+   "raw_moisture_pct": null,
+   "product_moisture_pct": null,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "HWP-10",
+   "name": "Humid washed product \u2014 serves PAP G10 and BG10 export",
+   "quality": {
+    "BPL": 66.5,
+    "Cd": 8.0,
+    "MgO": 0.55,
+    "SiO2": 5.0,
+    "CO2": 6.2,
+    "moisture": 12.0
+   },
+   "rock_value": 75.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Demonstration vector positioned inside the stated receiving window; M16 holds received washed product, so post-beneficiation chemistry is the physically correct basis. Numeric assays still require the project Grade/SQP register. Satisfies G10 and BG10 together."
+   },
+   "source_grade_id": "",
+   "beneficiation_yield": null,
+   "raw_moisture_pct": null,
+   "product_moisture_pct": null,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "HWP-11",
+   "name": "Humid washed product \u2014 serves PAP G10 and BG11 export",
+   "quality": {
+    "BPL": 68.0,
+    "Cd": 8.0,
+    "MgO": 0.55,
+    "SiO2": 7.0,
+    "CO2": 6.2,
+    "SiO2_R": 3.2,
+    "F": 3.7,
+    "moisture": 12.0
+   },
+   "rock_value": 80.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Demonstration vector positioned inside the stated receiving window; M16 holds received washed product, so post-beneficiation chemistry is the physically correct basis. Numeric assays still require the project Grade/SQP register. Carries the SiO2_R and F assays BG11 requires; a missing parameter fails qualification outright."
+   },
+   "source_grade_id": "",
+   "beneficiation_yield": null,
+   "raw_moisture_pct": null,
+   "product_moisture_pct": null,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "BG-22-H",
+   "name": "BG-22 humid precursor \u2014 dryer feed",
+   "quality": {},
+   "rock_value": 0.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Humid precursor of the transcribed Gantour export profile: identical chemistry, moisture ceiling removed because drying occurs downstream of this receiving point. Project-team ruling 25-Sep-2026."
+   },
+   "source_grade_id": "",
+   "beneficiation_yield": null,
+   "raw_moisture_pct": null,
+   "product_moisture_pct": null,
+   "is_specification": true,
+   "receiving_spec": [
+    {
+     "param": "BPL",
+     "pmin": 68.0,
+     "pmax": 70.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "CO2",
+     "pmin": 5.0,
+     "pmax": 6.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "SiO2",
+     "pmin": null,
+     "pmax": 4.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "MgO",
+     "pmin": 0.45,
+     "pmax": 0.65,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "Cd",
+     "pmin": null,
+     "pmax": 7.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    }
+   ],
+   "source_quality_ranges": {},
+   "receiving_destinations": [
+    "DRY-FEED"
+   ]
+  },
+  {
+   "id": "BG10-H",
+   "name": "BG10 humid precursor \u2014 dryer feed",
+   "quality": {},
+   "rock_value": 0.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Humid precursor of the transcribed Gantour export profile: identical chemistry, moisture ceiling removed because drying occurs downstream of this receiving point. Project-team ruling 25-Sep-2026."
+   },
+   "source_grade_id": "",
+   "beneficiation_yield": null,
+   "raw_moisture_pct": null,
+   "product_moisture_pct": null,
+   "is_specification": true,
+   "receiving_spec": [
+    {
+     "param": "BPL",
+     "pmin": 65.0,
+     "pmax": 67.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "CO2",
+     "pmin": 5.0,
+     "pmax": 6.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "SiO2",
+     "pmin": 3.5,
+     "pmax": 7.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "MgO",
+     "pmin": 0.45,
+     "pmax": 0.65,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "Cd",
+     "pmin": 7.0,
+     "pmax": 9.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    }
+   ],
+   "source_quality_ranges": {},
+   "receiving_destinations": [
+    "DRY-FEED"
+   ]
+  },
+  {
+   "id": "BG11-H",
+   "name": "BG11 humid precursor \u2014 dryer feed",
+   "quality": {},
+   "rock_value": 0.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Humid precursor of the transcribed Gantour export profile: identical chemistry, moisture ceiling removed because drying occurs downstream of this receiving point. Project-team ruling 25-Sep-2026."
+   },
+   "source_grade_id": "",
+   "beneficiation_yield": null,
+   "raw_moisture_pct": null,
+   "product_moisture_pct": null,
+   "is_specification": true,
+   "receiving_spec": [
+    {
+     "param": "BPL",
+     "pmin": 67.0,
+     "pmax": 69.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "SiO2",
+     "pmin": 5.0,
+     "pmax": 10.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "SiO2_R",
+     "pmin": 2.8,
+     "pmax": 3.6,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "F",
+     "pmin": 3.2,
+     "pmax": 4.2,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    }
+   ],
+   "source_quality_ranges": {},
+   "receiving_destinations": [
+    "DRY-FEED"
+   ]
+  },
+  {
+   "id": "TBT-HIGH-CD",
+   "name": "TBT \u2014 High-Cd washed profile",
+   "quality": {
+    "BPL": 62.0,
+    "Cd": 41.67,
+    "MgO": 1.5,
+    "SiO2": 4.1,
+    "moisture": 12.0
+   },
+   "rock_value": 65.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+   },
+   "source_grade_id": "RAW-BT-HIGH-CD",
+   "beneficiation_yield": 0.6264,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "TBT-LOW-CD",
+   "name": "TBT \u2014 Low-Cd washed profile",
+   "quality": {
+    "BPL": 64.5,
+    "Cd": 21.67,
+    "MgO": 1.2,
+    "SiO2": 2.9,
+    "moisture": 12.0
+   },
+   "rock_value": 65.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+   },
+   "source_grade_id": "RAW-BT-LOW-CD",
+   "beneficiation_yield": 0.6264,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "BT-HIGH-CD",
+   "name": "BT \u2014 High-Cd washed profile",
+   "quality": {
+    "BPL": 67.0,
+    "Cd": 35.71,
+    "MgO": 1.2,
+    "SiO2": 3.4,
+    "moisture": 12.0
+   },
+   "rock_value": 80.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+   },
+   "source_grade_id": "RAW-BT-HIGH-CD",
+   "beneficiation_yield": 0.6663,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "BT-LOW-CD",
+   "name": "BT \u2014 Low-Cd washed profile",
+   "quality": {
+    "BPL": 69.5,
+    "Cd": 18.57,
+    "MgO": 0.9,
+    "SiO2": 2.2,
+    "moisture": 12.0
+   },
+   "rock_value": 80.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+   },
+   "source_grade_id": "RAW-BT-LOW-CD",
+   "beneficiation_yield": 0.6663,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "MT-HIGH-CD",
+   "name": "MT \u2014 High-Cd washed profile",
+   "quality": {
+    "BPL": 73.0,
+    "Cd": 26.19,
+    "MgO": 0.9,
+    "SiO2": 2.6,
+    "moisture": 12.0
+   },
+   "rock_value": 100.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+   },
+   "source_grade_id": "RAW-BT-HIGH-CD",
+   "beneficiation_yield": 0.7573,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "MT-LOW-CD",
+   "name": "MT \u2014 Low-Cd washed profile",
+   "quality": {
+    "BPL": 75.5,
+    "Cd": 13.62,
+    "MgO": 0.6,
+    "SiO2": 1.4,
+    "moisture": 12.0
+   },
+   "rock_value": 100.0,
+   "material_class": "washed",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+   },
+   "source_grade_id": "RAW-BT-LOW-CD",
+   "beneficiation_yield": 0.7573,
+   "raw_moisture_pct": 12.0,
+   "product_moisture_pct": 17.5,
+   "is_specification": false,
+   "receiving_spec": [],
+   "source_quality_ranges": {},
+   "receiving_destinations": []
+  },
+  {
+   "id": "G10",
+   "name": "Demo G10 \u2014 receiving specification only",
+   "quality": {},
+   "rock_value": 0.0,
+   "material_class": "specification",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "PROVISIONAL_G10_BEHAVIOR_CALIBRATION_NOT_PLANT_VALIDATED"
+   },
+   "source_grade_id": "",
+   "beneficiation_yield": null,
+   "raw_moisture_pct": null,
+   "product_moisture_pct": null,
+   "is_specification": true,
+   "receiving_spec": [
+    {
+     "param": "BPL",
+     "pmin": 62.5,
+     "pmax": 100.0,
+     "target": 75.0,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "Cd",
+     "pmin": 0.0,
+     "pmax": 18.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "MgO",
+     "pmin": 0.0,
+     "pmax": 0.8,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "SiO2",
+     "pmin": 0.0,
+     "pmax": 7.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "CO2",
+     "pmin": 6.0,
+     "pmax": 6.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "moisture",
+     "pmin": 0.0,
+     "pmax": 25.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    }
+   ],
+   "source_quality_ranges": {},
+   "receiving_destinations": [
+    "DRY-FEED",
+    "PAP-1",
+    "PAP-2"
+   ]
+  }
+ ],
+ "material_profiles": [
+  {
+   "id": "M16-WASHED-HUMID",
+   "site": "MPH",
+   "stage": "M16 reception / humid storage",
+   "material_class": "washed",
+   "label": "Washed humid phosphate received from C1/C2",
+   "grade_ids": [
+    "TBT",
+    "TBT-HIGH-CD",
+    "TBT-LOW-CD",
+    "BT",
+    "BT-HIGH-CD",
+    "BT-LOW-CD",
+    "MT",
+    "MT-HIGH-CD",
+    "MT-LOW-CD",
+    "HWP-22",
+    "HWP-10",
+    "HWP-11"
+   ],
+   "quality_ranges": {
+    "BPL": "per live grade/SQP assay \u2014 approved cut-offs TBC",
+    "Cd": "per live grade/SQP assay \u2014 approved cut-offs TBC",
+    "MgO": "per live grade/SQP assay \u2014 approved cut-offs TBC",
+    "SiO2": "per live grade/SQP assay \u2014 approved cut-offs TBC",
+    "CaO_CO2": "per reception PGNAA \u2014 cut-offs TBC",
+    "moisture": "per microwave analyser \u2014 current 12% vector is ASSUMED"
+   },
+   "physical_properties": {
+    "state": "humid washed phosphate"
+   },
+   "transformation_note": "M16 receives washed product; no raw/screened ore may use this profile. Live SMS/SQMS values override the demonstration vectors.",
+   "evidence": {
+    "source": "TEN-0002 [B] + SMS SpaceValue interface",
+    "status": "TBC",
+    "confidence": "M",
+    "note": "parameter list/analyser location documented; grade cut-offs and mine-specific assay profiles not received"
+   }
+  }
+ ],
+ "spaces": [
+  {
+   "id": "HP-01",
+   "site": "MPH",
+   "area": "M16-humid",
+   "kind": "open",
+   "capacity_t": 125000,
+   "mass_t": 80000,
+   "grade": "HWP-22",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 300,
+   "safety_stock_t": 0,
+   "node_id": "",
+   "material_class": "washed",
+   "profile_id": "M16-WASHED-HUMID",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "8\u00d7125,000 t confirmed; contents/grades ASSUMED; x-range geometry ASSUMED (no plot plan)"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "HP-02",
+   "site": "MPH",
+   "area": "M16-humid",
+   "kind": "open",
+   "capacity_t": 125000,
+   "mass_t": 90000,
+   "grade": "HWP-10",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 300,
+   "safety_stock_t": 15000,
+   "node_id": "",
+   "material_class": "washed",
+   "profile_id": "M16-WASHED-HUMID",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "8\u00d7125,000 t confirmed; contents/grades ASSUMED; x-range geometry ASSUMED (no plot plan)"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "HP-03",
+   "site": "MPH",
+   "area": "M16-humid",
+   "kind": "open",
+   "capacity_t": 125000,
+   "mass_t": 70000,
+   "grade": "HWP-11",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 300,
+   "safety_stock_t": 0,
+   "node_id": "",
+   "material_class": "washed",
+   "profile_id": "M16-WASHED-HUMID",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "8\u00d7125,000 t confirmed; contents/grades ASSUMED; x-range geometry ASSUMED (no plot plan)"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "HP-04",
+   "site": "MPH",
+   "area": "M16-humid",
+   "kind": "open",
+   "capacity_t": 125000,
+   "mass_t": 60000,
+   "grade": "HWP-22",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 300,
+   "safety_stock_t": 0,
+   "node_id": "",
+   "material_class": "washed",
+   "profile_id": "M16-WASHED-HUMID",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "8\u00d7125,000 t confirmed; contents/grades ASSUMED; x-range geometry ASSUMED (no plot plan)"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "HP-05",
+   "site": "MPH",
+   "area": "M16-humid",
+   "kind": "open",
+   "capacity_t": 125000,
+   "mass_t": 74000,
+   "grade": "HWP-10",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 300,
+   "safety_stock_t": 15000,
+   "node_id": "",
+   "material_class": "washed",
+   "profile_id": "M16-WASHED-HUMID",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "8\u00d7125,000 t confirmed; contents/grades ASSUMED; x-range geometry ASSUMED (no plot plan)"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "HP-06",
+   "site": "MPH",
+   "area": "M16-humid",
+   "kind": "open",
+   "capacity_t": 125000,
+   "mass_t": 50000,
+   "grade": "HWP-10",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 300,
+   "safety_stock_t": 0,
+   "node_id": "",
+   "material_class": "washed",
+   "profile_id": "M16-WASHED-HUMID",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "8\u00d7125,000 t confirmed; contents/grades ASSUMED; x-range geometry ASSUMED (no plot plan)"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "HP-07",
+   "site": "MPH",
+   "area": "M16-humid",
+   "kind": "open",
+   "capacity_t": 125000,
+   "mass_t": 0,
+   "grade": "HWP-22",
+   "quality": {},
+   "state": "empty",
+   "reserved_t": 0.0,
+   "designated_grade": "HWP-22",
+   "x_from": 0,
+   "x_to": 300,
+   "safety_stock_t": 0,
+   "node_id": "",
+   "material_class": "washed",
+   "profile_id": "M16-WASHED-HUMID",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "8\u00d7125,000 t confirmed; contents/grades ASSUMED; x-range geometry ASSUMED (no plot plan)"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "HP-08",
+   "site": "MPH",
+   "area": "M16-humid",
+   "kind": "open",
+   "capacity_t": 125000,
+   "mass_t": 0,
+   "grade": "HWP-10",
+   "quality": {},
+   "state": "empty",
+   "reserved_t": 0.0,
+   "designated_grade": "HWP-10",
+   "x_from": 0,
+   "x_to": 300,
+   "safety_stock_t": 0,
+   "node_id": "",
+   "material_class": "washed",
+   "profile_id": "M16-WASHED-HUMID",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "8\u00d7125,000 t confirmed; contents/grades ASSUMED; x-range geometry ASSUMED (no plot plan)"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  }
+ ],
+ "segments": [
+  {
+   "space_id": "HP-02",
+   "x_from": 0,
+   "x_to": 150,
+   "mass_t": 45000,
+   "grade": "HWP-10",
+   "quality": {},
+   "age_days": 20
+  },
+  {
+   "space_id": "HP-02",
+   "x_from": 150,
+   "x_to": 300,
+   "mass_t": 45000,
+   "grade": "HWP-10",
+   "quality": {},
+   "age_days": 5
+  },
+  {
+   "space_id": "HP-05",
+   "x_from": 0,
+   "x_to": 300,
+   "mass_t": 74000,
+   "grade": "HWP-10",
+   "quality": {},
+   "age_days": 12
+  },
+  {
+   "space_id": "HP-01",
+   "x_from": 0,
+   "x_to": 300,
+   "mass_t": 80000,
+   "grade": "HWP-22",
+   "quality": {},
+   "age_days": 30
+  }
+ ],
+ "pile_zones": [],
+ "machines": [
+  {
+   "id": "ST01-A",
+   "site": "MPH",
+   "kind": "stacker",
+   "rate_min_tph": 500,
+   "rate_max_tph": 2600.0,
+   "reachable_spaces": [
+    "HP-01",
+    "HP-05"
+   ],
+   "rail": "M16A-A-T06",
+   "travel_speed_m_min": 30.0,
+   "setup_min": 10.0,
+   "min_separation_m": 50.0,
+   "start_stop_limit_per_h": 0.0,
+   "available": true,
+   "position_x": 150,
+   "work_area": {},
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "M16A-A-ST01 on machine line M16A-A-T06 at 2,600 t/h \u2014 identity, line and relative position CONFIRMED. Physical reach applied by the project-team bay-adjacency rule (25-Jul-2026): bay 1 (HP-01/HP-05). Hangar numbering inside the bays is INFERRED (see the HP-numbering assumption); metric rail positions remain schematic \u2014 the PFD is not to scale."
+   },
+   "physical_tag": "M16A-A-ST01",
+   "lifecycle": "EXISTING",
+   "planning_enabled": true,
+   "rate_design_tph": 0.0
+  },
+  {
+   "id": "RC01-A",
+   "site": "MPH",
+   "kind": "reclaimer",
+   "rate_min_tph": 500,
+   "rate_max_tph": 2500.0,
+   "reachable_spaces": [
+    "HP-01",
+    "HP-05",
+    "HP-02",
+    "HP-06"
+   ],
+   "rail": "M16A-A-T11",
+   "travel_speed_m_min": 30.0,
+   "setup_min": 10.0,
+   "min_separation_m": 50.0,
+   "start_stop_limit_per_h": 0.0,
+   "available": true,
+   "position_x": 150,
+   "work_area": {},
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "M16A-A-RC01 on machine line M16A-A-T11 at 2,500 t/h \u2014 identity, line and relative position CONFIRMED. Physical reach applied by the project-team bay-adjacency rule (25-Jul-2026): bay 1 (HP-01/HP-05) + bay 2 (HP-02/HP-06). Hangar numbering inside the bays is INFERRED (see the HP-numbering assumption); metric rail positions remain schematic \u2014 the PFD is not to scale."
+   },
+   "physical_tag": "M16A-A-RC01",
+   "lifecycle": "EXISTING",
+   "planning_enabled": true,
+   "rate_design_tph": 0.0
+  },
+  {
+   "id": "ST01-B",
+   "site": "MPH",
+   "kind": "stacker",
+   "rate_min_tph": 500,
+   "rate_max_tph": 2600.0,
+   "reachable_spaces": [
+    "HP-02",
+    "HP-06",
+    "HP-03",
+    "HP-07"
+   ],
+   "rail": "M16A-B-T06",
+   "travel_speed_m_min": 30.0,
+   "setup_min": 10.0,
+   "min_separation_m": 50.0,
+   "start_stop_limit_per_h": 0.0,
+   "available": true,
+   "position_x": 150,
+   "work_area": {},
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "M16A-B-ST01 on machine line M16A-B-T06 at 2,600 t/h \u2014 identity, line and relative position CONFIRMED. Physical reach applied by the project-team bay-adjacency rule (25-Jul-2026): bay 2 (HP-02/HP-06) + bay 3 (HP-03/HP-07). Hangar numbering inside the bays is INFERRED (see the HP-numbering assumption); metric rail positions remain schematic \u2014 the PFD is not to scale."
+   },
+   "physical_tag": "M16A-B-ST01",
+   "lifecycle": "EXISTING",
+   "planning_enabled": true,
+   "rate_design_tph": 0.0
+  },
+  {
+   "id": "RC01-B",
+   "site": "MPH",
+   "kind": "reclaimer",
+   "rate_min_tph": 500,
+   "rate_max_tph": 2500.0,
+   "reachable_spaces": [
+    "HP-03",
+    "HP-07",
+    "HP-04",
+    "HP-08"
+   ],
+   "rail": "M16A-B-T11",
+   "travel_speed_m_min": 30.0,
+   "setup_min": 10.0,
+   "min_separation_m": 50.0,
+   "start_stop_limit_per_h": 0.0,
+   "available": true,
+   "position_x": 150,
+   "work_area": {},
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "M16A-B-RC01 on machine line M16A-B-T11 at 2,500 t/h \u2014 identity, line and relative position CONFIRMED. Physical reach applied by the project-team bay-adjacency rule (25-Jul-2026): bay 3 (HP-03/HP-07) + bay 4 (HP-04/HP-08). Hangar numbering inside the bays is INFERRED (see the HP-numbering assumption); metric rail positions remain schematic \u2014 the PFD is not to scale."
+   },
+   "physical_tag": "M16A-B-RC01",
+   "lifecycle": "EXISTING",
+   "planning_enabled": true,
+   "rate_design_tph": 0.0
+  },
+  {
+   "id": "ST01-C",
+   "site": "MPH",
+   "kind": "stacker",
+   "rate_min_tph": 500,
+   "rate_max_tph": 2600.0,
+   "reachable_spaces": [
+    "HP-04",
+    "HP-08"
+   ],
+   "rail": "M16A-C-T06",
+   "travel_speed_m_min": 30.0,
+   "setup_min": 10.0,
+   "min_separation_m": 50.0,
+   "start_stop_limit_per_h": 0.0,
+   "available": true,
+   "position_x": 150,
+   "work_area": {},
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "M16A-C-ST01 on machine line M16A-C-T06 at 2,600 t/h \u2014 identity, line and relative position CONFIRMED. Physical reach applied by the project-team bay-adjacency rule (25-Jul-2026): bay 4 (HP-04/HP-08). Hangar numbering inside the bays is INFERRED (see the HP-numbering assumption); metric rail positions remain schematic \u2014 the PFD is not to scale."
+   },
+   "physical_tag": "M16A-C-ST01",
+   "lifecycle": "EXISTING",
+   "planning_enabled": true,
+   "rate_design_tph": 0.0
+  }
+ ],
+ "nodes": [
+  {
+   "id": "SPACE:HP-01",
+   "site": "MPH",
+   "kind": "space",
+   "label": "HP-01",
+   "x": 2,
+   "y": 1
+  },
+  {
+   "id": "SPACE:HP-02",
+   "site": "MPH",
+   "kind": "space",
+   "label": "HP-02",
+   "x": 2,
+   "y": 2
+  },
+  {
+   "id": "SPACE:HP-03",
+   "site": "MPH",
+   "kind": "space",
+   "label": "HP-03",
+   "x": 2,
+   "y": 3
+  },
+  {
+   "id": "SPACE:HP-04",
+   "site": "MPH",
+   "kind": "space",
+   "label": "HP-04",
+   "x": 2,
+   "y": 4
+  },
+  {
+   "id": "SPACE:HP-05",
+   "site": "MPH",
+   "kind": "space",
+   "label": "HP-05",
+   "x": 2,
+   "y": 5
+  },
+  {
+   "id": "SPACE:HP-06",
+   "site": "MPH",
+   "kind": "space",
+   "label": "HP-06",
+   "x": 2,
+   "y": 6
+  },
+  {
+   "id": "SPACE:HP-07",
+   "site": "MPH",
+   "kind": "space",
+   "label": "HP-07",
+   "x": 2,
+   "y": 7
+  },
+  {
+   "id": "SPACE:HP-08",
+   "site": "MPH",
+   "kind": "space",
+   "label": "HP-08",
+   "x": 2,
+   "y": 8
+  },
+  {
+   "id": "TOWER:M16-REC",
+   "site": "MPH",
+   "kind": "tower",
+   "label": "M16 reception tower",
+   "x": 1,
+   "y": 4
+  },
+  {
+   "id": "DEST:PAP-1",
+   "site": "MPH",
+   "kind": "dest",
+   "label": "PAP line 1 (wet)",
+   "x": 4,
+   "y": 3
+  },
+  {
+   "id": "DEST:PAP-2",
+   "site": "MPH",
+   "kind": "dest",
+   "label": "PAP line 2 (wet, future)",
+   "x": 4,
+   "y": 4
+  },
+  {
+   "id": "DEST:DRY-FEED",
+   "site": "MPH",
+   "kind": "dest",
+   "label": "Drying-plant feed (OOS plant)",
+   "x": 4,
+   "y": 5
+  },
+  {
+   "id": "HUB:M16-RCL-A",
+   "site": "MPH",
+   "kind": "gate",
+   "label": "M16A-A-T11 reclaim stream \u2192 M16A-A-T11S magnetic separator \u2192 M16A-A-T12 (belt scale M16A-A-T12W) \u2192 hopper + clamshell/rod gate bank M16A-A-H01\u2026H04 \u2192 M16A-A-T13",
+   "x": 3,
+   "y": 3
+  },
+  {
+   "id": "HUB:M16-RCL-B",
+   "site": "MPH",
+   "kind": "gate",
+   "label": "M16A-B-T11 reclaim stream \u2192 M16A-B-T11S magnetic separator \u2192 M16A-B-T12 (belt scale M16A-B-T12W) \u2192 hopper + clamshell/rod gate bank M16A-B-H01\u2026H04 \u2192 M16A-B-T13",
+   "x": 3,
+   "y": 5
+  },
+  {
+   "id": "HUB:M16-T13-A",
+   "site": "MPH",
+   "kind": "gate",
+   "label": "M16A-A-T13 outbound belt (1,500 t/h) after gate bank M16A-A-H01\u2026H04 \u2014 PAP/drying selection downstream is DERIVED/TBC",
+   "x": 3,
+   "y": 2
+  },
+  {
+   "id": "HUB:M16-T13-B",
+   "site": "MPH",
+   "kind": "gate",
+   "label": "M16A-B-T13 outbound belt (1,500 t/h) after gate bank M16A-B-H01\u2026H04 \u2014 PAP/drying selection downstream is DERIVED/TBC",
+   "x": 3,
+   "y": 6
+  },
+  {
+   "id": "SOURCE:CORRIDOR",
+   "site": "MPH",
+   "kind": "source",
+   "label": "SIMULATED corridor-arrival input (mines not modelled)",
+   "x": 0,
+   "y": 4
+  }
+ ],
+ "links": [
+  {
+   "id": "L-STK-HP-01",
+   "src": "TOWER:M16-REC",
+   "dst": "SPACE:HP-01",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "M16A-A-T01",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "reception T01/T02 \u2192 T03/T04 diverter chain \u2192 the stacker line(s) reaching bay 1: ST01-A (2,600 t/h). Which stacker may use this leg is enforced by machine reachability, not by the link. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h."
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RCL-HP-01",
+   "src": "SPACE:HP-01",
+   "dst": "HUB:M16-RCL-A",
+   "capacity_tph": 2500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "bay 1 is reclaimed onto the A stream (M16A-A-T11, 2,500 t/h) \u2014 the A and B streams stay physically separate"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-STK-HP-02",
+   "src": "TOWER:M16-REC",
+   "dst": "SPACE:HP-02",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "M16A-A-T01",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "reception T01/T02 \u2192 T03/T04 diverter chain \u2192 the stacker line(s) reaching bay 2: ST01-B (2,600 t/h). Which stacker may use this leg is enforced by machine reachability, not by the link. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h."
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RCL-HP-02",
+   "src": "SPACE:HP-02",
+   "dst": "HUB:M16-RCL-A",
+   "capacity_tph": 2500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "bay 2 is reclaimed onto the A stream (M16A-A-T11, 2,500 t/h) \u2014 the A and B streams stay physically separate"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-STK-HP-03",
+   "src": "TOWER:M16-REC",
+   "dst": "SPACE:HP-03",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "M16A-A-T01",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "reception T01/T02 \u2192 T03/T04 diverter chain \u2192 the stacker line(s) reaching bay 3: ST01-B (2,600 t/h). Which stacker may use this leg is enforced by machine reachability, not by the link. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h."
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RCL-HP-03",
+   "src": "SPACE:HP-03",
+   "dst": "HUB:M16-RCL-B",
+   "capacity_tph": 2500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "bay 3 is reclaimed onto the B stream (M16A-B-T11, 2,500 t/h) \u2014 the A and B streams stay physically separate"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-STK-HP-04",
+   "src": "TOWER:M16-REC",
+   "dst": "SPACE:HP-04",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "M16A-A-T01",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "reception T01/T02 \u2192 T03/T04 diverter chain \u2192 the stacker line(s) reaching bay 4: ST01-C (2,600 t/h). Which stacker may use this leg is enforced by machine reachability, not by the link. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h."
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RCL-HP-04",
+   "src": "SPACE:HP-04",
+   "dst": "HUB:M16-RCL-B",
+   "capacity_tph": 2500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "bay 4 is reclaimed onto the B stream (M16A-B-T11, 2,500 t/h) \u2014 the A and B streams stay physically separate"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-STK-HP-05",
+   "src": "TOWER:M16-REC",
+   "dst": "SPACE:HP-05",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "M16A-A-T01",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "reception T01/T02 \u2192 T03/T04 diverter chain \u2192 the stacker line(s) reaching bay 1: ST01-A (2,600 t/h). Which stacker may use this leg is enforced by machine reachability, not by the link. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h."
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RCL-HP-05",
+   "src": "SPACE:HP-05",
+   "dst": "HUB:M16-RCL-A",
+   "capacity_tph": 2500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "bay 1 is reclaimed onto the A stream (M16A-A-T11, 2,500 t/h) \u2014 the A and B streams stay physically separate"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-STK-HP-06",
+   "src": "TOWER:M16-REC",
+   "dst": "SPACE:HP-06",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "M16A-A-T01",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "reception T01/T02 \u2192 T03/T04 diverter chain \u2192 the stacker line(s) reaching bay 2: ST01-B (2,600 t/h). Which stacker may use this leg is enforced by machine reachability, not by the link. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h."
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RCL-HP-06",
+   "src": "SPACE:HP-06",
+   "dst": "HUB:M16-RCL-A",
+   "capacity_tph": 2500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "bay 2 is reclaimed onto the A stream (M16A-A-T11, 2,500 t/h) \u2014 the A and B streams stay physically separate"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-STK-HP-07",
+   "src": "TOWER:M16-REC",
+   "dst": "SPACE:HP-07",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "M16A-A-T01",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "reception T01/T02 \u2192 T03/T04 diverter chain \u2192 the stacker line(s) reaching bay 3: ST01-B (2,600 t/h). Which stacker may use this leg is enforced by machine reachability, not by the link. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h."
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RCL-HP-07",
+   "src": "SPACE:HP-07",
+   "dst": "HUB:M16-RCL-B",
+   "capacity_tph": 2500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "bay 3 is reclaimed onto the B stream (M16A-B-T11, 2,500 t/h) \u2014 the A and B streams stay physically separate"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-STK-HP-08",
+   "src": "TOWER:M16-REC",
+   "dst": "SPACE:HP-08",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "M16A-A-T01",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "reception T01/T02 \u2192 T03/T04 diverter chain \u2192 the stacker line(s) reaching bay 4: ST01-C (2,600 t/h). Which stacker may use this leg is enforced by machine reachability, not by the link. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h."
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RCL-HP-08",
+   "src": "SPACE:HP-08",
+   "dst": "HUB:M16-RCL-B",
+   "capacity_tph": 2500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "bay 4 is reclaimed onto the B stream (M16A-B-T11, 2,500 t/h) \u2014 the A and B streams stay physically separate"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-H-A",
+   "src": "HUB:M16-RCL-A",
+   "dst": "HUB:M16-T13-A",
+   "capacity_tph": 1500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "M16A-A-H01\u2026H04",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "CONFIRMED physical discharge equipment (PFD-0001[3]): reclaim stream A passes M16A-A-T11 \u2192 T11S magnetic separator \u2192 M16A-A-T12 (belt scale M16A-A-T12W) \u2192 hopper M16A-A-R01 with air blasters M16A-A-R01Z\u2026R04Z \u2192 clamshell + rod gate bank M16A-A-H01\u2026H04 \u2192 outbound belt M16A-A-T13 at 1,500 t/h. This link models that equipment only \u2014 it carries NO destination assignment"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RTE-A-PAP",
+   "src": "HUB:M16-T13-A",
+   "dst": "DEST:PAP-1",
+   "capacity_tph": 1500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "M16A-A-ROUTE",
+   "gate_id": "",
+   "gate_position": "PAP",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1",
+    "status": "DERIVED",
+    "confidence": "M",
+    "note": "DERIVED / TBC route selection, NOT confirmed equipment behaviour: neither PFD-0001[3] nor PRO-0001 states which H gate or which downstream diverter sends the A stream to a PAP receiving line rather than to the drying unit, and the PAP/drying route confluence is not resolvable from the available sheet. The belt RATINGS are confirmed (PAP: six parallel 1,500 t/h conveyors, 3 running + 3 future; drying: two parallel 1,299 t/h conveyors, both OUT OF SCOPE \u2014 PRO-0001 \u00a72.1); the ASSIGNMENT of this stream to a destination is not. Mutual exclusion per bank (one destination per bucket) is DERIVED from the single outbound belt M16A-A-T13 \u2014 a simultaneous split across both destinations is unconfirmed. A gate/route changeover of 10 min is documented in the parameter register but is NOT MODELLED by this MVP (changeover_min = 0; no inter-bucket switching loss is enforced)"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RTE-A-PAP2",
+   "src": "HUB:M16-T13-A",
+   "dst": "DEST:PAP-2",
+   "capacity_tph": 1500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": false,
+   "shared_group": "",
+   "conflict_group": "M16A-A-ROUTE",
+   "gate_id": "",
+   "gate_position": "PAP-2",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1 + project-team instruction 29-Jul-2026",
+    "status": "DERIVED",
+    "confidence": "M",
+    "note": "DERIVED / TBC route selection, NOT confirmed equipment behaviour: neither PFD-0001[3] nor PRO-0001 states which H gate or which downstream diverter sends the A stream to a PAP receiving line rather than to the drying unit, and the PAP/drying route confluence is not resolvable from the available sheet. The belt RATINGS are confirmed (PAP: six parallel 1,500 t/h conveyors, 3 running + 3 future; drying: two parallel 1,299 t/h conveyors, both OUT OF SCOPE \u2014 PRO-0001 \u00a72.1); the ASSIGNMENT of this stream to a destination is not. Mutual exclusion per bank (one destination per bucket) is DERIVED from the single outbound belt M16A-A-T13 \u2014 a simultaneous split across both destinations is unconfirmed. A gate/route changeover of 10 min is documented in the parameter register but is NOT MODELLED by this MVP (changeover_min = 0; no inter-bucket switching loss is enforced). PAP-2 is retained as a Future planning option by default; its exact downstream identity and assignment remain TBC."
+   },
+   "lifecycle": "FUTURE",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RTE-A-DRY",
+   "src": "HUB:M16-T13-A",
+   "dst": "DEST:DRY-FEED",
+   "capacity_tph": 1299,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "M16A-A-ROUTE",
+   "gate_id": "",
+   "gate_position": "DRY",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1",
+    "status": "DERIVED",
+    "confidence": "M",
+    "note": "DERIVED / TBC route selection, NOT confirmed equipment behaviour: neither PFD-0001[3] nor PRO-0001 states which H gate or which downstream diverter sends the A stream to a PAP receiving line rather than to the drying unit, and the PAP/drying route confluence is not resolvable from the available sheet. The belt RATINGS are confirmed (PAP: six parallel 1,500 t/h conveyors, 3 running + 3 future; drying: two parallel 1,299 t/h conveyors, both OUT OF SCOPE \u2014 PRO-0001 \u00a72.1); the ASSIGNMENT of this stream to a destination is not. Mutual exclusion per bank (one destination per bucket) is DERIVED from the single outbound belt M16A-A-T13 \u2014 a simultaneous split across both destinations is unconfirmed. A gate/route changeover of 10 min is documented in the parameter register but is NOT MODELLED by this MVP (changeover_min = 0; no inter-bucket switching loss is enforced)"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-H-B",
+   "src": "HUB:M16-RCL-B",
+   "dst": "HUB:M16-T13-B",
+   "capacity_tph": 1500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "M16A-B-H01\u2026H04",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "CONFIRMED physical discharge equipment (PFD-0001[3]): reclaim stream B passes M16A-B-T11 \u2192 T11S magnetic separator \u2192 M16A-B-T12 (belt scale M16A-B-T12W) \u2192 hopper M16A-A-R01 with air blasters M16A-B-R01Z\u2026R04Z \u2192 clamshell + rod gate bank M16A-B-H01\u2026H04 \u2192 outbound belt M16A-B-T13 at 1,500 t/h. This link models that equipment only \u2014 it carries NO destination assignment"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RTE-B-PAP",
+   "src": "HUB:M16-T13-B",
+   "dst": "DEST:PAP-1",
+   "capacity_tph": 1500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "M16A-B-ROUTE",
+   "gate_id": "",
+   "gate_position": "PAP",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1",
+    "status": "DERIVED",
+    "confidence": "M",
+    "note": "DERIVED / TBC route selection, NOT confirmed equipment behaviour: neither PFD-0001[3] nor PRO-0001 states which H gate or which downstream diverter sends the B stream to a PAP receiving line rather than to the drying unit, and the PAP/drying route confluence is not resolvable from the available sheet. The belt RATINGS are confirmed (PAP: six parallel 1,500 t/h conveyors, 3 running + 3 future; drying: two parallel 1,299 t/h conveyors, both OUT OF SCOPE \u2014 PRO-0001 \u00a72.1); the ASSIGNMENT of this stream to a destination is not. Mutual exclusion per bank (one destination per bucket) is DERIVED from the single outbound belt M16A-B-T13 \u2014 a simultaneous split across both destinations is unconfirmed. A gate/route changeover of 10 min is documented in the parameter register but is NOT MODELLED by this MVP (changeover_min = 0; no inter-bucket switching loss is enforced)"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RTE-B-PAP2",
+   "src": "HUB:M16-T13-B",
+   "dst": "DEST:PAP-2",
+   "capacity_tph": 1500,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": false,
+   "shared_group": "",
+   "conflict_group": "M16A-B-ROUTE",
+   "gate_id": "",
+   "gate_position": "PAP-2",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1 + project-team instruction 29-Jul-2026",
+    "status": "DERIVED",
+    "confidence": "M",
+    "note": "DERIVED / TBC route selection, NOT confirmed equipment behaviour: neither PFD-0001[3] nor PRO-0001 states which H gate or which downstream diverter sends the B stream to a PAP receiving line rather than to the drying unit, and the PAP/drying route confluence is not resolvable from the available sheet. The belt RATINGS are confirmed (PAP: six parallel 1,500 t/h conveyors, 3 running + 3 future; drying: two parallel 1,299 t/h conveyors, both OUT OF SCOPE \u2014 PRO-0001 \u00a72.1); the ASSIGNMENT of this stream to a destination is not. Mutual exclusion per bank (one destination per bucket) is DERIVED from the single outbound belt M16A-B-T13 \u2014 a simultaneous split across both destinations is unconfirmed. A gate/route changeover of 10 min is documented in the parameter register but is NOT MODELLED by this MVP (changeover_min = 0; no inter-bucket switching loss is enforced). PAP-2 is retained as a Future planning option by default; its exact downstream identity and assignment remain TBC."
+   },
+   "lifecycle": "FUTURE",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-RTE-B-DRY",
+   "src": "HUB:M16-T13-B",
+   "dst": "DEST:DRY-FEED",
+   "capacity_tph": 1299,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "M16A-B-ROUTE",
+   "gate_id": "",
+   "gate_position": "DRY",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1",
+    "status": "DERIVED",
+    "confidence": "M",
+    "note": "DERIVED / TBC route selection, NOT confirmed equipment behaviour: neither PFD-0001[3] nor PRO-0001 states which H gate or which downstream diverter sends the B stream to a PAP receiving line rather than to the drying unit, and the PAP/drying route confluence is not resolvable from the available sheet. The belt RATINGS are confirmed (PAP: six parallel 1,500 t/h conveyors, 3 running + 3 future; drying: two parallel 1,299 t/h conveyors, both OUT OF SCOPE \u2014 PRO-0001 \u00a72.1); the ASSIGNMENT of this stream to a destination is not. Mutual exclusion per bank (one destination per bucket) is DERIVED from the single outbound belt M16A-B-T13 \u2014 a simultaneous split across both destinations is unconfirmed. A gate/route changeover of 10 min is documented in the parameter register but is NOT MODELLED by this MVP (changeover_min = 0; no inter-bucket switching loss is enforced)"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  },
+  {
+   "id": "L-CORR-IN",
+   "src": "SOURCE:CORRIDOR",
+   "dst": "TOWER:M16-REC",
+   "capacity_tph": 2600,
+   "min_stable_tph": 0.0,
+   "transit_buckets": 1,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "aggregated corridor stand-in; real corridors in scenario S3"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  }
+ ],
+ "destinations": [
+  {
+   "id": "PAP-1",
+   "site": "MPH",
+   "node_id": "DEST:PAP-1",
+   "priority": 1,
+   "spec": [
+    {
+     "param": "BPL",
+     "pmin": 62.5,
+     "pmax": 100.0,
+     "target": 75.0,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "Cd",
+     "pmin": 0.0,
+     "pmax": 18.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "MgO",
+     "pmin": 0.0,
+     "pmax": 0.8,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "SiO2",
+     "pmin": 0.0,
+     "pmax": 7.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "CO2",
+     "pmin": 6.0,
+     "pmax": 6.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "moisture",
+     "pmin": 0.0,
+     "pmax": 25.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    }
+   ],
+   "demand_default_tph": 1500,
+   "requested_grade": "G10",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "1500 tph/line confirmed; requested grade G10 and its hard receiving intervals are provisional project-model inputs"
+   },
+   "demand_kind": "delivery",
+   "process_stage": ""
+  },
+  {
+   "id": "PAP-2",
+   "site": "MPH",
+   "node_id": "DEST:PAP-2",
+   "priority": 1,
+   "spec": [
+    {
+     "param": "BPL",
+     "pmin": 62.5,
+     "pmax": 100.0,
+     "target": 75.0,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "Cd",
+     "pmin": 0.0,
+     "pmax": 18.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "MgO",
+     "pmin": 0.0,
+     "pmax": 0.8,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "SiO2",
+     "pmin": 0.0,
+     "pmax": 7.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "CO2",
+     "pmin": 6.0,
+     "pmax": 6.5,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "moisture",
+     "pmin": 0.0,
+     "pmax": 25.0,
+     "target": null,
+     "hard": true,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    }
+   ],
+   "demand_default_tph": 1500,
+   "requested_grade": "G10",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3] + project-team instruction 29-Jul-2026",
+    "status": "DERIVED",
+    "confidence": "M",
+    "note": "The documented PAP conveyor rating is 1,500 t/h per line. PAP-2 is a user-directed second receiving-line planning option with the same demand and quality template as PAP-1; its exact downstream tag and route assignment remain TBC."
+   },
+   "demand_kind": "delivery",
+   "process_stage": ""
+  },
+  {
+   "id": "DRY-FEED",
+   "site": "MPH",
+   "node_id": "DEST:DRY-FEED",
+   "priority": 2,
+   "spec": [
+    {
+     "param": "BPL",
+     "pmin": 68.0,
+     "pmax": null,
+     "target": null,
+     "hard": false,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    },
+    {
+     "param": "Cd",
+     "pmin": null,
+     "pmax": 26.0,
+     "target": null,
+     "hard": false,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    }
+   ],
+   "demand_default_tph": 800,
+   "requested_grade": "TBT",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "dry\u2192rail\u2192SPH stream: demand 800 tph and Cd-constrained spec are placeholders"
+   },
+   "demand_kind": "delivery",
+   "process_stage": ""
+  }
+ ],
+ "demand": [],
+ "calendars": [
+  {
+   "scope": "ST01-C",
+   "start_bucket": 0,
+   "end_bucket": 5,
+   "reason": "planned maintenance (demo)",
+   "start_minute": null,
+   "end_minute": null,
+   "action": "UNAVAILABLE",
+   "rate_tph": null
+  }
+ ],
+ "exogenous": [],
+ "process_transfers": [],
+ "belt_profile": [
+  {
+   "link_id": "L-CORR-IN",
+   "arrive_bucket": 0,
+   "mass_t": 2000,
+   "grade": "TBT",
+   "quality": {},
+   "material_id": ""
+  },
+  {
+   "link_id": "L-CORR-IN",
+   "arrive_bucket": 1,
+   "mass_t": 2000,
+   "grade": "BT",
+   "quality": {},
+   "material_id": ""
+  },
+  {
+   "link_id": "L-CORR-IN",
+   "arrive_bucket": 2,
+   "mass_t": 2000,
+   "grade": "TBT",
+   "quality": {},
+   "material_id": ""
+  },
+  {
+   "link_id": "L-CORR-IN",
+   "arrive_bucket": 3,
+   "mass_t": 2000,
+   "grade": "BT",
+   "quality": {},
+   "material_id": ""
+  },
+  {
+   "link_id": "L-CORR-IN",
+   "arrive_bucket": 4,
+   "mass_t": 2000,
+   "grade": "TBT",
+   "quality": {},
+   "material_id": ""
+  },
+  {
+   "link_id": "L-CORR-IN",
+   "arrive_bucket": 5,
+   "mass_t": 2000,
+   "grade": "BT",
+   "quality": {},
+   "material_id": ""
+  }
+ ],
+ "fixed_jobs": [],
+ "weights": {
+  "w1_unmet": 1000.0,
+  "w2_offspec": 200.0,
+  "w3_process_cost": 0.0,
+  "w4_giveaway": 5.0,
+  "w5_moves": 2.0,
+  "w6_safety": 20.0,
+  "w7_utilisation": 0.0
+ },
+ "sim": {
+  "dt_h": 1.0,
+  "horizon_buckets": 24,
+  "frozen_buckets": 2,
+  "mixed_resolution_enabled": false,
+  "horizon_minutes": 1440,
+  "near_term_step_min": 15,
+  "near_term_horizon_min": 240,
+  "far_term_step_min": 60,
+  "replan_interval_min": 15,
+  "commit_window_min": 30,
+  "seed": 42,
+  "start_iso": "2026-07-13T00:00:00",
+  "max_solve_s": 20.0,
+  "deviation_tolerance": 0.1,
+  "replan_on_deviation": true
+ },
+ "assumptions": [
+  {
+   "id": "S2-A1",
+   "text": "Pile contents/grades and initial masses",
+   "module": "M16/inventory",
+   "status": "OPEN",
+   "source": "placeholder",
+   "confidence": "L",
+   "placeholder": "HP-01\u202608 table",
+   "impact": "all blending results",
+   "owner": "OCP project team",
+   "action": "SMS SpaceValue snapshot"
+  },
+  {
+   "id": "S2-A2",
+   "text": "PAP-1 and PAP-2 demand only the G10 receiving specification. Its current six assay intervals are hard but provisional model inputs, not an approved plant standard.",
+   "module": "PAP/quality",
+   "status": "OPEN",
+   "source": "project-team requirement + placeholder",
+   "confidence": "L",
+   "placeholder": "provisional hard G10 intervals",
+   "impact": "qualified PAP service and unmet demand",
+   "owner": "OCP project team",
+   "action": "process to provide the approved contractual G10 spec"
+  },
+  {
+   "id": "S2-A3",
+   "text": "Drying intake per conveyor is 1,299 t/h CONFIRMED (PRO-0001 \u00a72.1: two parallel conveyors to the drying unit, each 1,299 t/h, both OUT OF SCOPE); the DRY-FEED demand of 800 t/h remains a placeholder",
+   "module": "drying/demand",
+   "status": "OPEN",
+   "source": "Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1 + placeholder demand",
+   "confidence": "L",
+   "placeholder": "one 1,299 t/h link per gate bank; demand 800 t/h",
+   "impact": "dry-stream volumes",
+   "owner": "OCP project team",
+   "action": "drying-plant datasheet (OOS plant) + agreed intake profile"
+  },
+  {
+   "id": "S2-A4",
+   "text": "PAP / drying ROUTE SELECTION is a DERIVED/TBC abstraction, not confirmed equipment behaviour. PFD-0001[3] confirms the physical discharge chain per reclaim stream \u2014 T11 \u2192 T11S separator \u2192 T12 (belt scale T12W) \u2192 hopper M16A-A-R01 with air blasters \u2192 clamshell + rod gates M16A-A-H01\u2026H04 / M16A-B-H01\u2026H04 \u2192 outbound belt T13 at 1,500 t/h \u2014 and that equipment is modelled as the CONFIRMED links L-H-A / L-H-B. It does NOT state that the H gates themselves select PAP versus drying, nor where the PAP and drying routes converge. The destination choice is therefore a separate downstream logical route/diverter abstraction (L-RTE-{A,B}-{PAP,DRY}, evidence DERIVED). Confirmed belt RATINGS (PAP six parallel 1,500 t/h conveyors, 3 running + 3 future; drying two parallel 1,299 t/h conveyors, both OUT OF SCOPE \u2014 PRO-0001 \u00a72.1) do not make the ASSIGNMENT confirmed. Mutual exclusion per bank (one destination per bucket) is DERIVED from the single outbound T13 belt. The documented 10-minute gate/route changeover LOSS is NOT MODELLED: group switches are counted and penalised, but changeover_min = 0 on every link and no switching capacity loss is enforced.",
+   "module": "M16/routes",
+   "status": "OPEN",
+   "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet (equipment) + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1 (conveyor counts/ratings); destination assignment and confluence not stated in either",
+   "confidence": "L",
+   "placeholder": "HUB:M16-RCL-{A,B} \u2192 L-H-{A,B} (CONFIRMED) \u2192 HUB:M16-T13-{A,B} \u2192 L-RTE-{A,B}-{PAP,PAP2,DRY} (DERIVED) + one conflict group per bank",
+   "impact": "which destination each stream may feed per bucket, the simultaneous PAP+drying mix, and any switching cost (currently none)",
+   "owner": "OCP project team",
+   "action": "downstream PFD sheets / GA giving the gate\u2192conveyor\u2192destination assignment, the confluence point and the real changeover behaviour"
+  },
+  {
+   "id": "S2-A8",
+   "text": "M16 hangar numbering inside the bays is INFERRED. USER-DIRECTED / INFERRED: PFD-0001[3] shows eight 125,000 t hangars in four two-hangar bays but does not name them. HP-01\u202608 is the application's working convention (bay 1 = HP-01/HP-05, bay 2 = HP-02/HP-06, bay 3 = HP-03/HP-07, bay 4 = HP-04/HP-08), pending the plot plan and the official SMS pile-ID mapping. The bay topology itself (four two-hangar bays with the machine lines M16A-A-T06 \u00b7 M16A-A-T11 \u00b7 M16A-B-T06 \u00b7 M16A-B-T11 \u00b7 M16A-C-T06 interleaved between them) is CONFIRMED by the PFD, and machine reach follows the project-team bay-adjacency rule: ST01-A\u2192bay 1; RC01-A\u2192bays 1-2; ST01-B\u2192bays 2-3; RC01-B\u2192bays 3-4; ST01-C\u2192bay 4. With Future expansion the same rule extends ST01-C to bays 4-5 and adds M16A-C-RC01 (bays 5-6) and M16A-D-ST01 (bay 6); the future hangar identifiers HP-09*\u2026HP-12* are INFERRED display-only labels and are never solver spaces.",
+   "module": "M16/geometry",
+   "status": "CONFIRMED",
+   "source": "Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet + project-team reach rule 25-Jul-2026",
+   "confidence": "M",
+   "placeholder": "M16_BAYS + M16_MACHINE_LINES \u2192 Machine.reachable_spaces",
+   "impact": "which machine may stack/reclaim which hangar \u2014 solver candidates, ASP work-area validation and the mimic",
+   "owner": "OCP project team",
+   "action": "plot plan + official SMS pile-ID register to confirm the hangar names per bay"
+  },
+  {
+   "id": "S2-A9",
+   "text": "CURRENT M16 reception is ONE shared 2,600 t/h envelope, not 2 \u00d7 2,600 t/h. CURRENT reception is a single 2,600 t/h path (M16A-A-T01 \u2192 T02 \u2192 T03/T04 \u2192 the three stacker lines): PRO-0001 \u00a72.1.1 puts auto sampler M16VP01 on M16A-A-T01 and M16VP02 on 'the adjacent future conveyor', and PFD-0001[3] marks that adjacent line FUTURE. C1 and C2 therefore share one reception envelope \u2014 aggregate current reception is capped at 2,600 t/h, never 2 \u00d7 2,600 t/h. Modelled as a shared-capacity group on every stacking leg, so total stacking at M16 cannot exceed 2,600 t/h in a bucket whichever corridor the material came from. CONSEQUENCE: the S3 initial in-transit profile shows the corridors running alternately (C1 arrivals in the buckets C2 leaves free) instead of both at full rate in the same bucket \u2014 the alternation is DERIVED from this envelope, not observed dispatch history. A structural cap on simultaneous corridor dispatch, plus any reception buffer/interlock, still needs route evidence.",
+   "module": "M16/routes",
+   "status": "CONFIRMED",
+   "source": "Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1.1 (auto sampler M16VP02 on the adjacent FUTURE conveyor) + Q80130-MZI-M16-ME-PFD-0001[3] Rev 3, IFU, 28-Oct-2025 \u2014 Phosphate Storage Area flow sheet (FUTURE marking)",
+   "confidence": "M",
+   "placeholder": "shared_group 'M16A-A-T01' on L-STK-HP-01\u202608",
+   "impact": "maximum stacking/reception rate, corridor scheduling and the initial in-transit mass",
+   "owner": "OCP project team",
+   "action": "confirm the second reception line's phase, and obtain the reception buffer/interlock rules"
+  },
+  {
+   "id": "S2-A10",
+   "text": "PAP-2 is a project-team requested second receiving-line planning option with the same 1,500 t/h / G10 demand and quality template as PAP-1. It defaults to FUTURE: its two route legs remain in the network with lifecycle FUTURE and availability false, while the configured 36,000 t/24 h demand template is retained but excluded from active planning demand. Selecting AVAILABLE activates both route legs without inventing additional M16 reclaim-bank capacity. PAP-1 + PAP-2 + DRY-FEED at their full templates request 91,200 t against the current 72,000 t/day two-bank envelope, so simultaneous full service is not claimed.",
+   "module": "M16/PAP",
+   "status": "ASSUMED",
+   "source": "project-team instruction 29-Jul-2026 + Q80130-MZI-M16-PR-PRO-0001 Rev 2, 22-May-2025, \u00a72.1",
+   "confidence": "L",
+   "placeholder": "PAP-2 / DEST:PAP-2 / L-RTE-{A,B}-PAP2; DESTINATION_LINE_OPERATING_STATE=PAP-2:FUTURE",
+   "impact": "optional second PAP demand and outbound-bank allocation",
+   "owner": "OCP project team",
+   "action": "confirm PAP-2 physical tag, commissioning phase, downstream route and the capacity configuration used when it is available"
+  },
+  {
+   "id": "S2-A5",
+   "text": "Space x-geometry 0\u2013300 m; machine travel 30 m/min; setup 10 min",
+   "module": "M16/geometry",
+   "status": "OPEN",
+   "source": "placeholder",
+   "confidence": "L",
+   "placeholder": "uniform ranges",
+   "impact": "travel/changeover times",
+   "owner": "OCP project team",
+   "action": "plot plan / GA"
+  },
+  {
+   "id": "S2-A6",
+   "text": "Corridor arrivals stand-in: 2000 tph \u00d7 6 h alternating TBT/BT",
+   "module": "corridor",
+   "status": "OPEN",
+   "source": "placeholder",
+   "confidence": "L",
+   "placeholder": "belt profile entries",
+   "impact": "stacking workload",
+   "owner": "OCP project team",
+   "action": "use scenario S3 for real corridors"
+  },
+  {
+   "id": "S2-A7",
+   "text": "TBT/BT/MT numeric vectors are demonstration quality profiles, not approved mine/site assays. Their semantic order is corrected to TBT < BT < MT from the BoD terminology; the numeric values remain placeholders. Raw/screened ore has a separate empty RAW-TBC grade and must never inherit these vectors.",
+   "module": "phosphate/quality",
+   "status": "OPEN",
+   "source": "report worked example + parameter register",
+   "confidence": "L",
+   "placeholder": "material_profiles + demo grade vectors",
+   "impact": "all quality/blending results",
+   "owner": "OCP project team",
+   "action": "obtain per-site raw and washed assay tables, grade cut-offs and current SMS Material/Grade/SQP mapping"
+  }
+ ],
+ "notes": "",
+ "config": {
+  "DESTINATION_LINE_OPERATING_STATE": {
+   "PAP-2": "FUTURE"
+  },
+  "BUILTIN_BASELINE_REVISION": "2026-09-23-restore-demand-presets-v44",
+  "CHEVRON_STACKING": {
+   "model_version": 7,
+   "example_catalog_revision": 2,
+   "quantity_mode": "DEMAND_DRIVEN",
+   "min_input_grade_t": 500.0,
+   "stacking_traverse_speed_m_min": null,
+   "enabled": true,
+   "priority": 1,
+   "global_mode": "OPTIMIZED",
+   "matrix_catalog": [
+    {
+     "id": "MPH-HUMID-01",
+     "name": "MPH humid-phosphate matrix 1",
+     "components": [
+      {
+       "grade_id": "TBT",
+       "target_fraction": 0.5
+      },
+      {
+       "grade_id": "BT-LOW-CD",
+       "target_fraction": 0.5
+      }
+     ]
+    },
+    {
+     "id": "MPH-HUMID-02",
+     "name": "BT / MT dry-feed example",
+     "components": [
+      {
+       "grade_id": "BT",
+       "target_fraction": 0.4
+      },
+      {
+       "grade_id": "MT",
+       "target_fraction": 0.6
+      }
+     ]
+    }
+   ],
+   "optimized_share_bounds": [
+    {
+     "grade_id": "TBT",
+     "min_fraction": 0.0,
+     "max_fraction": 1.0
+    },
+    {
+     "grade_id": "BT-LOW-CD",
+     "min_fraction": 0.0,
+     "max_fraction": 1.0
+    }
+   ],
+   "proposed_recipes_by_space": {},
+   "proposed_matrix_by_space": {},
+   "proposed_campaigns_by_space": {},
+   "campaign_states_by_space": {},
+   "enabled_spaces": [
+    "HP-01",
+    "HP-02",
+    "HP-03",
+    "HP-04",
+    "HP-05",
+    "HP-06",
+    "HP-07",
+    "HP-08"
+   ],
+   "point_labels": {
+    "HP-01": "M16 humid-phosphate stockpile 1",
+    "HP-02": "M16 humid-phosphate stockpile 2",
+    "HP-03": "M16 humid-phosphate stockpile 3",
+    "HP-04": "M16 humid-phosphate stockpile 4",
+    "HP-05": "M16 humid-phosphate stockpile 5",
+    "HP-06": "M16 humid-phosphate stockpile 6",
+    "HP-07": "M16 humid-phosphate stockpile 7",
+    "HP-08": "M16 humid-phosphate stockpile 8"
+   }
+  },
+  "CONTINUITY_POLICIES": {
+   "PAP-1": {
+    "mode": "continuous_feed",
+    "minimum_tph": 0.0,
+    "minimum_service_fraction": 0.5,
+    "max_gap_min": 0
+   },
+   "PAP-2": {
+    "mode": "continuous_feed",
+    "minimum_tph": 0.0,
+    "minimum_service_fraction": 0.5,
+    "max_gap_min": 0
+   },
+   "DRY-FEED": {
+    "mode": "continuous_feed",
+    "minimum_tph": 0.0,
+    "minimum_service_fraction": 0.5,
+    "max_gap_min": 0
+   }
+  },
+  "CONTINUITY_GAP_MINUTE_PENALTY": 10,
+  "CONTINUITY_EPISODE_PENALTY": 100,
+  "ENERGY_OBJECTIVE_CENTIKWH_PENALTY": 1,
+  "EQUIPMENT_START_PENALTY": 20,
+  "EQUIPMENT_STOP_PENALTY": 10,
+  "EQUIPMENT_CHANGEOVER_PENALTY": 20,
+  "EQUIPMENT_HOLD_BUCKET_PENALTY": 8,
+  "OBJECTIVE_MODE": "service_first",
+  "MIN_JOB_VOLUME_T": 0.0,
+  "OBJECTIVE_SECONDARY_WALL_TIME_S": 15.0,
+  "OBJECTIVE_SECONDARY_DETERMINISTIC_TIME_S": 4.0,
+  "SERVICE_DEGRADATION_T": 0.0,
+  "SHORT_PARCEL_PENALTY": 4000,
+  "CAMPAIGN_POLICY": {
+   "enabled": true,
+   "default": {
+    "min_parcel_t": 250.0,
+    "min_run_min": 20,
+    "max_hold_min": 30,
+    "min_dwell_buckets": 1,
+    "prefer_continuous": true,
+    "allow_short_parcel": true
+   },
+   "by_machine_kind": {
+    "stacker": {
+     "min_parcel_t": 250.0,
+     "min_run_min": 20
+    },
+    "reclaimer": {
+     "min_parcel_t": 250.0,
+     "min_run_min": 20
+    }
+   },
+   "by_machine": {},
+   "basis": "ASSUMED demonstration campaign/parcel policy \u2014 NOT a plant-approved operating limit. min_parcel_t 250 t is roughly six minutes of a 2,100-2,500 t/h yard machine and is chosen only to be clearly larger than the integer 1 t activity floor that produced one-minute stacking runs; min_run_min 20 min and max_hold_min 30 min are round operating figures of the same order as the documented 30-minute washing-line residence time. Replace all four with dated values from the equipment datasheets and the operating philosophy: minimum stable belt/drive loading, permitted start frequency per hour, drive-thermal restart limits, and the maximum period the plant accepts running an empty belt rather than stopping it. min_dwell_buckets is 1 (disabled) because no approved campaign-length rule exists yet."
+  },
+  "CAMPAIGN_POLICY_BASIS": "ASSUMED demonstration campaign/parcel policy \u2014 NOT a plant-approved operating limit. min_parcel_t 250 t is roughly six minutes of a 2,100-2,500 t/h yard machine and is chosen only to be clearly larger than the integer 1 t activity floor that produced one-minute stacking runs; min_run_min 20 min and max_hold_min 30 min are round operating figures of the same order as the documented 30-minute washing-line residence time. Replace all four with dated values from the equipment datasheets and the operating philosophy: minimum stable belt/drive loading, permitted start frequency per hour, drive-thermal restart limits, and the maximum period the plant accepts running an empty belt rather than stopping it. min_dwell_buckets is 1 (disabled) because no approved campaign-length rule exists yet.",
+  "ENERGY_OBJECTIVE_ENABLED": false,
+  "OPERATIONAL_OBJECTIVE_BASIS": "ASSUMED/uncalibrated S0 priorities: continuous-feed gap duration and episodes plus exact scheduled equipment starts, stops and activity-group changeovers are active. Work/link energy is implemented but opt-in until meter-derived kWh/t coefficients are approved. Equipment efficiency and wear are represented only by scheduled transition/active-time proxies; condition, load and RUL telemetry are not yet available."
+ }
+}

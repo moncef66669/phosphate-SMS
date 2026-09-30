@@ -1,0 +1,5 @@
+link_id,arrive_bucket,mass_t,grade,quality,material_id
+C1,0,2600,BT,{},
+C1,1,2600,TBT,{},
+C2,2,2600,TBT,{},
+C2,3,2600,TBT,{},

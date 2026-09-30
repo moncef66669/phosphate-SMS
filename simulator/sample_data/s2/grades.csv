@@ -1,0 +1,5 @@
+id,name,quality,rock_value,material_class,profile_id,source,evidence_status,confidence
+TBT,TBT — demonstration quality vector; assay TBC,"{""BPL"": 63.0, ""Cd"": 35.0, ""MgO"": 1.4, ""SiO2"": 3.5, ""moisture"": 12.0}",65.0,washed,,placeholder (this MVP),ASSUMED,L
+BT,BT — demonstration quality vector; assay TBC,"{""BPL"": 68.0, ""Cd"": 30.0, ""MgO"": 1.1, ""SiO2"": 2.8, ""moisture"": 12.0}",80.0,washed,,placeholder (this MVP),ASSUMED,L
+MT,MT — demonstration quality vector; assay TBC,"{""BPL"": 74.0, ""Cd"": 22.0, ""MgO"": 0.8, ""SiO2"": 2.0, ""moisture"": 12.0}",100.0,washed,,placeholder (this MVP),ASSUMED,L
+RAW-TBC,Raw/screened phosphate — chemical grade TBC,{},0.0,raw_screened,,mine assay register not received,TBC,M

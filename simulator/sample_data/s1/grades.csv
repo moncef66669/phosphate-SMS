@@ -1,0 +1,2 @@
+id,name,quality,rock_value,material_class,profile_id,source,evidence_status,confidence
+S-STD,Solid sulphur (standard),"{""S"": 99.5, ""moisture"": 0.5}",0.0,,,placeholder (this MVP),ASSUMED,L

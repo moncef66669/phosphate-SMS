@@ -1,0 +1,5 @@
+id,text,module,status,source,confidence,placeholder,impact,owner,action
+S1-A1,Melting-unit demand = 800 tph constant,M17/demand,OPEN,placeholder,L,800 tph,drives whole plan,OCP project team,obtain melting feed plan
+S1-A2,Sulphur purity/moisture vector (99.5 % S / 0.5 % H2O),M17/quality,OPEN,placeholder,L,S-STD grade,moisture spec compliance,OCP project team,reception assay data
+S1-A3,Initial pile masses (60/40/55 kt),M17/inventory,OPEN,placeholder,L,see spaces table,autonomy calculations,OCP project team,SMS SpaceValue snapshot
+S1-A4,"8 start-stops/h is sub-bucket behaviour: with 1 h buckets the model can only penalise job switching (w5), not enforce the intra-hour limit",M17/constraints,OPEN,report §15.4,L,w5 penalty,dispatcher-level constraint deferred,OCP project team,enforce in sub-hourly dispatcher iteration

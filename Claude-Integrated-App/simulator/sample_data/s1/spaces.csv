@@ -1,0 +1,4 @@
+id,site,area,kind,capacity_t,mass_t,grade,quality,state,reserved_t,designated_grade,x_from,x_to,safety_stock_t,node_id,material_class,profile_id,repere_at_x_from,repere_at_x_to,source,evidence_status,confidence
+M17-OPEN-1,MPH,M17-open,open,100000,60000,S-STD,{},mixed,0.0,,0,400,0.0,,,,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3],CONFIRMED,H
+M17-OPEN-2,MPH,M17-open,open,100000,40000,S-STD,{},mixed,0.0,,0,400,0.0,,,,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3],CONFIRMED,H
+M17-CLOSED-1,MPH,M17-closed,closed,100000,55000,S-STD,{},mixed,0.0,,0,350,20000.0,,,,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3],CONFIRMED,H

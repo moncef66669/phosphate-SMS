@@ -1,0 +1,8 @@
+name,unit,description
+BPL,%,Bone Phosphate of Lime
+Cd,ppm,cadmium
+MgO,%,magnesium oxide
+SiO2,%,silica
+CO2,%,carbon dioxide
+CaO_CO2,ratio,CaO/CO2 ratio
+moisture,%,H2O

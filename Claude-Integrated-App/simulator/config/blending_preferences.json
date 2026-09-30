@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "scenarios": {
+    "S3 — Three-site phosphate value chain: Louta + Benguerir → M16": {
+      "CHEVRON_STACKING": {
+        "enabled": true,
+        "enabled_spaces": [
+          "HP-01",
+          "HP-02",
+          "HP-03",
+          "HP-04",
+          "HP-05",
+          "HP-06",
+          "HP-07",
+          "HP-08"
+        ]
+      },
+      "PRE_WASHING_BLENDING": {
+        "enabled": true,
+        "points": {
+          "BEN-PREWASH": {
+            "enabled_source_spaces": [
+              "BG-RAW-1",
+              "BG-RAW-2"
+            ]
+          },
+          "LOU-PREWASH": {
+            "enabled_source_spaces": [
+              "110LG-OL1",
+              "110LG-OL2"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+id,site,kind,label,x,y
+SPACE:HP-01,MPH,space,HP-01,2,1
+SPACE:HP-02,MPH,space,HP-02,2,2
+SPACE:HP-03,MPH,space,HP-03,2,3
+SPACE:HP-04,MPH,space,HP-04,2,4
+SPACE:HP-05,MPH,space,HP-05,2,5
+SPACE:HP-06,MPH,space,HP-06,2,6
+SPACE:HP-07,MPH,space,HP-07,2,7
+SPACE:HP-08,MPH,space,HP-08,2,8
+TOWER:M16-REC,MPH,tower,M16 reception tower,1,4
+DEST:PAP-1,MPH,dest,PAP line 1 (wet),4,3
+DEST:PAP-2,MPH,dest,"PAP line 2 (wet, future)",4,4
+DEST:DRY-FEED,MPH,dest,Drying-plant feed (OOS plant),4,5
+HUB:M16-RCL-A,MPH,gate,M16A-A-T11 reclaim stream → M16A-A-T11S magnetic separator → M16A-A-T12 (belt scale M16A-A-T12W) → hopper + clamshell/rod gate bank M16A-A-H01…H04 → M16A-A-T13,3,3
+HUB:M16-RCL-B,MPH,gate,M16A-B-T11 reclaim stream → M16A-B-T11S magnetic separator → M16A-B-T12 (belt scale M16A-B-T12W) → hopper + clamshell/rod gate bank M16A-B-H01…H04 → M16A-B-T13,3,5
+HUB:M16-T13-A,MPH,gate,"M16A-A-T13 outbound belt (1,500 t/h) after gate bank M16A-A-H01…H04 — PAP/drying selection downstream is DERIVED/TBC",3,2
+HUB:M16-T13-B,MPH,gate,"M16A-B-T13 outbound belt (1,500 t/h) after gate bank M16A-B-H01…H04 — PAP/drying selection downstream is DERIVED/TBC",3,6
+SOURCE:CORRIDOR,MPH,source,SIMULATED corridor-arrival input (mines not modelled),0,4

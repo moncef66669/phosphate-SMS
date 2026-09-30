@@ -1,0 +1,591 @@
+﻿simulator\ui\process_mimic.py:1445:               "BENGUERIR": "Benguerir", "MPH": "MPH M16"}
+simulator\ui\process_mimic.py:1451:    "BENGUERIR": ("BG raw lanes", "BG raw lanes"),
+simulator\ui\process_mimic.py:1500:        views = ["CHAIN", "LOUTA", "BENGUERIR", "MPH"]
+simulator\ui\process_mimic.py:1754:    if distribution_rows and view in ("LOUTA", "BENGUERIR"):
+simulator\ui\process_mimic.py:1828:                                                    "BENGUERIR"):
+simulator\ui\process_mimic.py:1833:                       "Q80130-BEN-B02-ME-BOD-0001 Rev B) · raw→C2 "
+simulator\ui\process_mimic.py:2002:               "BENGUERIR (Mine Stockyard SMS) · → PAP / DRY-FEED · "
+simulator\ui\process_mimic.py:2006:                         views=["CHAIN", "LOUTA", "BENGUERIR", "MPH"],
+simulator\ui\layout_geometry.py:264:    site_id: str                  # LOUTA | BENGUERIR | MPH | CHAIN | GLOBAL
+simulator\ui\layout_geometry.py:293:_B02 = ("Q80130-BEN-B02-ME-BOD-0001 Rev B, IFR, 05-Feb-2025, "
+simulator\ui\layout_geometry.py:295:_B01 = "Q80130-BEN-B01-PR-REP-0002 Rev B, 26-Jul-2023 (IFR)"
+simulator\ui\layout_geometry.py:308:    f"{WASHING_LINE_RESIDENCE_TIME_H['BENGUERIR'] * 60:g} min (ASSUMED) · "
+simulator\ui\layout_geometry.py:313:    "Q80130-BEN-B02-PR-BOD-0001 Rev 0, §7.1 p.19 and §7.3.1 p.25"
+simulator\ui\layout_geometry.py:316:    ("BG-WASH-L1", "LINE 1", "Train A", "OPERATING"),
+simulator\ui\layout_geometry.py:317:    ("BG-WASH-L2", "LINE 2", "Train B", "FUTURE"),
+simulator\ui\layout_geometry.py:318:    ("BG-WASH-L3", "LINE 3", "Train C", "FUTURE"),
+simulator\ui\layout_geometry.py:381:                WASHING_LINE_RESIDENCE_TIME_H["BENGUERIR"] * 60),
+simulator\ui\layout_geometry.py:980:# ================================== BENGUERIR ======================================
+simulator\ui\layout_geometry.py:1040:    (Q80130-BEN-B02-ME-BOD-0001 Rev B, IFR, 05-Feb-2025, §§2.3.1–2.3.3 +
+simulator\ui\layout_geometry.py:1055:        "BENGUERIR", "BENGUERIR BBE — staged mine + beneficiation SMS",
+simulator\ui\layout_geometry.py:1062:        g.zones.append(ZoneGeo("BENGUERIR SMS — BBE staged (B02)",
+simulator\ui\layout_geometry.py:1077:            PileGeo("BG-RAW-1", ox + 3, oy + 18.2, ox + 20, oy + 19.4,
+simulator\ui\layout_geometry.py:1079:                    label=site_tag("BENGUERIR", "BG-RAW-1")
+simulator\ui\layout_geometry.py:1081:                    display_mass_t=_bg_raw_display_mass(sc, "BG-RAW-1"),
+simulator\ui\layout_geometry.py:1083:                    **_bg_raw_display_grade(sc, "BG-RAW-1")),
+simulator\ui\layout_geometry.py:1084:            PileGeo("BG-RAW-2", ox + 3, oy + 15.8, ox + 20, oy + 17.0,
+simulator\ui\layout_geometry.py:1086:                    label=site_tag("BENGUERIR", "BG-RAW-2")
+simulator\ui\layout_geometry.py:1088:                    display_mass_t=_bg_raw_display_mass(sc, "BG-RAW-2"),
+simulator\ui\layout_geometry.py:1090:                    **_bg_raw_display_grade(sc, "BG-RAW-2")),
+simulator\ui\layout_geometry.py:1093:            RailGeo("BG-RAW-ST1-R", ox + 1.8, oy + 19.7, ox + 21.2,
+simulator\ui\layout_geometry.py:1094:                    kind="stacker", flanks=["BG-RAW-1"],
+simulator\ui\layout_geometry.py:1097:            RailGeo("BG-RAW-R", ox + 1.8, oy + 17.6, ox + 21.2,
+simulator\ui\layout_geometry.py:1098:                    kind="reclaimer", flanks=["BG-RAW-1", "BG-RAW-2"],
+simulator\ui\layout_geometry.py:1101:            RailGeo("BG-RAW-ST2-R", ox + 1.8, oy + 15.4, ox + 21.2,
+simulator\ui\layout_geometry.py:1102:                    kind="stacker", flanks=["BG-RAW-2"],
+simulator\ui\layout_geometry.py:1110:            MachineGeo("BG-RAW-ST-1", "BG-RAW-ST1-R", 0.82, 0.4,
+simulator\ui\layout_geometry.py:1115:                            f"BG-RAW-1 only — dedicated stacker, never "
+simulator\ui\layout_geometry.py:1116:                            f"BG-RAW-2. Rate: {_T20_RATE} "
+simulator\ui\layout_geometry.py:1118:            MachineGeo("BG-RAW-BWR", "BG-RAW-R", 0.82, 0.4,
+simulator\ui\layout_geometry.py:1123:                            f"BOTH BG-RAW-1 and BG-RAW-2 — ONE shared "
+simulator\ui\layout_geometry.py:1131:            MachineGeo("BG-RAW-ST-2", "BG-RAW-ST2-R", 0.82, 0.4,
+simulator\ui\layout_geometry.py:1136:                            f"BG-RAW-2 only — dedicated stacker, never "
+simulator\ui\layout_geometry.py:1137:                            f"BG-RAW-1. Rate: {_T20_RATE} "
+simulator\ui\layout_geometry.py:1145:            ConveyorGeo("BG-RAW-WASH", [(ox + 21.5, oy + 17.8),
+simulator\ui\layout_geometry.py:1148:            ConveyorGeo("BG-WASH-YARD", [(ox + 31, oy + 15.0),
+simulator\ui\layout_geometry.py:1156:            PileGeo("BG-P1", ox + 22, oy + 9.6, ox + 58, oy + 12.6,
+simulator\ui\layout_geometry.py:1157:                    label=site_tag("BENGUERIR", "BG-P1")),
+simulator\ui\layout_geometry.py:1158:            PileGeo("BG-P2", ox + 22, oy + 2.6, ox + 58, oy + 5.6,
+simulator\ui\layout_geometry.py:1159:                    label=site_tag("BENGUERIR", "BG-P2")),
+simulator\ui\layout_geometry.py:1162:            RailGeo("BG-SL", ox + 20.5, oy + 7.6, ox + 59.5, kind="stacker",
+simulator\ui\layout_geometry.py:1163:                    flanks=["BG-P1", "BG-P2"], working_sides="both",
+simulator\ui\layout_geometry.py:1165:            RailGeo("BG-RL-P1", ox + 20.5, oy + 13.8, ox + 59.5,
+simulator\ui\layout_geometry.py:1166:                    kind="reclaimer", flanks=["BG-P1"],
+simulator\ui\layout_geometry.py:1169:            RailGeo("BG-RL-P2", ox + 20.5, oy + 1.3, ox + 59.5,
+simulator\ui\layout_geometry.py:1170:                    kind="reclaimer", flanks=["BG-P2"],
+simulator\ui\layout_geometry.py:1175:            MachineGeo("ST3", "BG-SL", 0.45, 0.5, twin_boom=True,
+simulator\ui\layout_geometry.py:1181:            MachineGeo("RC2", "BG-RL-P1", 0.30, 0.5, label="BEN · RC2",
+simulator\ui\layout_geometry.py:1185:            MachineGeo("RC3", "BG-RL-P2", 0.62, 0.5, label="BEN · RC3",
+simulator\ui\layout_geometry.py:1191:            ConveyorGeo("BG-RL7", [(ox + 59.5, oy + 13.8),
+simulator\ui\layout_geometry.py:1194:            ConveyorGeo("BG-RL8", [(ox + 59.5, oy + 1.3),
+simulator\ui\layout_geometry.py:1197:            ConveyorGeo("BG-PROD-C2", [(ox + 63, oy + 8.4),
+simulator\ui\layout_geometry.py:1200:                        link_ids=["L-BG-PROD-C2"], tag="", compact=True),
+simulator\ui\layout_geometry.py:1201:            ConveyorGeo("BG-TRAIN-P", [(ox + 63, oy + 8.4),
+simulator\ui\layout_geometry.py:1204:                        link_ids=["L-BG-TRAIN-PROD"], tag="", compact=True),
+simulator\ui\layout_geometry.py:1210:            EquipGeo("destbox", ox + 74.5, oy + 4.8, "BG-TRAIN", w=7, h=2.6),
+simulator\ui\layout_geometry.py:1252:        PileGeo("BG-RAW-1", ox + 8, oy + 51.2, ox + 62, oy + 54.2,
+simulator\ui\layout_geometry.py:1255:                display_mass_t=_bg_raw_display_mass(sc, "BG-RAW-1"),
+simulator\ui\layout_geometry.py:1257:                **_bg_raw_display_grade(sc, "BG-RAW-1")),
+simulator\ui\layout_geometry.py:1258:        PileGeo("BG-RAW-2", ox + 8, oy + 43.0, ox + 62, oy + 46.0,
+simulator\ui\layout_geometry.py:1261:                display_mass_t=_bg_raw_display_mass(sc, "BG-RAW-2"),
+simulator\ui\layout_geometry.py:1263:                **_bg_raw_display_grade(sc, "BG-RAW-2")),
+simulator\ui\layout_geometry.py:1266:        RailGeo("BG-RAW-ST1-R", ox + 6.5, oy + 55.15, ox + 63.5,
+simulator\ui\layout_geometry.py:1267:                kind="stacker", flanks=["BG-RAW-1"], working_sides="below",
+simulator\ui\layout_geometry.py:1271:        RailGeo("BG-RAW-R", ox + 6.5, oy + 48.6, ox + 63.5,
+simulator\ui\layout_geometry.py:1272:                kind="reclaimer", flanks=["BG-RAW-1", "BG-RAW-2"],
+simulator\ui\layout_geometry.py:1277:        RailGeo("BG-RAW-ST2-R", ox + 6.5, oy + 40.4, ox + 63.5,
+simulator\ui\layout_geometry.py:1278:                kind="stacker", flanks=["BG-RAW-2"], working_sides="above",
+simulator\ui\layout_geometry.py:1284:        MachineGeo("BG-RAW-ST-1", "BG-RAW-ST1-R", 0.28, 0.6, display=True,
+simulator\ui\layout_geometry.py:1288:                        f"USER_CONFIRMED: BG-RAW-1 only — dedicated "
+simulator\ui\layout_geometry.py:1289:                        f"stacker, never BG-RAW-2. Rate: {_T20_RATE} "
+simulator\ui\layout_geometry.py:1291:        MachineGeo("BG-RAW-BWR", "BG-RAW-R", 0.52, 0.6, display=True,
+simulator\ui\layout_geometry.py:1296:                        f"USER_CONFIRMED: reaches BOTH BG-RAW-1 and "
+simulator\ui\layout_geometry.py:1297:                        f"BG-RAW-2 — ONE shared machine, never a second "
+simulator\ui\layout_geometry.py:1302:        MachineGeo("BG-RAW-ST-2", "BG-RAW-ST2-R", 0.74, 0.6, display=True,
+simulator\ui\layout_geometry.py:1306:                        f"USER_CONFIRMED: BG-RAW-2 only — dedicated "
+simulator\ui\layout_geometry.py:1307:                        f"stacker, never BG-RAW-1. Rate: {_T20_RATE} "
+simulator\ui\layout_geometry.py:1329:        ChipGeo("B01 2023: 1 stacker + 1 reclaimer 04BG-RC-01 — "
+simulator\ui\layout_geometry.py:1332:                     "04BG-* ↔ RB/SL/RL-* mapping unproven; tag registers "
+simulator\ui\layout_geometry.py:1348:    # planning model only as the exogenous BG-WASH-IN inflow (S3-A11).
+simulator\ui\layout_geometry.py:1360:        ConveyorGeo("BG-WASH-1", [(ox + 23.2, oy + 28.2),
+simulator\ui\layout_geometry.py:1363:        ConveyorGeo("BG-WASH-2", [(ox + 40.2, oy + 28.2),
+simulator\ui\layout_geometry.py:1368:        ConveyorGeo("BG-RAW-WASH", [(ox + 6.5, oy + 48.6),
+simulator\ui\layout_geometry.py:1375:        ConveyorGeo("BG-WASH-YARD", [(ox + 57, oy + 28.2),
+simulator\ui\layout_geometry.py:1378:                    tag="BG-WASH-IN → yard",
+simulator\ui\layout_geometry.py:1388:        PileGeo("BG-P1", ox + 10, oy + 15.0, ox + 70, oy + 18.4,
+simulator\ui\layout_geometry.py:1389:                label=site_tag("BENGUERIR", "BG-P1") + " · 191,512 t"),
+simulator\ui\layout_geometry.py:1390:        PileGeo("BG-P2", ox + 10, oy + 5.6, ox + 70, oy + 9.0,
+simulator\ui\layout_geometry.py:1391:                label=site_tag("BENGUERIR", "BG-P2") + " · 191,512 t"),
+simulator\ui\layout_geometry.py:1394:        RailGeo("BG-SL", ox + 8.5, oy + 12.0, ox + 71.5, kind="stacker",
+simulator\ui\layout_geometry.py:1395:                flanks=["BG-P1", "BG-P2"], working_sides="both",
+simulator\ui\layout_geometry.py:1400:        RailGeo("BG-RL-P1", ox + 8.5, oy + 20.0, ox + 71.5, kind="reclaimer",
+simulator\ui\layout_geometry.py:1401:                flanks=["BG-P1"], working_sides="below",
+simulator\ui\layout_geometry.py:1405:        RailGeo("BG-RL-P2", ox + 8.5, oy + 3.4, ox + 71.5, kind="reclaimer",
+simulator\ui\layout_geometry.py:1406:                flanks=["BG-P2"], working_sides="above",
+simulator\ui\layout_geometry.py:1412:        MachineGeo("ST3", "BG-SL", 0.45, 0.85, twin_boom=True,
+simulator\ui\layout_geometry.py:1413:                   label=site_tag("BENGUERIR", "ST3"), physical_tag="ST3",
+simulator\ui\layout_geometry.py:1421:        MachineGeo("RC2", "BG-RL-P1", 0.30, 0.85,
+simulator\ui\layout_geometry.py:1422:                   label=site_tag("BENGUERIR", "RC2"), physical_tag="RC2",
+simulator\ui\layout_geometry.py:1429:        MachineGeo("RC3", "BG-RL-P2", 0.62, 0.85,
+simulator\ui\layout_geometry.py:1430:                   label=site_tag("BENGUERIR", "RC3"), physical_tag="RC3",
+simulator\ui\layout_geometry.py:1440:        ConveyorGeo("BG-RL7", [(ox + 71.5, oy + 20.0), (ox + 76, oy + 20.0),
+simulator\ui\layout_geometry.py:1444:        ConveyorGeo("BG-RL8", [(ox + 71.5, oy + 3.4), (ox + 76, oy + 3.4),
+simulator\ui\layout_geometry.py:1448:        ConveyorGeo("BG-PROD-C2", [(ox + 80.5, oy + 12.2),
+simulator\ui\layout_geometry.py:1451:                    link_ids=["L-BG-PROD-C2"],
+simulator\ui\layout_geometry.py:1453:        ConveyorGeo("BG-C2", [(ox + 91.6, oy + 14.8), (ox + 95.2, oy + 14.8)],
+simulator\ui\layout_geometry.py:1455:        ConveyorGeo("BG-TRAIN-P", [(ox + 80.5, oy + 12.2),
+simulator\ui\layout_geometry.py:1458:                    link_ids=["L-BG-TRAIN-PROD"],
+simulator\ui\layout_geometry.py:1466:            "BG-RAW-C2", [(ox + 62, oy + 53.0), (ox + 91, oy + 53.0),
+simulator\ui\layout_geometry.py:1468:            link_ids=["L-BG-RAW-C2"],
+simulator\ui\layout_geometry.py:1474:            "BG-RAW-C2", [(ox + 62, oy + 53.0), (ox + 91, oy + 53.0),
+simulator\ui\layout_geometry.py:1481:        "BG-TRAIN-R", [(ox + 62, oy + 44.5), (ox + 104, oy + 44.5),
+simulator\ui\layout_geometry.py:1483:        link_ids=["L-BG-TRAIN-RAW"],
+simulator\ui\layout_geometry.py:1492:        EquipGeo("destbox", ox + 110.5, oy + 6.6, "BG-TRAIN station",
+simulator\ui\layout_geometry.py:1521:        ("BENGUERIR", "B02 current-configuration status",
+simulator\ui\layout_geometry.py:1527:        ("BENGUERIR", "raw/screened ore-storage topology (Table 20)",
+simulator\ui\layout_geometry.py:1532:        ("BENGUERIR", "raw ore-storage grade composition / live snapshot",
+simulator\ui\layout_geometry.py:1534:         "BG-RAW-1 = 200,000 t and BG-RAW-2 = 200,000 t per project-team "
+simulator\ui\layout_geometry.py:1539:         "composition is BG-RAW-1 = 50% Global + 50% High-Cd "
+simulator\ui\layout_geometry.py:1540:         "(composite BPL 55.585 %, Cd 23 ppm) and BG-RAW-2 = 50% Global + "
+simulator\ui\layout_geometry.py:1547:        ("BENGUERIR", "raw-storage reclaimer capacity conflict",
+simulator\ui\layout_geometry.py:1555:        ("BENGUERIR", "raw-storage package scope vs planning scope",
+simulator\ui\layout_geometry.py:1564:        ("BENGUERIR", "B01 ↔ B02 ↔ Table 20 equipment mapping",
+simulator\ui\layout_geometry.py:1565:         "process stages connected (B02 §2.6); exact 04BG-* ↔ RB/SL/RL-* "
+simulator\ui\layout_geometry.py:1571:        ("BENGUERIR", "reclaim-line arrangement",
+simulator\ui\layout_geometry.py:1575:        ("BENGUERIR", "stockpile autonomy",
+simulator\ui\layout_geometry.py:1579:        ("BENGUERIR", "'3 qualities on 2 piles' operating rule",
+simulator\ui\layout_geometry.py:1582:        ("BENGUERIR", "washing output / ST3 stacking",
+simulator\ui\layout_geometry.py:1586:        ("BENGUERIR", "train loading scope",
+simulator\ui\layout_geometry.py:1590:        ("BENGUERIR", "B01 2023 mass-rate inconsistencies",
+simulator\ui\layout_geometry.py:1594:        ("BENGUERIR", "same-pile concurrency policy",
+simulator\ui\layout_geometry.py:2280:                     "Phosphate value chain — LOUTA + BENGUERIR → MPH M16",
+simulator\ui\layout_geometry.py:2345:                     "Global stockyard layout & flow — LOUTA · BENGUERIR · "
+simulator\ui\layout_geometry.py:2376:            "BENGUERIR": benguerir_geometry}[view](sc)
+simulator\mph_sim\routes.py:158:    wash-tower → BG-P1 → BG-OUT → C2 → M16 would let the solver teleport
+simulator\mph_sim\rabbitmq_inventory.py:1434:                  for site in ("LOUTA", "BENGUERIR", "MPH")},
+simulator\tests\test_benguerir_raw_yard.py:34:RAW_VIEWS = ("BENGUERIR", "CHAIN", "GLOBAL")
+simulator\tests\test_benguerir_raw_yard.py:38:    return [p for p in geo.piles if p.pile_id.startswith("BG-RAW-")]
+simulator\tests\test_benguerir_raw_yard.py:42:    return [m for m in geo.machines if m.machine_id.startswith("BG-RAW-")]
+simulator\tests\test_benguerir_raw_yard.py:56:        assert {p.pile_id for p in piles} == {"BG-RAW-1", "BG-RAW-2"}
+simulator\tests\test_benguerir_raw_yard.py:61:        assert {m.machine_id for m in stackers} == {"BG-RAW-ST-1",
+simulator\tests\test_benguerir_raw_yard.py:62:                                                     "BG-RAW-ST-2"}
+simulator\tests\test_benguerir_raw_yard.py:63:        assert reclaimers[0].machine_id == "BG-RAW-BWR"
+simulator\tests\test_benguerir_raw_yard.py:70:        st1 = next(m for m in geo.machines if m.machine_id == "BG-RAW-ST-1")
+simulator\tests\test_benguerir_raw_yard.py:72:        assert rail.flanks == ["BG-RAW-1"], f"{view}: {rail.flanks}"
+simulator\tests\test_benguerir_raw_yard.py:78:        st2 = next(m for m in geo.machines if m.machine_id == "BG-RAW-ST-2")
+simulator\tests\test_benguerir_raw_yard.py:80:        assert rail.flanks == ["BG-RAW-2"], f"{view}: {rail.flanks}"
+simulator\tests\test_benguerir_raw_yard.py:87:        bwr = next(m for m in geo.machines if m.machine_id == "BG-RAW-BWR")
+simulator\tests\test_benguerir_raw_yard.py:89:        assert set(rail.flanks) == {"BG-RAW-1", "BG-RAW-2"}
+simulator\tests\test_benguerir_raw_yard.py:107:        for mid in ("BG-RAW-ST-1", "BG-RAW-ST-2"):
+simulator\tests\test_benguerir_raw_yard.py:118:        bwr = next(m for m in geo.machines if m.machine_id == "BG-RAW-BWR")
+simulator\tests\test_benguerir_raw_yard.py:122:        # 04BG-RC-01 is B01 evidence for a DIFFERENT (unproven-equivalent)
+simulator\tests\test_benguerir_raw_yard.py:124:        assert "04BG-RC-01" not in bwr.label
+simulator\tests\test_benguerir_raw_yard.py:125:        assert bwr.physical_tag != "04BG-RC-01"
+simulator\tests\test_benguerir_raw_yard.py:130:    geo = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:146:            if p.pile_id == "BG-RAW-1":
+simulator\tests\test_benguerir_raw_yard.py:157:    gaps = " ".join(g[2] for g in geometry_for(s3, "BENGUERIR").gaps)
+simulator\tests\test_benguerir_raw_yard.py:158:    assert "BG-RAW-1 = 200,000 t" in gaps
+simulator\tests\test_benguerir_raw_yard.py:159:    assert "BG-RAW-2 = 200,000 t" in gaps
+simulator\tests\test_benguerir_raw_yard.py:173:    geo = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:201:             if "<br>Tonnage: 50,000 t<br>Location: BG-RAW-" in text]
+simulator\tests\test_benguerir_raw_yard.py:208:        "Tonnage: 50,000 t<br>Location: BG-RAW-1 · R0–R250",
+simulator\tests\test_benguerir_raw_yard.py:210:        "Tonnage: 50,000 t<br>Location: BG-RAW-1 · R250–R500",
+simulator\tests\test_benguerir_raw_yard.py:212:        "Tonnage: 50,000 t<br>Location: BG-RAW-2 · R0–R250",
+simulator\tests\test_benguerir_raw_yard.py:214:        "Tonnage: 50,000 t<br>Location: BG-RAW-2 · R250–R500",
+simulator\tests\test_benguerir_raw_yard.py:217:    assert not any(text.startswith("<b>BG-RAW") for text in all_hover)
+simulator\tests\test_benguerir_raw_yard.py:222:    rows = broken.config["BG_RAW_DISPLAY_GRADE_COMPONENTS"]["BG-RAW-1"]
+simulator\tests\test_benguerir_raw_yard.py:225:    geo = geometry_for(broken, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:226:    pile = next(p for p in geo.piles if p.pile_id == "BG-RAW-1")
+simulator\tests\test_benguerir_raw_yard.py:238:    geo = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:246:    geo = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:247:    for mid in ("BG-RAW-ST-1", "BG-RAW-ST-2", "BG-RAW-BWR"):
+simulator\tests\test_benguerir_raw_yard.py:255:    geo = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:266:    geo = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:267:    bwr = next(m for m in geo.machines if m.machine_id == "BG-RAW-BWR")
+simulator\tests\test_benguerir_raw_yard.py:275:    ids = {a.id for a in s3.assumptions if a.module == "BENGUERIR"}
+simulator\tests\test_benguerir_raw_yard.py:281:    geo = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:282:    bwr = next(m for m in geo.machines if m.machine_id == "BG-RAW-BWR")
+simulator\tests\test_benguerir_raw_yard.py:285:    for mid in ("BG-RAW-ST-1", "BG-RAW-ST-2"):
+simulator\tests\test_benguerir_raw_yard.py:299:    raw_ids = {"BG-RAW-ST-1", "BG-RAW-ST-2", "BG-RAW-BWR"}
+simulator\tests\test_benguerir_raw_yard.py:307:    geo = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_raw_yard.py:316:    assert rl_p1.flanks == ["BG-P1"] and rl_p2.flanks == ["BG-P2"]
+simulator\tests\test_benguerir_raw_yard.py:341:    for view in ("BENGUERIR", "CHAIN", "GLOBAL", "LOUTA", "MPH"):
+simulator\tests\test_benguerir_raw_yard.py:348:    assert "Q80130-BEN-B02" not in lg._T20   # never attributed to B02's doc
+simulator\tests\test_benguerir_raw_yard.py:354:    for view in ("BENGUERIR", "CHAIN", "GLOBAL"):
+simulator\tests\test_benguerir_raw_yard.py:357:        if view == "BENGUERIR":
+simulator\tests\test_benguerir_raw_yard.py:369:    process_mimic_figure(st_off, geometry_for(sc_off, "BENGUERIR"),
+simulator\tests\test_benguerir_washing_lines.py:26:LINE_IDS = ("BG-WASH-L1", "BG-WASH-L2", "BG-WASH-L3")
+simulator\tests\test_benguerir_washing_lines.py:28:    "BG-WASH-L1": ("LINE 1", "OPERATING"),
+simulator\tests\test_benguerir_washing_lines.py:29:    "BG-WASH-L2": ("LINE 2", "FUTURE"),
+simulator\tests\test_benguerir_washing_lines.py:30:    "BG-WASH-L3": ("LINE 3", "FUTURE"),
+simulator\tests\test_benguerir_washing_lines.py:44:    `BG-WASH-*` cards so it keeps testing Benguerir behaviour alone.
+simulator\tests\test_benguerir_washing_lines.py:47:            if line.line_id.startswith("BG-WASH")}
+simulator\tests\test_benguerir_washing_lines.py:101:        "BENGUERIR-detail": benguerir_geometry(s3),
+simulator\tests\test_benguerir_washing_lines.py:102:        "BENGUERIR-compact": benguerir_geometry(s3, compact=True),
+simulator\tests\test_benguerir_washing_lines.py:127:            ("BENGUERIR-detail", benguerir_geometry(s3)),
+simulator\tests\test_benguerir_washing_lines.py:128:            ("BENGUERIR-compact", benguerir_geometry(s3, compact=True)),
+simulator\tests\test_benguerir_washing_lines.py:167:    for view in ("BENGUERIR", "CHAIN", "GLOBAL"):
+simulator\tests\test_demand_driven_coverage.py:24:MINE_SITES = {"LOUTA", "BENGUERIR"}
+simulator\tests\test_demand_driven_coverage.py:111:    stale.destination("BG-TRAIN-PROD").demand_default_tph = 0
+simulator\tests\test_demand_driven_coverage.py:120:    assert stale.destination("BG-TRAIN-PROD").demand_default_tph == \
+simulator\tests\test_demand_driven_coverage.py:149:        if issue.entity == "BG-TRAIN-RAW")
+simulator\tests\test_demand_driven_coverage.py:154:    active.destination("BG-TRAIN-RAW").demand_default_tph = 500
+simulator\tests\test_demand_driven_coverage.py:157:        if issue.entity == "BG-TRAIN-RAW")
+simulator\tests\test_demand_driven_coverage.py:216:        "BENGUERIR",
+simulator\mph_sim\datasets.py:171:_B02 = ("Q80130-BEN-B02-ME-BOD-0001 Rev B, IFR, 05-Feb-2025, "
+simulator\mph_sim\datasets.py:173:_B01 = "Q80130-BEN-B01-PR-REP-0002 Rev B, 26-Jul-2023 (IFR)"
+simulator\mph_sim\datasets.py:342:    "BENGUERIR": 0.5,
+simulator\mph_sim\datasets.py:352:    "scrubber 3 min (Q80130-BEN-B02-PR-BOD-0001 Rev 0 §7.1 p.19 and "
+simulator\mph_sim\datasets.py:547:            "BEN-RAW-SCREENED", "BENGUERIR",
+simulator\mph_sim\datasets.py:571:            "BEN-WASHED-FILTERED", "BENGUERIR",
+simulator\mph_sim\datasets.py:590:            "BEN-SETTLED-PRODUCT", "BENGUERIR",
+simulator\mph_sim\datasets.py:604:            transformation_note="Profile used by BG-P1/BG-P2. TBT/BT/MT "
+simulator\mph_sim\datasets.py:975:    Benguerir configuration switches (Q80130-BEN-B02-ME-BOD-0001 Rev B):
+simulator\mph_sim\datasets.py:987:        jobs instead of the exogenous BG-WASH-IN bypass. Exactly one of
+simulator\mph_sim\datasets.py:1021:        Site("BENGUERIR", "Benguerir mine + beneficiation expansion (BBE)",
+simulator\mph_sim\datasets.py:1103:            "BENGUERIR": False,
+simulator\mph_sim\datasets.py:1141:            "BG-RAW-1": 100_000.0,
+simulator\mph_sim\datasets.py:1142:            "BG-RAW-2": 100_000.0,
+simulator\mph_sim\datasets.py:1158:            "BG-RAW-1": "RAW-BT-GLOBAL",
+simulator\mph_sim\datasets.py:1159:            "BG-RAW-2": "RAW-BT-GLOBAL",
+simulator\mph_sim\datasets.py:1163:            "BG-RAW-1": [
+simulator\mph_sim\datasets.py:1175:            "BG-RAW-2": [
+simulator\mph_sim\datasets.py:1359:        StockSpace("BG-P1", "BENGUERIR", "mine-yard", "open", 191_512, 150_000,
+simulator\mph_sim\datasets.py:1361:                   material_class="washed", profile_id="BEN-SETTLED-PRODUCT",
+simulator\mph_sim\datasets.py:1376:        StockSpace("BG-P2", "BENGUERIR", "mine-yard", "open", 191_512, 140_000,
+simulator\mph_sim\datasets.py:1378:                   material_class="washed", profile_id="BEN-SETTLED-PRODUCT",
+simulator\mph_sim\datasets.py:1379:                   evidence=CONF(_B02, "as BG-P1")),
+simulator\mph_sim\datasets.py:1387:        Machine("RC2", "BENGUERIR", "reclaimer", 500, 2600,
+simulator\mph_sim\datasets.py:1388:                ["BG-P1", "BG-P2"], rail="BG-RL-P1", position_x=250,
+simulator\mph_sim\datasets.py:1398:        Machine("RC3", "BENGUERIR", "reclaimer", 500, 2600,
+simulator\mph_sim\datasets.py:1399:                ["BG-P1", "BG-P2"], rail="BG-RL-P2", position_x=250,
+simulator\mph_sim\datasets.py:1409:        Machine("ST3", "BENGUERIR", "stacker", 0, 2100,
+simulator\mph_sim\datasets.py:1410:                ["BG-P1", "BG-P2"], rail="BG-SL", position_x=250,
+simulator\mph_sim\datasets.py:1425:        Node("SPACE:BG-P1", "BENGUERIR", "space", "BG-P1", 0, 8),
+simulator\mph_sim\datasets.py:1426:        Node("SPACE:BG-P2", "BENGUERIR", "space", "BG-P2", 0, 9),
+simulator\mph_sim\datasets.py:1427:        Node("HUB:BG-OUT", "BENGUERIR", "tower",
+simulator\mph_sim\datasets.py:1429:        Node("HUB:C2-HEAD", "BENGUERIR", "tower",
+simulator\mph_sim\datasets.py:1431:        Node("SRC:BG-RAW", "BENGUERIR", "source",
+simulator\mph_sim\datasets.py:1434:             "sets BG-RAW-1 = 200,000 t and BG-RAW-2 = 200,000 t capacity; "
+simulator\mph_sim\datasets.py:1436:             "BG-RAW-1 = 100,000 t and BG-RAW-2 = 100,000 t starting "
+simulator\mph_sim\datasets.py:1439:             "BG-RAW-1 = 50% Global + 50% High-Cd and BG-RAW-2 = "
+simulator\mph_sim\datasets.py:1449:        Node("DEST:BG-WASH-L1-FEED", "BENGUERIR", "dest",
+simulator\mph_sim\datasets.py:1452:        Node("DEST:BG-TRAIN-PROD", "BENGUERIR", "dest",
+simulator\mph_sim\datasets.py:1454:        Node("DEST:BG-TRAIN-RAW", "BENGUERIR", "dest",
+simulator\mph_sim\datasets.py:1458:        Link("L-BG-P1-OUT", "SPACE:BG-P1", "HUB:BG-OUT", capacity_tph=2600,
+simulator\mph_sim\datasets.py:1463:        Link("L-BG-P2-OUT", "SPACE:BG-P2", "HUB:BG-OUT", capacity_tph=2600,
+simulator\mph_sim\datasets.py:1465:             evidence=CONF(_B02, "as L-BG-P1-OUT")),
+simulator\mph_sim\datasets.py:1466:        Link("L-BG-PROD-C2", "HUB:BG-OUT", "HUB:C2-HEAD", capacity_tph=2600,
+simulator\mph_sim\datasets.py:1471:        Link("L-BG-RAW-C2", "SRC:BG-RAW", "HUB:C2-HEAD", capacity_tph=2600,
+simulator\mph_sim\datasets.py:1495:        Link("L-BG-TRAIN-PROD", "HUB:BG-OUT", "DEST:BG-TRAIN-PROD",
+simulator\mph_sim\datasets.py:1497:             material_class="washed", shared_group="BG-TRAIN-STATION",
+simulator\mph_sim\datasets.py:1504:        Link("L-BG-TRAIN-RAW", "SRC:BG-RAW", "DEST:BG-TRAIN-RAW",
+simulator\mph_sim\datasets.py:1506:             material_class="raw", shared_group="BG-TRAIN-STATION",
+simulator\mph_sim\datasets.py:1510:                                 "L-BG-TRAIN-PROD")),
+simulator\mph_sim\datasets.py:1514:            "BEN-WASH-L1", "BENGUERIR", "DEST:BG-WASH-L1-FEED",
+simulator\mph_sim\datasets.py:1517:            demand_kind="process_feed", process_stage="BEN-WASH-L1",
+simulator\mph_sim\datasets.py:1526:        Destination("BG-TRAIN-PROD", "BENGUERIR", "DEST:BG-TRAIN-PROD",
+simulator\mph_sim\datasets.py:1536:        Destination("BG-TRAIN-RAW", "BENGUERIR", "DEST:BG-TRAIN-RAW",
+simulator\mph_sim\datasets.py:1969:        # baseline: the assumed washing output enters BG-P1 directly and
+simulator\mph_sim\datasets.py:1972:            ExogenousFlow("BG-WASH-IN", target_space="BG-P1", rate_tph=1500,
+simulator\mph_sim\datasets.py:1976:                              "Benguerir washing output 1,500 t/h into BG-P1 "
+simulator\mph_sim\datasets.py:1987:        # the exogenous BG-WASH-IN flow above is NOT created in this mode)
+simulator\mph_sim\datasets.py:1994:            Node("SRC:BG-WASH", "BENGUERIR", "source",
+simulator\mph_sim\datasets.py:1998:            Node("HUB:BG-WASH-OUT", "BENGUERIR", "tower",
+simulator\mph_sim\datasets.py:2003:            Link("L-BG-WASH", "SRC:BG-WASH", "HUB:BG-WASH-OUT",
+simulator\mph_sim\datasets.py:2010:            Link("L-BG-SL5", "HUB:BG-WASH-OUT", "SPACE:BG-P1",
+simulator\mph_sim\datasets.py:2013:                               "SL5 tripper leg to BG-P1 at ST3's 2,100 t/h "
+simulator\mph_sim\datasets.py:2016:            Link("L-BG-SL6", "HUB:BG-WASH-OUT", "SPACE:BG-P2",
+simulator\mph_sim\datasets.py:2018:                 evidence=DERV(_B02, "SL6 tripper leg to BG-P2 — as L-BG-SL5")),
+simulator\mph_sim\datasets.py:2022:                "L-BG-WASH", _t, 1500, "TBT"))
+simulator\mph_sim\datasets.py:2028:        Segment("BG-P1", 0, 500, 150_000, "TBT", age_days=8),
+simulator\mph_sim\datasets.py:2164:                   "BENGUERIR", source="earlier conveying-system datasheet "
+simulator\mph_sim\datasets.py:2165:                   "(doc ref TBC) — NOT " + "Q80130-BEN-B02-ME-BOD-0001",
+simulator\mph_sim\datasets.py:2166:                   placeholder="BG-P1=TBT, BG-P2=BT",
+simulator\mph_sim\datasets.py:2191:                   "BENGUERIR", source="project-team layout/UI instruction, "
+simulator\mph_sim\datasets.py:2194:                   "default BEN-WASH-L1 feed-demand interface",
+simulator\mph_sim\datasets.py:2235:                   "{LOUTA: True, BENGUERIR: False}",
+simulator\mph_sim\datasets.py:2344:                   "BENGUERIR", source=_B02 + " + project-team planning "
+simulator\mph_sim\datasets.py:2356:                   "BENGUERIR", status="CONFIRMED", source=_B02,
+simulator\mph_sim\datasets.py:2361:        Assumption("S3-A11", "Benguerir washing output 1,500 t/h into BG-P1 "
+simulator\mph_sim\datasets.py:2365:                   "BENGUERIR", source="placeholder",
+simulator\mph_sim\datasets.py:2366:                   placeholder="BG-WASH-IN 1,500 t/h · buckets 0–23",
+simulator\mph_sim\datasets.py:2373:                   "explicit wash-supply node (SRC:BG-WASH → "
+simulator\mph_sim\datasets.py:2374:                   "HUB:BG-WASH-OUT → SL5/SL6) and stacked by ST3 as "
+simulator\mph_sim\datasets.py:2376:                   "scenario build — exogenous BG-WASH-IN and the supply "
+simulator\mph_sim\datasets.py:2381:                   "nominal, DERIVED)", "BENGUERIR",
+simulator\mph_sim\datasets.py:2388:                   impact="ST3 utilisation, BG-P1 build timing and the "
+simulator\mph_sim\datasets.py:2400:                   "20 (S3-A14)", "BENGUERIR",
+simulator\mph_sim\datasets.py:2414:                   "BG-RAW-1 = 200,000 t and BG-RAW-2 = 200,000 t per "
+simulator\mph_sim\datasets.py:2422:                   "per pile)", "BENGUERIR",
+simulator\mph_sim\datasets.py:2430:                   "starting mass is BG-RAW-1 = 100,000 t and "
+simulator\mph_sim\datasets.py:2431:                   "BG-RAW-2 = 100,000 t (50% of the separately recorded "
+simulator\mph_sim\datasets.py:2437:                   "inventory", "BENGUERIR", status="CONFIRMED",
+simulator\mph_sim\datasets.py:2452:            "BG-RAW-1 = 50% Global BT + 50% "
+simulator\mph_sim\datasets.py:2454:            "CO2 8.31 %, SiO2 14.995 %, Cd 23 ppm); BG-RAW-2 = 50% Global "
+simulator\mph_sim\datasets.py:2462:            "BENGUERIR", status="ASSUMED",
+simulator\mph_sim\datasets.py:2486:                   "has been resolved", "BENGUERIR",
+simulator\mph_sim\datasets.py:2488:                   placeholder="L-BG-RAW-C2 capacity_tph=2600 (assumes "
+simulator\mph_sim\datasets.py:2496:                   "in the B02 BoD", "BENGUERIR", source="placeholder",
+simulator\mph_sim\datasets.py:2566:        "BEN-WASH-L1": 0.0,
+simulator\mph_sim\datasets.py:2567:        "BG-TRAIN-PROD": float(profile["bg_train_product_t"]),
+simulator\mph_sim\datasets.py:2568:        "BG-TRAIN-RAW": 0.0,
+simulator\mph_sim\datasets.py:2579:        "BEN-WASH-L1": "RAW-BT-GLOBAL",
+simulator\mph_sim\datasets.py:2580:        "BG-TRAIN-PROD": "TBT",
+simulator\mph_sim\datasets.py:2581:        "BG-TRAIN-RAW": "RAW-BT-GLOBAL",
+simulator\mph_sim\datasets.py:2916:    bg_baseline_node_ids = {"DEST:BG-WASH-L1-FEED"}
+simulator\mph_sim\datasets.py:2917:    bg_baseline_destination_ids = {"BEN-WASH-L1", "BG-TRAIN-PROD"}
+simulator\mph_sim\datasets.py:3009:    fresh_raw = next((node for node in fresh.nodes if node.id == "SRC:BG-RAW"),
+simulator\mph_sim\datasets.py:3011:    loaded_raw = next((node for node in sc.nodes if node.id == "SRC:BG-RAW"),
+simulator\mph_sim\datasets.py:3042:            "BEN-RAW-SCREENED",
+simulator\tests\test_integration.py:62:    assert s3_part["BENGUERIR"] == [], (
+simulator\tests\test_integration.py:113:    for mine in ("LOUTA", "BENGUERIR"):
+simulator\tests\test_integration.py:162:    assert st.batches["BENGUERIR"].jobs == []
+simulator\tests\test_integration.py:163:    assert st.batches["BENGUERIR"].items == []
+simulator\tests\test_integration.py:164:    assert st.batches["BENGUERIR"].dispatch_state == "No jobs"
+simulator\tests\test_integration.py:221:    jb = _mk_reclaim_job(sc, "RC2", "BG-P1")
+simulator\tests\test_integration.py:223:    for site, item in (("MPH", ia), ("BENGUERIR", ib)):
+simulator\tests\test_integration.py:249:    assert {r["pile"] for r in space_values_for_site(s3, "BENGUERIR")} \
+simulator\tests\test_integration.py:250:        == {"BG-P1", "BG-P2"}
+simulator\tests\test_integration.py:286:    assert st.batches["BENGUERIR"].items == []
+simulator\tests\test_integration.py:287:    assert st.batches["BENGUERIR"].dispatch_state == "No jobs"
+simulator\tests\test_equipment_state_timing.py:93:    for line in geometry_for(sc, "BENGUERIR").process_lines:
+simulator\tests\test_equipment_state_timing.py:107:        "BENGUERIR": 0.5,
+simulator\tests\test_equipment_state_timing.py:111:        "BENGUERIR": False,
+simulator\tests\test_equipment_state_timing.py:120:        "{LOUTA: True, BENGUERIR: False}"
+simulator\tests\test_equipment_state_timing.py:135:        "BENGUERIR": 0.5,
+simulator\tests\test_equipment_state_timing.py:139:        "BENGUERIR": False,
+simulator\tests\test_equipment_state_timing.py:163:        "BENGUERIR": 0.5,
+simulator\tests\test_equipment_state_timing.py:167:        "BENGUERIR": False,
+simulator\tests\test_equipment_state_timing.py:186:        for site in ("LOUTA", "BENGUERIR")
+simulator\tests\test_flow_configuration.py:120:    assets = _assets_by_key(scenario, "BENGUERIR")
+simulator\tests\test_flow_configuration.py:122:    for line_id in ("BG-WASH-L1", "BG-WASH-L2", "BG-WASH-L3"):
+simulator\tests\test_benguerir_cleanup.py:8:  * an EXTERNAL citation `Q80130-BEN-B02-ME-BOD-0001 Rev B §2.3.2` was
+simulator\tests\test_benguerir_cleanup.py:158:        assert "Q80130-BEN-B02-ME-BOD-0001 Rev B §2.3.2" in flat, name
+simulator\tests\test_benguerir_cleanup.py:174:                 "Q80130-BEN-B02-ME-BOD-0001 Rev B, IFR, 05-Feb-2025 §2.3.2",
+simulator\tests\test_benguerir_cleanup.py:175:                 "Table 20 vs Q80130-BEN-B02-ME-BOD-0001 Rev B §2.3.2"):
+simulator\tests\test_benguerir_cleanup.py:222:    assert "assumed `BG-WASH-IN` 1,500 t/h bypasses ST3" in report_md
+simulator\tests\test_benguerir_cleanup.py:229:    for modelled in ("BG-P1/P2", "RC2/RC3", "C2 dispatch"):
+simulator\tests\test_benguerir_cleanup.py:250:    node = next(n for n in s3.nodes if n.id == "SRC:BG-RAW")
+simulator\tests\test_benguerir_cleanup.py:253:    assert ("BG-RAW-1 = 100,000 t and BG-RAW-2 = 100,000 t starting "
+simulator\tests\test_benguerir_cleanup.py:255:    assert "BG-RAW-1 = 200,000 t" in node.label
+simulator\tests\test_benguerir_cleanup.py:256:    assert "BG-RAW-2 = 200,000 t" in node.label
+simulator\tests\test_benguerir_cleanup.py:270:    node = next(n for n in s3.nodes if n.id == "SRC:BG-RAW")
+simulator\tests\test_benguerir_cleanup.py:297:    assert not [s for s in s3.spaces if s.id.startswith("BG-RAW")]
+simulator\tests\test_benguerir_cleanup.py:298:    assert not [m for m in s3.machines if m.id.startswith("BG-RAW")]
+simulator\tests\test_benguerir_cleanup.py:302:RAW_PILES = ("BG-RAW-1", "BG-RAW-2")
+simulator\tests\test_benguerir_cleanup.py:303:RAW_MACHINES = ("BG-RAW-ST-1", "BG-RAW-BWR", "BG-RAW-ST-2")
+simulator\tests\test_benguerir_cleanup.py:309:    piles = {p.pile_id: p for p in geo.piles if p.pile_id.startswith("BG-RAW")}
+simulator\tests\test_benguerir_cleanup.py:330:        if pile.pile_id.startswith("BG-RAW"):
+simulator\tests\test_benguerir_cleanup.py:345:        if "<br>Tonnage: 50,000 t<br>Location: BG-RAW-" in text
+simulator\tests\test_benguerir_cleanup.py:349:        "Tonnage: 50,000 t<br>Location: BG-RAW-1 · R0–R250",
+simulator\tests\test_benguerir_cleanup.py:351:        "Tonnage: 50,000 t<br>Location: BG-RAW-1 · R250–R500",
+simulator\tests\test_benguerir_cleanup.py:353:        "Tonnage: 50,000 t<br>Location: BG-RAW-2 · R0–R250",
+simulator\tests\test_benguerir_cleanup.py:355:        "Tonnage: 50,000 t<br>Location: BG-RAW-2 · R250–R500",
+simulator\tests\test_benguerir_cleanup.py:357:    assert not any(text.startswith("<b>BG-RAW") for text in hovers)
+simulator\tests\test_benguerir_cleanup.py:366:        if pile.pile_id.startswith("BG-RAW"):
+simulator\tests\test_benguerir_cleanup.py:372:            if pile.pile_id == "BG-RAW-1":
+simulator\tests\test_benguerir_cleanup.py:382:    assert "BG-RAW-1 = 200,000 t" in report_md
+simulator\tests\test_benguerir_cleanup.py:383:    assert "BG-RAW-2 = 200,000 t" in report_md
+simulator\tests\test_benguerir_cleanup.py:397:@pytest.mark.parametrize("view", ["CHAIN", "GLOBAL", "BENGUERIR"])
+simulator\tests\test_benguerir_cleanup.py:401:                if m.machine_id.startswith("BG-RAW")}
+simulator\tests\test_benguerir_cleanup.py:408:@pytest.mark.parametrize("view", ["CHAIN", "GLOBAL", "BENGUERIR"])
+simulator\tests\test_benguerir_cleanup.py:411:    bwr = next(m for m in geo.machines if m.machine_id == "BG-RAW-BWR")
+simulator\tests\test_benguerir_cleanup.py:420:@pytest.mark.parametrize("view", ["CHAIN", "GLOBAL", "BENGUERIR"])
+simulator\tests\test_benguerir_cleanup.py:425:        if mg.machine_id.startswith("BG-RAW"):
+simulator\tests\test_benguerir_cleanup.py:432:@pytest.mark.parametrize("view", ["CHAIN", "GLOBAL", "BENGUERIR"])
+simulator\tests\test_benguerir_cleanup.py:438:    st1, shared, st2 = (rails["BG-RAW-ST1-R"], rails["BG-RAW-R"],
+simulator\tests\test_benguerir_cleanup.py:439:                        rails["BG-RAW-ST2-R"])
+simulator\tests\test_benguerir_cleanup.py:440:    p1, p2 = piles["BG-RAW-1"], piles["BG-RAW-2"]
+simulator\tests\test_benguerir_cleanup.py:445:    assert st1.flanks == ["BG-RAW-1"]
+simulator\tests\test_benguerir_cleanup.py:446:    assert st2.flanks == ["BG-RAW-2"]
+simulator\tests\test_benguerir_cleanup.py:447:    assert sorted(shared.flanks) == ["BG-RAW-1", "BG-RAW-2"]
+simulator\tests\test_benguerir_cleanup.py:461:    assert not [m for m in sc.machines if m.id.startswith("BG-RAW")]
+simulator\tests\test_benguerir_cleanup.py:462:    assert not [s for s in sc.spaces if s.id.startswith("BG-RAW")]
+simulator\tests\test_benguerir_cleanup.py:463:    for view in ("CHAIN", "GLOBAL", "BENGUERIR"):
+simulator\tests\test_benguerir_cleanup.py:466:                   if m.machine_id.startswith("BG-RAW")]
+simulator\tests\test_benguerir_cleanup.py:473:    """B01 evidence = ONE 2,200 t/h stacker + ONE reclaimer 04BG-RC-01."""
+simulator\tests\test_benguerir_cleanup.py:475:    for window in re.finditer(r"[^|\n]{0,200}04BG-RC-01[^|\n]{0,200}", flat):
+simulator\tests\test_benguerir_cleanup.py:480:           "1 reclaimer 04BG-RC-01" in flat
+simulator\tests\test_compact_mimic_labels.py:63:    for view in ("LOUTA", "BENGUERIR", "GLOBAL", "CHAIN"):
+simulator\tests\test_compact_mimic_labels.py:68:            if line.line_id.startswith(("LT-WASH-", "BG-WASH-"))
+simulator\tests\test_global_concurrency.py:47:    assert "LOUTA" in zl and "BENGUERIR" in zl and "M16" in zl
+simulator\tests\test_global_concurrency.py:49:    assert {p.pile_id for p in g.piles} >= {"BG-P1", "BG-P2", "LT-P1",
+simulator\tests\test_global_concurrency.py:72:    bg = g.pile("BG-P1")
+simulator\tests\test_global_concurrency.py:147:    for view in ("GLOBAL", "CHAIN", "LOUTA", "BENGUERIR", "MPH"):
+simulator\tests\test_global_concurrency.py:291:    benguerir = next(s for s in s3.sites if s.id == "BENGUERIR")
+simulator\tests\test_global_layout.py:65:    assert "LOUTA" in zl and "BENGUERIR" in zl and "M16" in zl
+simulator\tests\test_global_layout.py:67:    for prefix in ("LT-P", "BG-P", "HP-"):
+simulator\tests\test_global_layout.py:76:    assert "102MG-SP-01" in t and "BG-P1" in t and "HP-01" in t
+simulator\tests\test_global_layout.py:77:    for pid in ("102MG-SP-01", "BG-P1", "HP-01"):
+simulator\tests\test_global_layout.py:253:    for view in ("CHAIN", "GLOBAL", "LOUTA", "BENGUERIR", "MPH"):
+simulator\tests\test_global_layout.py:307:    g = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_global_layout.py:322:    raw_y = min(p.y0 for p in g.piles if p.pile_id.startswith("BG-RAW"))
+simulator\tests\test_global_layout.py:349:    for view in ("GLOBAL", "LOUTA", "BENGUERIR", "MPH", "CHAIN"):
+simulator\tests\test_global_layout.py:360:    for view in ("GLOBAL", "CHAIN", "LOUTA", "BENGUERIR", "MPH"):
+simulator\tests\test_global_layout.py:381:    for view in ("GLOBAL", "LOUTA", "BENGUERIR", "MPH", "CHAIN"):
+simulator\tests\test_demand_plan_units.py:46:    assert by_unit["BG-TRAIN-PROD"]["Requirement"] == "Final delivery"
+simulator\tests\test_demand_plan_units.py:47:    assert by_unit["BG-TRAIN-PROD"]["Requested grade"] == "TBT"
+simulator\tests\test_demand_plan_units.py:48:    assert by_unit["BG-TRAIN-PROD"]["Quantity [t]"] == pytest.approx(12_000)
+simulator\tests\test_demand_plan_units.py:49:    assert by_unit["BG-TRAIN-PROD"]["Average rate [t/h]"] == pytest.approx(500)
+simulator\tests\test_demand_plan_units.py:61:    assert by_unit["BEN-WASH-L1"]["Requirement"] == "Washing feed"
+simulator\tests\test_demand_plan_units.py:62:    assert by_unit["BEN-WASH-L1"]["Requested grade"] == "RAW-BT-GLOBAL"
+simulator\tests\test_demand_plan_units.py:63:    assert by_unit["BEN-WASH-L1"]["Quantity [t]"] == pytest.approx(0)
+simulator\tests\test_demand_plan_units.py:64:    assert by_unit["BEN-WASH-L1"]["Route"] == "Pending model"
+simulator\tests\test_demand_plan_units.py:70:    assert _demand_quantity_t(scenario, "BEN-WASH-L1") == pytest.approx(0)
+simulator\tests\test_demand_plan_units.py:107:    destination = scenario.destination("BG-TRAIN-RAW")
+simulator\tests\test_demand_plan_units.py:140:            scenario, "BG-TRAIN-PROD") == pytest.approx(train_t)
+simulator\tests\test_demand_plan_units.py:180:    assert restored.destination("BEN-WASH-L1").demand_kind == "process_feed"
+simulator\tests\test_demand_plan_units.py:181:    assert restored.destination("BEN-WASH-L1").process_stage == "BEN-WASH-L1"
+simulator\mph_sim\integration.py:53:SMS_SITES = ("LOUTA", "BENGUERIR", "MPH")
+simulator\mph_sim\integration.py:64:    "BENGUERIR": "Benguerir stockyard stacking, reclaiming, C2 dispatch and "
+simulator\mph_sim\integration.py:95:        "BENGUERIR": SmsInstanceConfig("BENGUERIR", "BENGUERIR-SMS",
+simulator\tests\test_report_washing_residence.py:35:        "{LOUTA:true,BENGUERIR:false}`"
+simulator\tests\test_schedule_ui.py:58:    assert "BEN · BG-RAW-ST-1" not in \
+simulator\tests\test_schedule_ui.py:69:    assert "BEN · BG-RAW-ST-1" in \
+simulator\tests\test_benguerir_b02.py:4:Authoritative source: Q80130-BEN-B02-ME-BOD-0001 Rev B, IFR, 05-Feb-2025,
+simulator\tests\test_benguerir_b02.py:25:B02_ID = "Q80130-BEN-B02-ME-BOD-0001"
+simulator\tests\test_benguerir_b02.py:26:B02_CITE = ("Q80130-BEN-B02-ME-BOD-0001 Rev B, IFR, 05-Feb-2025, "
+simulator\tests\test_benguerir_b02.py:41:    ms = [m for m in sc.machines if m.site == "BENGUERIR"]
+simulator\tests\test_benguerir_b02.py:42:    sp = [s for s in sc.spaces if s.site == "BENGUERIR"]
+simulator\tests\test_benguerir_b02.py:53:    site = next(s for s in s3.sites if s.id == "BENGUERIR")
+simulator\tests\test_benguerir_b02.py:77:    total = sum(sp.capacity_t for sp in s3.spaces if sp.site == "BENGUERIR")
+simulator\tests\test_benguerir_b02.py:81:    g = geometry_for(s3, "BENGUERIR")
+simulator\tests\test_benguerir_b02.py:107:    bg = [sp for sp in s3.spaces if sp.site == "BENGUERIR"]
+simulator\tests\test_benguerir_b02.py:115:                if m.site == "BENGUERIR" and m.kind == "stacker"]
+simulator\tests\test_benguerir_b02.py:117:    for view in ("BENGUERIR", "CHAIN", "GLOBAL"):
+simulator\tests\test_benguerir_b02.py:121:        assert not any("BG-STACKER" in m.machine_id for m in g.machines)
+simulator\tests\test_benguerir_b02.py:155:    for view in ("BENGUERIR", "CHAIN", "GLOBAL"):
+simulator\tests\test_benguerir_b02.py:163:            assert "BG-RC-0" not in m.label and "BG-STACKER" not in m.label
+simulator\tests\test_benguerir_b02.py:168:    for view in ("BENGUERIR", "CHAIN", "GLOBAL"):
+simulator\tests\test_benguerir_b02.py:170:        raw = [p for p in g.piles if p.pile_id.startswith("BG-RAW")]
+simulator\tests\test_benguerir_b02.py:174:        assert {"BG-P1", "BG-P2"} <= {p.pile_id for p in g.piles}
+simulator\tests\test_benguerir_b02.py:189:    p = graph.best_path("SPACE:BG-P1", "TOWER:M16-REC")
+simulator\tests\test_benguerir_b02.py:190:    assert p is not None and "L-BG-PROD-C2" in p.links and "C2" in p.links
+simulator\tests\test_benguerir_b02.py:191:    assert "L-BG-RAW-C2" not in p.links
+simulator\tests\test_benguerir_b02.py:193:    assert s3.link("L-BG-RAW-C2").available is False
+simulator\tests\test_benguerir_b02.py:194:    assert graph.paths("SRC:BG-RAW", "TOWER:M16-REC") == []
+simulator\tests\test_benguerir_b02.py:198:    pr = graph_raw.best_path("SRC:BG-RAW", "TOWER:M16-REC")
+simulator\tests\test_benguerir_b02.py:199:    assert pr is not None and "L-BG-RAW-C2" in pr.links and "C2" in pr.links
+simulator\tests\test_benguerir_b02.py:203:    assert s3.link("L-BG-RAW-C2").material_class == "raw"
+simulator\tests\test_benguerir_b02.py:204:    assert s3.link("L-BG-PROD-C2").material_class == "washed"
+simulator\tests\test_benguerir_b02.py:209:    assert graph.paths("SRC:BG-RAW", "DEST:BG-TRAIN-PROD",
+simulator\tests\test_benguerir_b02.py:211:    for sp in ("SPACE:BG-P1", "SPACE:BG-P2"):
+simulator\tests\test_benguerir_b02.py:212:        assert graph.paths(sp, "DEST:BG-TRAIN-RAW",
+simulator\tests\test_benguerir_b02.py:239:    for lid in ("L-BG-TRAIN-RAW", "L-BG-TRAIN-PROD"):
+simulator\tests\test_benguerir_b02.py:246:    lr = s3.link("L-BG-TRAIN-RAW")
+simulator\tests\test_benguerir_b02.py:247:    lp = s3.link("L-BG-TRAIN-PROD")
+simulator\tests\test_benguerir_b02.py:250:    assert lr.shared_group == lp.shared_group == "BG-TRAIN-STATION"
+simulator\tests\test_benguerir_b02.py:251:    assert {d.id for d in s3.destinations} >= {"BG-TRAIN-RAW",
+simulator\tests\test_benguerir_b02.py:252:                                               "BG-TRAIN-PROD"}
+simulator\tests\test_benguerir_b02.py:256:    for did in ("BG-TRAIN-RAW", "BG-TRAIN-PROD"):
+simulator\tests\test_benguerir_b02.py:259:    outlets = ms.sites["BENGUERIR"].outlets
+simulator\tests\test_benguerir_b02.py:265:# ---- 18. BG-WASH-IN regression ---------------------------------------------------
+simulator\tests\test_benguerir_b02.py:267:    e = next(e for e in s3.exogenous if e.id == "BG-WASH-IN")
+simulator\tests\test_benguerir_b02.py:271:    assert e.rate_tph == 1500 and e.target_space == "BG-P1"
+simulator\tests\test_benguerir_b02.py:307:              if a["space"] == "BG-P1" and a["kind"] in ("reclaim",
+simulator\tests\test_benguerir_b02.py:310:    assert sim.inv["BG-P1"] == pytest.approx(exp, abs=2.0)
+simulator\tests\test_benguerir_b02.py:315:    site = next(s for s in s3.sites if s.id == "BENGUERIR")
+simulator\tests\test_benguerir_b02.py:321:    banner = ms.sites["BENGUERIR"].banner
+simulator\tests\test_benguerir_b02.py:324:    sp = s3.space("BG-P1")
+simulator\tests\test_benguerir_b02.py:330:    for view in ("BENGUERIR", "CHAIN", "GLOBAL"):
+simulator\tests\test_benguerir_b02.py:338:        rl1 = g.rail("BG-RL-P1")
+simulator\tests\test_benguerir_b02.py:339:        rl2 = g.rail("BG-RL-P2")
+simulator\tests\test_benguerir_b02.py:340:        assert rl1.flanks == ["BG-P1"] and rl2.flanks == ["BG-P2"], \
+simulator\tests\test_zone_model.py:6:    BG-WASH-IN inflow and the supply model are NEVER both active (no
+simulator\tests\test_zone_model.py:85:    assert any(e.id == "BG-WASH-IN" for e in sc.exogenous)
+simulator\tests\test_zone_model.py:86:    assert not any(e.link_id == "L-BG-WASH" for e in sc.belt_profile)
+simulator\tests\test_zone_model.py:92:    assert not any(e.id == "BG-WASH-IN" for e in sc.exogenous), \
+simulator\tests\test_zone_model.py:94:    wash = [e for e in sc.belt_profile if e.link_id == "L-BG-WASH"]
+simulator\tests\test_zone_model.py:106:    assert all(parent_space_id(j.space) in ("BG-P1", "BG-P2") for j in st3)
+simulator\tests\test_zone_model.py:114:    # solver added to BG-P1 must equal the ST3 job tonnage (this is what
+simulator\tests\test_zone_model.py:117:    inv = res.inventory["BG-P1"]
+simulator\tests\test_zone_model.py:119:               if j.space == "BG-P1" and j.kind in ("reclaim", "dispatch"))
+simulator\tests\test_zone_model.py:121:    bg_p1_stacked = sum(j.tonnage_t for j in st3 if j.space == "BG-P1")
+simulator\tests\test_zone_model.py:151:    # BG-P1 mass balance: start + stacked - reclaimed == end
+simulator\tests\test_zone_model.py:154:                 if a["space"] == "BG-P1" and a["kind"] in ("reclaim",
+simulator\tests\test_zone_model.py:156:    start = next(s.mass_t for s in sc.spaces if s.id == "BG-P1")
+simulator\tests\test_zone_model.py:157:    assert sim.inv["BG-P1"] == pytest.approx(start + bg_in - bg_out, abs=1)
+simulator\tests\test_zone_model.py:316:            ("BG-RAW-ST-1", "per-pile"), ("BG-RAW-ST-2", "missing inputs"),
+simulator\tests\test_zone_model.py:353:        for banned in ("BG-RAW-ST-1", "BG-RAW-ST-2", "BG-RAW-BWR",
+simulator\tests\test_plan_configure_contract.py:135:        ("BENGUERIR", "mine"),
+simulator\tests\test_plan_configure_contract.py:276:    assert scenario.destination("BG-TRAIN-PROD").demand_default_tph == \
+simulator\tests\test_revd_alignment.py:62:    assert {"LOUTA", "BENGUERIR", "MPH"} <= ids
+simulator\tests\test_revd_alignment.py:64:    assert roles["LOUTA"] == "mine" and roles["BENGUERIR"] == "mine"
+simulator\tests\test_revd_alignment.py:84:    assert src == "BENGUERIR"
+simulator\tests\test_revd_alignment.py:93:    assert _link_sites(s3, "C2") == ("BENGUERIR", "MPH")
+simulator\tests\test_revd_alignment.py:157:    assert "LOUTA + BENGUERIR → MPH M16 hub" in body
+simulator\tests\test_revd_alignment.py:184:    assert SITE_FILTERS == ["LOUTA", "BENGUERIR", "MPH M16", "MPH M17",
+simulator\tests\test_revd_alignment.py:195:    """Regression: mine stockpile route nodes must exist (SPACE:BG-P1/P2,
+simulator\tests\test_svg_flow_integration.py:31:        "BG-TRAIN", "PAP / DRYING", "DRY-FEED",
+simulator\tests\test_svg_flow_integration.py:109:        sc, state, geometry_for(sc, "BENGUERIR"),
+simulator\tests\test_svg_flow_integration.py:165:    assert captured["views"] == ["CHAIN", "LOUTA", "BENGUERIR", "MPH"]
+simulator\tests\test_rabbitmq_inventory.py:250:        ("BENGUERIR", "BG-P1"),
+simulator\tests\test_rabbitmq_inventory.py:363:        FakeRpcTransport(_response_factory(wire_site="BENGUERIR")),
+simulator\tests\test_rabbitmq_inventory.py:648:    config = _config("LOUTA", "BG-P1")
+simulator\tests\test_rabbitmq_inventory.py:670:        "BENGUERIR": CAPTURED + timedelta(seconds=10),
+simulator\tests\test_rabbitmq_inventory.py:682:    assert set(result.responses) == {"LOUTA", "BENGUERIR", "MPH"}
+simulator\tests\test_rabbitmq_inventory.py:683:    assert result.requested_sites == ["BENGUERIR", "LOUTA", "MPH"]
+simulator\tests\test_rabbitmq_inventory.py:689:    assert set(result.snapshot.pile_ids) == {"LT-P1", "BG-P1", "HP-01"}
+simulator\tests\test_rabbitmq_inventory.py:707:        "BENGUERIR": CAPTURED + timedelta(seconds=15),
+simulator\tests\test_rabbitmq_inventory.py:718:    assert set(result.responses) == {"LOUTA", "BENGUERIR", "MPH"}
+simulator\tests\test_rabbitmq_inventory.py:728:                     ("LOUTA", "BENGUERIR", "MPH")}
+simulator\tests\test_rabbitmq_inventory.py:730:        scenario, capture_times, failed_site="BENGUERIR")
+simulator\tests\test_rabbitmq_inventory.py:739:               issue.site == "BENGUERIR" for issue in result.issues)
+simulator\tests\test_site_labels.py:12:        Job("J-BEN", "RC2", "dispatch", "BG-P1", grade="TBT"),
+simulator\tests\test_m16_bays.py:518:            "BG-RAW-1", "BG-RAW-2", "BG-P1", "BG-P2"]
+simulator\tests\test_m16_bays.py:520:            "BG-RAW-ST-1", "BG-RAW-BWR", "BG-RAW-ST-2", "ST3", "RC2", "RC3"}
+simulator\tests\test_m16_bays.py:521:        raw = [p for p in geo.piles if p.pile_id.startswith("BG-RAW")]
+simulator\tests\test_m16_bays.py:528:    for view in ("MPH", "LOUTA", "BENGUERIR", "CHAIN", "GLOBAL"):
+simulator\tests\test_machine_coverage_ui.py:167:    for machine_id in ("ST3", "BG-RAW-ST-1", "102MG-ST-01"):
+simulator\tests\test_material_profiles.py:19:        "BEN-RAW-SCREENED",
+simulator\tests\test_material_profiles.py:20:        "BEN-WASHED-FILTERED",
+simulator\tests\test_material_profiles.py:21:        "BEN-SETTLED-PRODUCT",
+simulator\tests\test_material_profiles.py:29:    raw = sc.material_profile("BEN-RAW-SCREENED")
+simulator\tests\test_material_profiles.py:30:    washed = sc.material_profile("BEN-SETTLED-PRODUCT")
+simulator\tests\test_material_profiles.py:47:    raw = sc.material_profile("BEN-RAW-SCREENED")
+simulator\tests\test_material_profiles.py:48:    filtered = sc.material_profile("BEN-WASHED-FILTERED")
+simulator\tests\test_material_profiles.py:49:    settled = sc.material_profile("BEN-SETTLED-PRODUCT")
+simulator\tests\test_material_profiles.py:59:        "BG-P1": "BEN-SETTLED-PRODUCT",
+simulator\tests\test_material_profiles.py:60:        "BG-P2": "BEN-SETTLED-PRODUCT",
+simulator\tests\test_material_profiles.py:94:        if grade.id.startswith(("LOU-", "BEN-", "MINE-"))
+simulator\tests\test_material_profiles.py:120:    benguerir = sc.material_profile("BEN-RAW-SCREENED")
+simulator\tests\test_material_profiles.py:126:        "BG-RAW-1": "RAW-BT-GLOBAL",
+simulator\tests\test_material_profiles.py:127:        "BG-RAW-2": "RAW-BT-GLOBAL",
+simulator\tests\test_material_profiles.py:132:        for row in components["BG-RAW-1"]
+simulator\tests\test_material_profiles.py:139:        for row in components["BG-RAW-2"]
+simulator\tests\test_material_profiles.py:152:        for pile in geometry_for(sc, "BENGUERIR").piles
+simulator\tests\test_material_profiles.py:153:        if pile.pile_id.startswith("BG-RAW")
+simulator\tests\test_material_profiles.py:155:    assert piles["BG-RAW-1"].display_quality == {
+simulator\tests\test_material_profiles.py:162:    assert piles["BG-RAW-2"].display_quality == {
+simulator\tests\test_material_profiles.py:173:    sc.config["BG_RAW_DISPLAY_GRADE_COMPONENTS"]["BG-RAW-1"] = [
+simulator\tests\test_material_profiles.py:186:        pile for pile in geometry_for(sc, "BENGUERIR").piles
+simulator\tests\test_material_profiles.py:187:        if pile.pile_id == "BG-RAW-1"
+simulator\tests\test_material_profiles.py:200:    assert sc2.material_profile("BEN-RAW-SCREENED").quality_ranges == \
+simulator\tests\test_material_profiles.py:201:        sc.material_profile("BEN-RAW-SCREENED").quality_ranges
+simulator\tests\test_material_profiles.py:282:    sc.space("BG-P1").material_class = "raw_screened"
+simulator\tests\test_material_profiles.py:285:    assert ("PROFILE_CLASS_MISMATCH", "BG-P1") in codes
+simulator\tests\test_material_profiles.py:286:    assert ("GRADE_CLASS_MISMATCH", "BG-P1") in codes
+simulator\tests\test_material_profiles.py:293:    sc.space("BG-P1").grade = "OTHER-WASHED"
+simulator\tests\test_material_profiles.py:296:    assert ("PROFILE_GRADE_MISMATCH", "BG-P1") in codes
+simulator\tests\test_ux.py:81:        "BENGUERIR", "LOUTA", "MPH",
+simulator\tests\test_ux.py:180:                      if node.id == "SRC:BG-RAW")
+simulator\tests\test_ux.py:181:    assert "BG-RAW-1 = 200,000 t" in raw_source.label
+simulator\tests\test_ux.py:182:    assert "BG-RAW-2 = 200,000 t" in raw_source.label
+simulator\tests\test_ux.py:185:    assert "BG-RAW-1 = 200,000 t" in raw_assumption.text
+simulator\tests\test_ux.py:186:    assert "BG-RAW-2 = 200,000 t" in raw_assumption.text
+simulator\tests\test_ux.py:199:        "BG-RAW-1": 100_000.0, "BG-RAW-2": 100_000.0,
+simulator\tests\test_ux.py:202:        "BG-RAW-1": "RAW-BT-GLOBAL",
+simulator\tests\test_ux.py:203:        "BG-RAW-2": "RAW-BT-GLOBAL",
+simulator\tests\test_ux.py:206:        scenario.config["BG_RAW_DISPLAY_GRADE_COMPONENTS"]["BG-RAW-1"]
+simulator\tests\test_ux.py:209:        scenario.config["BG_RAW_DISPLAY_GRADE_COMPONENTS"]["BG-RAW-2"]
+simulator\tests\test_timeline_ux.py:25:    assert "BG-RAW-ST-1" not in set(reg.machine)
+simulator\tests\test_timeline_ux.py:33:    for machine_id in ("BG-RAW-ST-1", "BG-RAW-ST-2"):
+simulator\tests\test_timeline_ux.py:58:    job = Job("J-TON", "RC2", "reclaim", "BG-P1", dest_id="C2",
+simulator\tests\test_timeline_ux.py:63:    assert df.iloc[0].source == "BG-P1"
+simulator\tests\test_timeline_ux.py:88:        "J-HOVER", "RC2", "reclaim", "BG-P1", dest_id="C2",
+simulator\tests\test_timeline_ux.py:104:        "BG-P1 → C2",
+simulator\tests\test_louta_layout_correction.py:610:    for view in ("LOUTA", "BENGUERIR", "MPH", "CHAIN", "GLOBAL"):
+simulator\tests\test_louta_layout_correction.py:633:            "BG-RAW-1", "BG-RAW-2", "BG-P1", "BG-P2"]
+simulator\tests\test_louta_layout_correction.py:635:            "BG-RAW-ST-1", "BG-RAW-BWR", "BG-RAW-ST-2", "ST3", "RC2", "RC3"}
+simulator\tests\test_louta_layout_correction.py:637:            "BG-WASH-L1", "BG-WASH-L2", "BG-WASH-L3"}
+simulator\tests\test_louta_layout_correction.py:641:               if p.pile_id.startswith("BG-RAW")}
+simulator\tests\test_louta_distribution_model.py:94:            "LOU-WASH-L1", "LOU-WASH-L2", "BEN-WASH-L1",
+simulator\tests\test_louta_distribution_model.py:116:        "LOU-WASH-L1", "LOU-WASH-L2", "BEN-WASH-L1",
+simulator\tests\test_louta_distribution_model.py:175:        "LOUTA": True, "BENGUERIR": False,
+simulator\tests\test_monitor.py:204:    assert list(ms.sites) == ["LOUTA", "BENGUERIR", "MPH"]
+simulator\tests\test_monitor.py:209:    assert corridors["C2"].from_site == "BENGUERIR"
+simulator\tests\test_monitor.py:214:                                 in ms.sites["BENGUERIR"].outlets)
+simulator\tests\test_monitor.py:221:    assert "NOT TO SCALE" in ms.sites["BENGUERIR"].schematic_note
+simulator\tests\test_monitor.py:223:    assert "TBC" in ms.sites["BENGUERIR"].banner
+simulator\tests\test_monitor.py:263:    # pass (Q80130-BEN-B02-ME-BOD-0001 Rev B):
+simulator\tests\test_monitor.py:264:    #  - BG-WASH-IN positional-argument DEFECT fixed (the old call put 0 into
+simulator\tests\test_monitor.py:267:    #    +36 kt in-horizon inflow at BG-P1) -> plan changes are EXPECTED;
+simulator\tests\test_monitor.py:269:    #    reference) and the Benguerir dispatch path gained L-BG-PROD-C2
+simulator\tests\test_operator_presentation_cleanup.py:64:    expected = {"BENGUERIR": 1, "LOUTA": 1, "GLOBAL": 2}
+simulator\tests\test_operator_presentation_cleanup.py:86:    for view in ("GLOBAL", "CHAIN", "LOUTA", "BENGUERIR", "MPH"):
+simulator\tests\test_mimic.py:65:    for view in ("CHAIN", "LOUTA", "BENGUERIR", "MPH"):
+simulator\tests\test_mimic.py:109:    for view in ("CHAIN", "LOUTA", "BENGUERIR", "MPH"):
+simulator\tests\test_mimic.py:145:    for view in ("CHAIN", "LOUTA", "BENGUERIR", "MPH"):
+simulator\tests\test_mimic.py:279:    for view in ("CHAIN", "LOUTA", "BENGUERIR", "MPH"):
+simulator\tests\test_operator_presentation.py:38:    for view in ("GLOBAL", "CHAIN", "LOUTA", "BENGUERIR", "MPH"):

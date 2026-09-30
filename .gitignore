@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+outputs/
+_review_extract.txt
+generated_outputs/runtime/
+simulator/.streamlit-simulator.pid
+
+# --- added 30-Sep-2026, when the repository was first initialised ---
+# Local run history, logs and PID files: machine-specific, not source.
+runs.db
+*.log
+*.pid
+
+# Generated artefacts: ~180 MB and reproducible from the model, so they are
+# kept out of history. The written reports under generated_outputs/reports/
+# are deliberately NOT excluded -- they are authored content, not build output.
+Claude-Integrated-App/simulator/generated_outputs/
+generated_outputs/validation/
+generated_outputs/project_review/
+generated_outputs/ui_tweaks/
+generated_outputs/model_flux_stocks_slide/
+
+# Third-party and client material. The repository is PUBLIC, and these are
+# OCP/Innomotics engineering deliverables and commercial workbooks that are
+# not cleared for publication. They stay on local disk; nothing here should
+# ever be committed. Text extracts are excluded for the same reason -- the
+# content is the issue, not the file format.
+reference_material/
+Global Stockyard Layout Redesign/
+Global Stockyard Layout Redesign.zip

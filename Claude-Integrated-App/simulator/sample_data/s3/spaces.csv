@@ -1,0 +1,32 @@
+id,site,area,kind,capacity_t,mass_t,grade,quality,state,reserved_t,designated_grade,x_from,x_to,safety_stock_t,node_id,material_class,profile_id,repere_at_x_from,repere_at_x_to,source,evidence_status,confidence
+HP-01,MPH,M16-humid,open,125000.0,80000.0,HWP-22,{},mixed,0.0,,0,300,0.0,,washed,M16-WASHED-HUMID,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H
+HP-02,MPH,M16-humid,open,125000.0,90000.0,HWP-10,{},mixed,0.0,,0,300,15000.0,,washed,M16-WASHED-HUMID,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H
+HP-03,MPH,M16-humid,open,125000.0,70000.0,HWP-11,{},mixed,0.0,,0,300,0.0,,washed,M16-WASHED-HUMID,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H
+HP-04,MPH,M16-humid,open,125000.0,60000.0,HWP-22,{},mixed,0.0,,0,300,0.0,,washed,M16-WASHED-HUMID,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H
+HP-05,MPH,M16-humid,open,125000.0,74000.0,HWP-10,{},mixed,0.0,,0,300,15000.0,,washed,M16-WASHED-HUMID,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H
+HP-06,MPH,M16-humid,open,125000.0,50000.0,HWP-10,{},mixed,0.0,,0,300,0.0,,washed,M16-WASHED-HUMID,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H
+HP-07,MPH,M16-humid,open,125000.0,0.0,HWP-22,{},empty,0.0,HWP-22,0,300,0.0,,washed,M16-WASHED-HUMID,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H
+HP-08,MPH,M16-humid,open,125000.0,0.0,HWP-10,{},empty,0.0,HWP-10,0,300,0.0,,washed,M16-WASHED-HUMID,0,1000,Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H
+BG-P1,BENGUERIR,mine-yard,open,191512.0,10000.0,TBT,{},mixed,0.0,,0,500,30000.0,,washed,BEN-SETTLED-PRODUCT,0,1000,"Q80130-BEN-B02-ME-BOD-0001 Rev B, IFR, 05-Feb-2025, §§2.3.1–2.3.3 and §2.6",CONFIRMED,H
+BG-P2,BENGUERIR,mine-yard,open,191512.0,10000.0,BT-LOW-CD,{},mixed,0.0,,0,500,30000.0,,washed,BEN-SETTLED-PRODUCT,0,1000,"Q80130-BEN-B02-ME-BOD-0001 Rev B, IFR, 05-Feb-2025, §§2.3.1–2.3.3 and §2.6",CONFIRMED,H
+BG-HOP-TM1,BENGUERIR,mine-interface,closed,10000.0,10000.0,RAW-TBT,{},reserved,0.0,RAW-TBT,0,1,0.0,,raw_screened,BEN-RAW-SCREENED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-HOP-TSM2,BENGUERIR,mine-interface,closed,10000.0,10000.0,RAW-TBT,{},reserved,0.0,RAW-TBT,0,1,0.0,,raw_screened,BEN-RAW-SCREENED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-HOP-TSM3,BENGUERIR,mine-interface,closed,10000.0,10000.0,RAW-BT-LOW-CD,{},reserved,0.0,RAW-BT-LOW-CD,0,1,0.0,,raw_screened,BEN-RAW-SCREENED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-MINE-1,BENGUERIR,mine-yard,open,200000.0,100000.0,RAW-TBT,{},mixed,0.0,,0,500,20000.0,,raw_screened,BEN-RAW-SCREENED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-MINE-2,BENGUERIR,mine-yard,open,200000.0,100000.0,RAW-BT-LOW-CD,{},mixed,0.0,,0,500,20000.0,,raw_screened,BEN-RAW-SCREENED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-RAW-1,BENGUERIR,mine-yard,open,200000.0,100000.0,RAW-TBT,{},mixed,0.0,,0,500,20000.0,,raw_screened,BEN-RAW-SCREENED,0,1000,"Q80130-BEN-B01-PR-REP-0002 Rev B, 26-Jul-2023 (IFR)",CONFIRMED,H
+BG-RAW-2,BENGUERIR,mine-yard,open,200000.0,100000.0,RAW-BT-LOW-CD,{},mixed,0.0,,0,500,20000.0,,raw_screened,BEN-RAW-SCREENED,0,1000,"Q80130-BEN-B01-PR-REP-0002 Rev B, 26-Jul-2023 (IFR)",CONFIRMED,H
+BG-SCREEN-L1-WIP,BENGUERIR,process-interface,closed,10000.0,0.0,RAW-TBT,{},empty,0.0,RAW-TBT,0,1,0.0,,raw_screened,BEN-RAW-SCREENED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-WASH-L1-WIP,BENGUERIR,process-interface,closed,10000.0,0.0,TBT,{},empty,0.0,TBT,0,1,0.0,,washed,BEN-WASHED-FILTERED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-SCREEN-L2-WIP,BENGUERIR,process-interface,closed,10000.0,0.0,RAW-BT-LOW-CD,{},empty,0.0,RAW-BT-LOW-CD,0,1,0.0,,raw_screened,BEN-RAW-SCREENED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-WASH-L2-WIP,BENGUERIR,process-interface,closed,10000.0,0.0,BT-LOW-CD,{},empty,0.0,BT-LOW-CD,0,1,0.0,,washed,BEN-WASHED-FILTERED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-SCREEN-L3-WIP,BENGUERIR,process-interface,closed,10000.0,0.0,RAW-TBT,{},empty,0.0,RAW-TBT,0,1,0.0,,raw_screened,BEN-RAW-SCREENED,0,1000,placeholder (this MVP),ASSUMED,L
+BG-WASH-L3-WIP,BENGUERIR,process-interface,closed,10000.0,0.0,TBT,{},empty,0.0,TBT,0,1,0.0,,washed,BEN-WASHED-FILTERED,0,1000,placeholder (this MVP),ASSUMED,L
+LT-MINE-FEED-GLOBAL,LOUTA,mine-interface,closed,10000.0,10000.0,RAW-BT,{},mixed,0.0,,0,1,0.0,,raw_screened,LOU-MINE-PHOSPHATE,0,1000,placeholder (this MVP),ASSUMED,L
+LT-MINE-FEED-LOW-CD,LOUTA,mine-interface,closed,10000.0,10000.0,RAW-BT-LOW-CD,{},mixed,0.0,,0,1,0.0,,raw_screened,LOU-MINE-PHOSPHATE,0,1000,placeholder (this MVP),ASSUMED,L
+110LG-OL1,LOUTA,mine-yard,open,247137.0,123568.5,RAW-BT,{},mixed,0.0,,0,500,25000.0,,raw_screened,LOU-MINE-PHOSPHATE,0,1000,"Q80130-LOU-L02-PR-BOD-0001 Rev B, 12-Apr-2023, §§1.2 and 6.1–6.3 + Louta Beneficiation Plant Process description, Rev B (IFA), 25-Apr-2023, §3.1 pp. 5–8 — document number inconsistent in the source: cover Q80130-LOU-L02-PR-REP-00002 vs body header Q80130-LOU-L02-PR-REP-00004",DERIVED,M
+110LG-OL2,LOUTA,mine-yard,open,247137.0,123568.5,RAW-BT-LOW-CD,{},mixed,0.0,,0,500,25000.0,,raw_screened,LOU-MINE-PHOSPHATE,0,1000,"Q80130-LOU-L02-PR-BOD-0001 Rev B, 12-Apr-2023, §§1.2 and 6.1–6.3 + Louta Beneficiation Plant Process description, Rev B (IFA), 25-Apr-2023, §3.1 pp. 5–8 — document number inconsistent in the source: cover Q80130-LOU-L02-PR-REP-00002 vs body header Q80130-LOU-L02-PR-REP-00004",DERIVED,M
+LT-WASH-L1-WIP,LOUTA,process-interface,closed,10000.0,0.0,TBT,{},empty,0.0,TBT,0,1,0.0,,washed,LOU-WASHED-PRODUCT,0,1000,placeholder (this MVP),ASSUMED,L
+LT-WASH-L2-WIP,LOUTA,process-interface,closed,10000.0,0.0,BT-LOW-CD,{},empty,0.0,BT-LOW-CD,0,1,0.0,,washed,LOU-WASHED-PRODUCT,0,1000,placeholder (this MVP),ASSUMED,L
+LT-P1,LOUTA,mine-yard,open,191512.0,10000.0,TBT,"{""BPL"": 65.0, ""Cd"": 33.0, ""MgO"": 1.28, ""SiO2"": 3.22, ""moisture"": 12.0}",mixed,0.0,,0,500,25000.0,,washed,LOU-WASHED-PRODUCT,0,1000,L02 design basis / handling philosophy (doc refs TBC),DERIVED,M
+LT-P2,LOUTA,mine-yard,open,191512.0,10000.0,BT-LOW-CD,"{""BPL"": 71.9, ""Cd"": 16.59, ""MgO"": 0.78, ""SiO2"": 1.88, ""moisture"": 12.0}",mixed,0.0,,0,500,25000.0,,washed,LOU-WASHED-PRODUCT,0,1000,L02 design basis / handling philosophy (doc refs TBC),DERIVED,M

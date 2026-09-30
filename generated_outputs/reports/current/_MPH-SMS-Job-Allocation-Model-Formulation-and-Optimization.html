@@ -1,0 +1,194 @@
+<!DOCTYPE html><html lang="en"><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MPH — Model Formulation &amp; Optimization Algorithms</title>
+<style>
+  @page { size:A4; margin:15mm 14mm; }
+  * { box-sizing:border-box; }
+  body { font-family:"Calibri","Segoe UI",Arial,sans-serif; color:#1a1a1a; font-size:9.2pt; line-height:1.28; margin:0; }
+  h1 { color:#1f4e79; font-size:15pt; margin:0 0 2px; line-height:1.15; }
+  h2.sub { color:#2e6da4; font-size:10.2pt; font-weight:600; margin:0 0 7px; }
+  .meta { font-size:8.2pt; color:#555; border-top:2px solid #1f4e79; border-bottom:1px solid #cdd6df; padding:4px 0; margin-bottom:8px; }
+  h3 { color:#1f4e79; font-size:10.8pt; margin:10px 0 4px; border-bottom:1px solid #d6e0ea; padding-bottom:2px; break-after:avoid; }
+  h4 { color:#2e6da4; font-size:9.5pt; margin:8px 0 3px; break-after:avoid; }
+  p { margin:3px 0; text-align:justify; }
+  ul { margin:3px 0 4px; padding-left:16px; } li { margin:1px 0; }
+  strong { color:#14365c; }
+  code { font-family:Consolas,monospace; font-size:7.8pt; background:#f1f4f7; padding:0 2px; border-radius:2px; color:#14365c; }
+  table { border-collapse:collapse; width:100%; margin:4px 0 6px; font-size:8.05pt; line-height:1.2; }
+  th { background:#1f4e79; color:#fff; text-align:left; padding:3px 5px; font-weight:600; }
+  td { border:1px solid #cdd6df; padding:3px 5px; vertical-align:top; }
+  tr:nth-child(even) td { background:#f3f6f9; }
+  table.compact { font-size:7.5pt; line-height:1.14; }
+  table.compact td, table.compact th { padding:2px 4px; }
+  table.kpi { font-size:7.1pt; line-height:1.08; }
+  table.kpi td, table.kpi th { padding:1.5px 3px; }
+  table.reg { font-size:7.1pt; line-height:1.1; }
+  table.reg td, table.reg th { padding:2px 3px; }
+  .nb, .visual { break-inside:avoid; }
+  blockquote, .guard { background:#fbf3e6; border-left:4px solid #d98b2b; margin:5px 0; padding:5px 8px; font-size:8.6pt; }
+  .note { color:#5c6873; font-size:7.7pt; }
+  .footref { font-size:7.6pt; color:#666; font-style:italic; border-top:1px solid #ccc; padding-top:5px; margin-top:10px; }
+  thead { display:table-header-group; }
+
+  /* compact block diagrams */
+  .visual { border:1px solid #cdd6df; border-radius:6px; background:#fcfdfe; padding:7px; margin:5px 0; }
+  .chain { display:grid; grid-template-columns:1.15fr .78fr 1.05fr .62fr .9fr; gap:5px; align-items:center; }
+  .stack { display:flex; flex-direction:column; gap:5px; }
+  .box { border:1.5px solid #5b7fa6; background:#eef3f8; color:#14365c; border-radius:5px; padding:5px 6px; text-align:center; font-weight:700; font-size:8pt; }
+  .box small { display:block; color:#687785; font-size:6.9pt; font-weight:400; margin-top:1px; }
+  .box.hub { border:2.2px solid #d98b2b; background:#fdf6ea; color:#a65b18; }
+  .box.dest { border-color:#2e7d32; background:#eef6f1; color:#235a40; }
+  .box.gray { border-color:#7d8a97; background:#f0f2f4; color:#4d5b66; }
+  .arr { text-align:center; color:#5b7fa6; font-weight:700; font-size:7.1pt; line-height:1.2; }
+  .arr b { display:block; font-size:10pt; color:#8aa3bd; }
+  .domainb { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:5px; align-items:center; border-top:1px dotted #b9c4cf; margin-top:7px; padding-top:7px; }
+  .loop { display:flex; align-items:stretch; gap:4px; margin:3px 0; }
+  .step { flex:1; border:1.4px solid #5b7fa6; background:#eef3f8; color:#14365c; border-radius:5px; padding:5px; text-align:center; font-size:7.5pt; font-weight:700; }
+  .step.key { border:2px solid #d98b2b; background:#fdf6ea; color:#a65b18; }
+  .step.ok { border-color:#2e7d32; background:#eef6f1; color:#235a40; }
+  .chev { align-self:center; color:#8a98a6; font-size:11pt; font-weight:700; }
+  .return { text-align:center; color:#5b7fa6; font-size:7.2pt; font-weight:700; border-top:1px dashed #8aa3bd; margin:5px 4% 0; padding-top:2px; }
+  .levels { display:grid; grid-template-columns:82px 1fr; border:1px solid #b9c4cf; border-radius:5px; overflow:hidden; margin:5px 0; }
+  .lvl { background:#1f4e79; color:#fff; padding:5px; font-size:7.2pt; font-weight:700; border-bottom:1px solid #fff; }
+  .lvlbody { padding:5px 7px; border-bottom:1px solid #dfe6ec; font-size:7.8pt; }
+  .lvlbody.key { background:#fdf6ea; color:#8d4e16; font-weight:700; }
+  .pill { display:inline-block; border:1px solid #5b7fa6; background:#eef3f8; border-radius:10px; padding:1px 7px; margin:1px 3px 1px 0; font-size:7.2pt; }
+  .bars { break-inside:avoid; border:1px solid #cdd6df; border-radius:6px; background:#fcfdfe; padding:6px 8px; margin:5px 0; }
+  .barrow { display:grid; grid-template-columns:145px 1fr 42px; gap:6px; align-items:center; margin:3px 0; font-size:7.5pt; }
+  .barlabel { color:#31475d; }
+  .bartrack { height:11px; background:#e7edf2; border-radius:2px; overflow:hidden; }
+  .barfill { height:100%; min-width:4px; background:#d98b2b; }
+  .barrow:first-child .barfill { background:#1f4e79; }
+  .barval { text-align:right; color:#14365c; font-weight:700; }
+  .callouts { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-top:6px; }
+  .callout { border-top:2px solid #5b7fa6; background:#eef3f8; padding:4px 6px; text-align:center; font-size:7.1pt; }
+  .callout strong { display:block; font-size:9pt; }
+
+  pre { white-space:pre-wrap; break-inside:avoid; font-family:Consolas,monospace;
+        font-size:7.6pt; line-height:1.35; background:#f6f8fa;
+        border:1px solid #dbe3ea; border-radius:5px; padding:7px 9px; }
+  h2 { color:#1f4e79; font-size:11.5pt; margin:12px 0 4px;
+       border-bottom:1px solid #d6e0ea; padding-bottom:2px; break-after:avoid; }
+  h5, h6 { color:#2e6da4; margin:7px 0 2px; break-after:avoid; }
+  ol { margin:3px 0 5px; padding-left:19px; }
+  a { color:#1f4e79; text-decoration:none; }
+  .edition { background:#eef3f8; border-left:4px solid #1f4e79;
+             padding:6px 9px; margin:7px 0 10px; font-size:8.3pt; }
+</style>
+</head><body><h2>MPH — Model Formulation &amp; Optimization Algorithms</h2>
+<h4>Phosphate Value-Chain Job-Allocation Simulator</h4>
+<p><strong>Edition:</strong> Code-verified split report · <strong>Date:</strong> 17 September 2026 · <strong>Canonical source:</strong> <code>model_knowledge/MODEL_FORMULATION.md</code></p>
+<blockquote>This report is generated from the versioned model-knowledge package. Run-specific configuration and the model-context snapshot remain authoritative for interpreting an individual solve.</blockquote>
+<p>Package version: <strong>1.2.0</strong> Verified against implementation: <strong>2026-09-17</strong> Model type: deterministic mixed-integer constraint optimization (OR-Tools CP-SAT) with a minute-level execution overlay.</p>
+<p>This document describes implemented behavior. Project evidence and scenario assumptions remain governed by <code>ASSUMPTIONS.md</code>, the scenario registers, and the source documents cited there. Synthetic washing values are commissioning inputs, not plant-validated performance or an approved G10 specification.</p>
+<h3>Scope and decision boundary</h3>
+<p>The planner selects whole-tonne material movements through a directed stockyard/process network over a finite time horizon. It chooses eligible machine/space/destination/route/material/treatment candidates, their tonnes by time bucket, and associated activity states. It accounts for inventories, route and machine capacity, calendars, fixed jobs, material transformations, destination demand, quality, safety stock, continuity, and operating events.</p>
+<p>The solver does not predict geology, spatial reclaim faces, breakdowns, measured treatment performance, market value, or operator behavior. A minute-level overlay places the accepted bucket decisions in physical time and can reject an otherwise feasible solver incumbent if positioning or execution validation fails; it does not change planned mass.</p>
+<h3>Evidence and bases</h3>
+<p>Definitions labelled <code>code-verified</code> were traced to the declared source set in <code>model_manifest.json</code>. Scenario inputs can override defaults, so an actual run must be interpreted from its embedded scenario and model-context snapshots.</p>
+<ul><li>Solver mass is integer <strong>physical/as-handled tonnes</strong> unless explicitly identified as dry solids.</li><li><code>dt</code> is the native solver bucket duration in hours.</li><li>Chemistry other than moisture is a dry-solids concentration. Moisture is a wet-basis percentage.</li><li>Rates are t/h; a bucket mass is rate multiplied by <code>dt</code>.</li><li>Quality slack has tonne-quality-unit basis after internal integer scaling.</li><li>Costs for washing are dollars per product dry-solids tonne (TSM) in the implemented expression.</li></ul>
+<h3>Sets and indices</h3>
+<table><thead><tr><th>Symbol</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>c in C</code></td><td>generated movement candidate, including route/material/treatment</td></tr>
+<tr><td><code>t in T</code></td><td>native planning bucket</td></tr>
+<tr><td><code>g in G</code></td><td>activity group sharing one machine/space/destination state</td></tr>
+<tr><td><code>m in M</code></td><td>machine</td></tr>
+<tr><td><code>s in S</code></td><td>stock or process space</td></tr>
+<tr><td><code>d in D</code></td><td>destination/demand stream</td></tr>
+<tr><td><code>l in L</code></td><td>network link</td></tr>
+<tr><td><code>r in R</code></td><td>grade-resolved material pool</td></tr>
+<tr><td><code>p in P</code></td><td>quality characteristic</td></tr>
+</tbody></table>
+<p>Candidates absent after validation, reachability, lifecycle, material-class, and quality-data filters cannot be selected. The candidate list is therefore part of the causal explanation of every result.</p>
+<h3>Parameters</h3>
+<p>Material parameters include initial inventory and capacity, safety targets, machine and link rates, calendars, demand and priority by bucket, quality assays/specifications, transport delays, process yields, residence/dependency delays, fixed jobs, and scenario configuration.</p>
+<p>Important configurable objective/scheduling parameters are:</p>
+<ul><li><code>OBJECTIVE_MODE</code>: <code>service_first</code> or <code>weighted</code>;</li><li><code>MIN_JOB_VOLUME_T</code>: hard minimum on a complete contiguous job, default 0;</li><li><code>SERVICE_DEGRADATION_T</code>: allowed deterioration of qualified service during protected refinement, default 0;</li><li><code>w1_unmet</code>, <code>w2_offspec</code>, <code>w4_giveaway</code>, <code>w5_moves</code>, <code>w6_safety</code>, and <code>w7_utilisation</code>; <code>w3_process_cost</code> is present in the data model but has no general process-cost curve implementation;</li><li>continuity, equipment-cycle, parcel, energy, and tie-breaker coefficients.</li></ul>
+<h3>Variables</h3>
+<p>For candidate <code>c</code> and bucket <code>t</code>:</p>
+<ul><li><code>X[c,t]</code> is selected input physical mass in whole tonnes.</li><li><code>Y[c,t]</code> is output mass for yield-changing process candidates; for ordinary transfers it aliases input behavior.</li><li><code>A[g,t]</code> is one when activity group <code>g</code> is assigned in bucket <code>t</code>.</li><li><code>I[s,t]</code> is physical inventory at a bucket boundary.</li><li><code>I_material[s,r,t]</code> is material-pool inventory when washing is enabled; the pool totals equal physical inventory and do not duplicate capacity.</li><li><code>U[d,t]</code> is unmet-demand mass. This explicit slack makes ordinary demand shortage costly rather than automatically infeasible.</li><li><code>QSlack</code> represents soft quality violation; hard quality bounds do not get this relaxation.</li><li><code>SafetyShort[s,t]</code> is inventory below the configured safety target.</li><li><code>Gap[d,t]</code> and <code>Episode[d,t]</code> represent continuous-feed gap state and a new gap episode.</li><li><code>Start[m,t]</code>, <code>Stop[m,t]</code>, <code>Changeover[m,t]</code>, and <code>Hold[m,t]</code> encode machine state transitions. A hold keeps the machine on while moving zero material.</li><li><code>ShortParcel[g,t]</code> marks a permitted below-policy parcel and is penalized.</li></ul>
+<h3>Core balances and transformations</h3>
+<h4>Physical inventory</h4>
+<p>For every space and bucket, the implemented balance is conceptually:</p>
+<p>`I[s,t+1] = I[s,t] + incoming[s,t] + exogenous_in[s,t]</p>
+<ul><li>outgoing[s,t] - exogenous_out[s,t] - spill[s,t]`.</li></ul>
+<p>Opening inventory limits reclaim. Inventory is bounded by physical capacity; route, machine, and conflict capacities independently bound movement.</p>
+<h4>Demand</h4>
+<p>For ordinary delivery demand:</p>
+<p><code>Delivered[d,t] + U[d,t] = Demand[d,t]</code>.</p>
+<p>Process-feed demand is treated as an exact daily grade campaign total plus one explicit unmet variable for the campaign, allowing the optimizer to choose its operating buckets.</p>
+<h4>Quality</h4>
+<p>Delivered quality is mass-weighted. Moisture uses wet mass; other chemistry is weighted on a dry-solids basis. Hard bounds are enforced. Soft bounds introduce quality slack priced by the objective. Unknown required assays are not silently treated as zero.</p>
+<p>The quality envelope may be selected by the demand campaign. A physical grade keeps the destination's fallback <code>Destination.spec</code>; a grade marked <code>is_specification</code> replaces that fallback with its <code>Grade.receiving_spec</code> for the affected buckets. A specification grade is therefore an acceptance contract, not stock identity: candidate eligibility does not require the source label to equal the specification label. Quality windows are split at a campaign-grade boundary and are never averaged across two different contracts.</p>
+<h4>Gantour train-export receiving grades</h4>
+<p>Four hard receiving profiles are available only at <code>BG-TRAIN-PROD</code>:</p>
+<table><thead><tr><th>Grade</th><th>Executable hard intervals</th></tr></thead><tbody>
+<tr><td>BG-22</td><td>BPL 68–70%; CO2 5–6.5%; SiO2 ≤4.5%; H2O ≤3.5%; MgO 0.45–0.65%; Cd ≤7 ppm</td></tr>
+<tr><td>BG10</td><td>BPL 65–67.5%; CO2 5–6.5%; SiO2 3.5–7%; H2O ≤3.5%; MgO 0.45–0.65%; Cd 7–9 ppm</td></tr>
+<tr><td>BG11</td><td>BPL 67–69%; total SiO2 5–10%; reactive SiO2 2.8–3.6%; F 3.2–4.2%</td></tr>
+<tr><td>BG AD</td><td>BPL 64–65%; CO2 ≤5.5%; SiO2 6–8.5%; MgO ≤0.53%; Cd 8–12 ppm; H2O ≤3%; P2O5 S,C 8.79–8.93%</td></tr>
+</tbody></table>
+<p><code>H2O</code> maps to <code>moisture</code>, <code>SiO2 T</code> to <code>SiO2</code>, <code>SiO2 R</code> to <code>SiO2_R</code>, and <code>P2O5 S,C</code> to the distinct <code>P2O5_SC</code> assay. The P2O5 ranges reported with BG-22 and BG10 are retained as source metadata while BPL is the executable phosphate-content constraint; enforcing both would duplicate an equivalent measurement. The source's strict <code>&lt;</code> statements are preserved verbatim in grade provenance, but the current inclusive <code>SpecRange.pmax</code> contract implements their numeric boundaries without an invented epsilon.</p>
+<p>BG11 and BG AD can be served only when every required distinct assay is known. Missing <code>SiO2_R</code>, <code>F</code>, or <code>P2O5_SC</code> excludes the affected material from that campaign and leaves demand explicitly unmet. The default S0 train grade remains unchanged; adding these profiles does not silently activate an export order.</p>
+<h4>Washing and G10</h4>
+<p>When <code>WASHING_TREATMENTS.enabled</code> is true, the planner creates grade-resolved material pools and two available treatment alternatives:</p>
+<table><thead><tr><th>Option</th><th>Dry-solids yield</th><th>Cost ($/product dry t)</th><th>Relative changes <code>[BPL,Cd,MgO,SiO2,CO2,moisture]</code></th></tr></thead><tbody>
+<tr><td>Simple washing</td><td>0.85</td><td>0.63</td><td><code>[+17%,-20%,-30%,-60%,-50%,+20%]</code></td></tr>
+<tr><td>Full washing</td><td>0.65</td><td>1.04</td><td><code>[+45%,-60%,-60%,-80%,-70%,+20%]</code></td></tr>
+</tbody></table>
+<p>For every known characteristic <code>p</code>:</p>
+<p><code>q_out[p] = q_raw[p] * (1 + change[p]/100)</code>.</p>
+<p>These are relative changes, not percentage-point additions. Thus 15% moisture with <code>+20%</code> becomes 18%. Missing assays remain missing.</p>
+<p>Wet output mass is derived from dry-solids conservation and the configured dry yield <code>eta</code>:</p>
+<p><code>wet_output / wet_input = (1 - M_raw/100) * eta / (1 - M_out/100)</code>.</p>
+<p>The synthetic G10 receiving intervals are BPL <code>[65,90]</code>, Cd <code>[0,18]</code>, MgO <code>[0,1.2]</code>, SiO2 <code>[0,6]</code>, CO2 <code>[0,4.5]</code>, and moisture <code>[0,20]</code>. They are hard constraints for configured PAP destinations. G10 is a receiving specification, not a physical stock grade.</p>
+<h3>Objective</h3>
+<p>The model minimizes. The effective objective depends on <code>OBJECTIVE_MODE</code>.</p>
+<h4><code>service_first</code> mode</h4>
+<p>The primary solve minimizes:</p>
+<p><code>(B + 1) * Emergency + QualifiedServiceShortfall</code>,</p>
+<p>where <code>B</code> is a finite upper bound on all priority-weighted final-product demand in the window. Therefore one unit of emergency slack outweighs all possible qualified-service improvement in that window. <code>Emergency</code> comprises spill, surge/unstacked slack, and process-stage target shortfall.</p>
+<p>Accepted secondary passes explicitly protect every earlier incumbent ceiling. With washing enabled, the implemented order is:</p>
+<ol><li>qualified service shortfall (within <code>SERVICE_DEGRADATION_T</code>);</li><li>unqualified/off-spec dispatch;</li><li>raw washing-feed dry tonnes;</li><li>washing treatment cost;</li><li>continuous-feed gap minutes and episode starts;</li><li>equipment starts, stops, changeovers, and holds;</li><li>remaining preferences (soft quality, safety, parcel, energy, flow/activity tie-breakers, giveaway, utilisation, and other configured terms).</li></ol>
+<p>Later passes cannot buy an improvement by degrading a protected earlier tier. If a pass times out, fails, or is rejected by minute/quality acceptance, the last accepted incumbent is retained. A <code>FEASIBLE</code> pass is not proof that its tier is optimal.</p>
+<p>The raw-feed term is total washing input dry mass. The treatment-cost term is:</p>
+<p><code>sum[c,t] cost_per_product_dry_t[c] * product_dry_mass[c,t]</code>.</p>
+<p>Consequently, when both treatments meet G10 and face the same upstream and capacity conditions, simple washing is structurally preferred: its 0.85 dry yield needs less raw dry feed than 0.65, and its unit cost 0.63 is also below 1.04. Full washing becomes rational only when its stronger assay improvement is needed for qualification or another constraint changes the comparison.</p>
+<h4><code>weighted</code> mode</h4>
+<p>The legacy mode minimizes one scaled sum. Major terms include priority-weighted unmet demand (<code>w1</code>), hard/soft quality and blend slack (<code>w2</code>), BPL giveaway (<code>w4</code>), equipment events (<code>w5</code>), safety-stock deficit-hours (<code>w6</code>), and optional utilisation reward (<code>w7</code>), plus emergency, stage, parcel, continuity, energy, washing-cost, and tie-breaker terms. Raw coefficients alone are not comparable because the terms have different units and integer scaling. <code>w1</code> is a demand-first heuristic, not a lexicographic guarantee.</p>
+<h3>Constraints</h3>
+<p>The principal implemented groups are:</p>
+<ul><li>candidate eligibility, reachability, lifecycle, material class, and assays;</li><li>whole-tonne flow linked to activity and rate envelopes;</li><li>at most one activity group per machine/bucket, calendars and fixed jobs;</li><li>link, shared-capacity, corridor-confluence, and conflict-group capacity;</li><li>physical and grade-resolved inventory conservation;</li><li>process yield, residence/dependency delay, maturity, stage targets, and terminal-inventory/corridor targets;</li><li>demand equalities with explicit unmet slack;</li><li>hard or soft mass-weighted quality limits and G10 certification;</li><li>campaign-selected train-export specifications, destination eligibility, and explicit rejection of missing required assays;</li><li>continuous-feed gap definition and optional hard maximum gap;</li><li>soft safety-stock shortfall;</li><li>same-pile stacking/reclaim policy and positioning reservations;</li><li>optional hard minimum volume on a complete contiguous job;</li><li>optional parcel floors with a priced short-parcel exception.</li></ul>
+<p><code>MIN_JOB_VOLUME_T</code> differs from the parcel floor. The former is a hard whole-job constraint and may increase unmet demand or infeasibility. The latter allows an explicit penalized exception. A default minimum job volume of zero does not prevent one-tonne allocations.</p>
+<h3>Optimization algorithms</h3>
+<p>The planner has one public entry point and three execution strategies. These procedures are part of the model semantics because they determine the horizon seen by each CP-SAT solve, which state is carried forward, what is protected in later passes, and which feasible fallback can be returned.</p>
+<h4>Entry-point routing</h4>
+<p><code>solve_plan</code> validates washing settings and initial rolling state, prepares any optimized blend design, and then dispatches as follows:</p>
+<ol><li>reject washing combined with mixed resolution because grade-resolved washing currently requires the native uniform or weekly grid;</li><li>use <code>solve_mixed_resolution_plan</code> when mixed resolution is enabled;</li><li>otherwise use <code>solve_weekly_rolling_plan</code> when weekly rolling is enabled and the horizon exceeds 24 hours;</li><li>otherwise use <code>_solve_uniform_plan</code> once on the configured native grid.</li></ol>
+<p>Input/model errors return an explicit <code>ERROR</code> result. A successful result is augmented with the authoritative optimized-blend campaign records.</p>
+<h4>Uniform CP-SAT solve</h4>
+<p>The uniform algorithm performs these ordered stages:</p>
+<ol><li>validate the grid, objective weights, initial state, washing configuration, and configured policy consistency;</li><li>prepare grade/material pools and generate only reachable, eligible movement candidates with their routes, transformations, and assays;</li><li>build integer flow, activity, inventory, demand/slack, quality, continuity, operating-event, and policy variables and constraints;</li><li>add deterministic hints or a bounded feasibility seed where configured;</li><li>solve the primary CP-SAT objective with one worker, the configured seed and deterministic-time budget, plus a wall-clock hang guard;</li><li>extract a candidate minute schedule and reject or repair an incumbent whose execution windows fail the minute-placement contracts;</li><li>in <code>service_first</code> mode, run the protected secondary objective levels in the exact order stated above, retaining the last accepted incumbent after any timeout, failure, or rejection;</li><li>when enabled, attempt parcel consolidation while fixing route/grade totals, service, terminal inventories, slacks, and protected objective quantities;</li><li>extract jobs, material flows and terminal state, compute reconciliation and objective evidence, and return the accepted incumbent.</li></ol>
+<p>The optional consolidation pass cannot invalidate a valid primary plan: an exception or rejected candidate retains the incumbent. An <code>OPTIMAL</code> secondary pass is not reinterpreted as proof of primary global optimality.</p>
+<h4>State-coupled weekly rolling solve</h4>
+<p>For a multi-day native-grid horizon, civil-day windows are built from actual dates. Opening windows are coalesced through the latest unresolved optimized blend readiness boundary so a blend recipe and its construction schedule are chosen jointly. Each accepted window carries forward physical/grade inventory, pending delayed material, belt parcels, machine activity group, continuous-feed gap state, open-gap duration, and resolved blend recipes.</p>
+<p>Window target profiles and terminal targets are allocated across the remaining horizon. Controlled dispatches that would arrive beyond an intermediate window are banned from that window. Each window calls the uniform algorithm with a bounded share of deterministic and wall time. The procedure stops at the first non-<code>OPTIMAL</code>/<code>FEASIBLE</code> window or exhausted wall budget, then <code>_merge_weekly_windows</code> returns either the coupled merged plan or an explicitly partial/failed weekly result. Optimality is therefore a window-level statement, not a certificate for the entire seven-day problem solved monolithically.</p>
+<h4>Mixed-resolution solve</h4>
+<p>The mixed algorithm first solves the complete tactical horizon on the native grid (using weekly rolling when configured). A feasible tactical result defines the near-term boundary inventory and blend composition. The near-term prefix is then resampled to the fine grid, tied to that boundary, solved again with the uniform algorithm, and merged back with the tactical tail using canonical minute bounds and the replan/commit rules.</p>
+<p>If tactical solving fails, that status is returned. If resampling, wall budget, or the fine-prefix solve fails after a feasible tactical incumbent exists, the tactical plan is retained and labelled <code>cp-sat-mixed-fallback</code>. Washing with mixed resolution is currently rejected before this procedure starts.</p>
+<h4>Incumbent acceptance and termination</h4>
+<p>A solver incumbent is usable only when CP-SAT reports <code>OPTIMAL</code> or <code>FEASIBLE</code> and the execution acceptance callback validates minute placement; quality-aware secondary levels also apply their quality acceptance callback. Each bounded refinement records status, before/after value, and acceptance. Hard-wall expiration never converts absence of an incumbent into infeasibility, and an accepted earlier incumbent is retained whenever an optional later stage fails.</p>
+<h3>Solver semantics</h3>
+<p>CP-SAT uses one worker and a fixed seed. The configured solve budget is applied as deterministic time, with a wall-clock guard. Integer scaling and rounding are part of the implemented model. Status meanings:</p>
+<ul><li><code>OPTIMAL</code>: optimal only for the objective scope reported by the run;</li><li><code>FEASIBLE</code>: every hard constraint checked by the solver is satisfied, but the objective may be improvable and demand can remain unmet;</li><li><code>INFEASIBLE</code>: no solution exists for the built hard model;</li><li><code>UNKNOWN</code>: no usable incumbent/certificate was obtained within the search conditions; it is not proof of infeasibility.</li></ul>
+<p>In <code>service_first</code>, the reported optimality scope can be limited to primary emergency and qualified service. Each later pass records before/after, status, and whether it was accepted.</p>
+<h3>Post-processing and displayed jobs</h3>
+<p>Solver bucket flows are extracted into allocation jobs. The minute execution overlay places jobs around positioning, route, and occupancy constraints, labels holds, and derives physical-run identity. One allocation job can contain multiple physical runs; one physical run can span several allocation jobs.</p>
+<p>The Gantt chart renders extracted execution windows. Very thin bars therefore can represent a real low-tonnage/short-duration selected slice, not merely a plotting defect. The evidence keys <code>below_parcel_floor_slices</code>, <code>smallest_allocation_slice_t</code>, rate credibility, scheduled/executed transitions, and the reconciliation residual distinguish optimization fragmentation from display artifacts.</p>
+<h3>KPIs</h3>
+<ul><li><code>service_pct = 100 * credited_delivery / requested_demand</code>. Ordinary demand is credited by due bucket; process-feed campaigns are credited by daily grade-campaign totals.</li><li><code>unmet_t = requested_demand - credited_delivery</code>.</li><li><code>priority_weighted_service_pct</code> applies configured demand priority to both requested and credited mass.</li><li><code>final_product_service_pct</code> excludes process-feed campaign demand.</li><li><code>onspec_pct</code> is the share of destination/bucket observations with positive delivered mass that satisfy every configured quality limit. Zero-delivery buckets are service gaps, not quality observations.</li><li><code>on_spec_mass_pct</code> is on-spec final-product delivered mass divided by quality-evaluated final-product mass; unknown-quality mass is separate.</li><li><code>washing_&lt;mode&gt;_actual_dry_yield_pct = 100 * product_dry / feed_dry</code>.</li><li><code>washing_treatment_cost = sum(product_dry_t * cost_per_tsm_t)</code>.</li><li><code>safety_shortfall_t_h</code> integrates tonnes below safety stock over time.</li><li>machine utilisation counts active native buckets; route utilisation is average transported rate divided by link capacity over the evaluated horizon.</li><li>schedule-fragmentation KPIs separately report planned bucket transitions and executed minute transitions. <code>transition_reconciliation_residual</code> must be 0.</li></ul>
+<p>Every KPI must be read with its run-specific evaluation horizon, basis, and planned-versus-actual status.</p>
+<h3>Limitations and interpretation boundaries</h3>
+<ul><li>Washing coefficients, yields, G10 limits, and residence defaults are synthetic demo assumptions, not plant validation.</li><li>Treatment costs currently omit transport, energy, water, reagent, disposal, and capital effects unless separately represented.</li><li>Grade-resolved material pools approximate selective/campaign withdrawal; they do not model pile-face geometry or layer progression.</li><li>Unmet slack prevents demand alone from proving infeasibility. Other hard constraints, fixed jobs, calendars, maximum-gap rules, or minimum job volume can still make the model infeasible.</li><li>Candidate exports cover generated alternatives only. A candidate marked unused is not proven force-feasible without an isolated forced-alternative solve.</li><li>Reported constraint residuals are diagnostic recomputations, not a complete export of every internal CP-SAT constraint.</li><li>Weighted-objective values mix scaled terms and are not physical cost.</li><li>A model-consistent plan is not evidence of physical or commercial validity where inputs are assumed, missing, or stale.</li></ul></body></html>

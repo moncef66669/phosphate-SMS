@@ -1,0 +1,6 @@
+# Preview app runtime artefacts.
+# runs.db lands here (not in simulator/) because the launcher sets the working
+# directory to simulator_preview/ — see Run-UI-Preview.ps1.
+runs.db
+__pycache__/
+.pytest_cache/

@@ -1,0 +1,2 @@
+id,src,dst,capacity_tph,min_stable_tph,transit_buckets,available,shared_group,conflict_group,gate_id,gate_position,changeover_min,lifecycle,capacity_design_tph,material_class,source,evidence_status,confidence
+L-M17-RECLAIM,SPACE:M17-CLOSED-1,DEST:MOLTEN-S,1100,100,0,True,,,,,0.0,EXISTING,0.0,,Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3],CONFIRMED,H

@@ -1,0 +1,22 @@
+# Operations-console preview — base widget theme.
+# The console structure/density comes from simulator_preview/hmi/css.py; these
+# values only set the Streamlit widget base so inputs render dark natively
+# instead of being repainted by CSS overrides.
+[theme]
+base = "dark"
+primaryColor = "#e08a2e"
+backgroundColor = "#10161c"
+secondaryBackgroundColor = "#1c262e"
+textColor = "#e6edf3"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = true
+
+[server]
+headless = true
+fileWatcherType = "poll"
+
+[browser]
+gatherUsageStats = false

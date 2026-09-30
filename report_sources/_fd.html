@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Functional Design — MPH OSBL Automated Job Allocation Layer</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 15mm 15mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Calibri","Segoe UI",Arial,sans-serif; color:#1a1a1a; font-size:9.5pt; line-height:1.34; margin:0; }
+  h1 { color:#1f4e79; font-size:15.5pt; margin:0 0 2px 0; line-height:1.2; }
+  h2.sub { color:#2e6da4; font-size:10.5pt; font-weight:600; margin:0 0 8px 0; }
+  .meta { font-size:8.4pt; color:#555; border-top:2px solid #1f4e79; border-bottom:1px solid #ccc; padding:4px 0; margin-bottom:10px; }
+  h3 { color:#1f4e79; font-size:11.5pt; margin:13px 0 4px 0; border-bottom:1px solid #d6e0ea; padding-bottom:2px; break-after:avoid; }
+  h4 { color:#2e6da4; font-size:9.8pt; margin:10px 0 3px; break-after:avoid; }
+  p { margin:4px 0; text-align:justify; }
+  ul { margin:3px 0 4px 0; padding-left:16px; } li { margin:2px 0; }
+  ol { margin:3px 0 4px 0; padding-left:18px; }
+  strong { color:#14365c; }
+  table { border-collapse:collapse; width:100%; margin:5px 0; font-size:8.7pt; }
+  th { background:#1f4e79; color:#fff; text-align:left; padding:3px 6px; font-weight:600; }
+  td { border:1px solid #cdd6df; padding:3px 6px; vertical-align:top; }
+  tr:nth-child(even) td { background:#f3f6f9; }
+  tr.hl td { background:#fdf6ea; font-weight:600; }
+  code { font-family:"Consolas",monospace; font-size:8.2pt; background:#f1f4f7; padding:0 3px; border-radius:3px; color:#14365c; }
+  .footref { font-size:7.8pt; color:#666; font-style:italic; border-top:1px solid #ccc; padding-top:5px; margin-top:12px; }
+  .note { font-size:8.6pt; color:#555; }
+  .nb { break-inside:avoid; }
+  blockquote { background:#fbf3e6; border-left:4px solid #d98b2b; margin:6px 0; padding:6px 10px; font-size:9.1pt; }
+  .eq { break-inside:avoid; font-family:"Consolas",monospace; font-size:8.3pt; background:#f6f8fa; border:1px solid #dbe3ea; border-radius:5px; padding:6px 10px; margin:4px 0; white-space:pre; overflow-x:auto; color:#14365c; line-height:1.45; }
+  .eqcap { font-size:8.4pt; color:#555; margin:1px 0 7px; }
+  table.reg { font-size:7.3pt; }
+  table.reg td { padding:2px 4px; }
+  table.reg th { padding:2px 4px; font-size:7.3pt; }
+  thead { display:table-header-group; }
+  .erd { break-inside:avoid; border:1px solid #cdd6df; border-radius:6px; padding:10px; margin:6px 0; background:#fcfdfe; }
+  .erow { display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin:4px 0; }
+  .ebox { border:1.5px solid #5b7fa6; background:#eef3f8; border-radius:5px; padding:3px 9px; font-size:8.3pt; font-weight:700; color:#14365c; }
+  .ebox.key { border-color:#d98b2b; background:#fdf6ea; color:#b5651d; }
+  .ebox.job { border-color:#2e6d4f; background:#eef6f1; color:#235a40; }
+  .ebox small { font-weight:400; color:#777; }
+  .earr { font-size:7.6pt; color:#7a8a99; font-weight:700; white-space:nowrap; }
+  .edown { font-size:7.9pt; color:#7a8a99; font-weight:700; }
+  /* value-chain grid */
+  .vc { break-inside:avoid; border:1px dashed #b9c4cf; border-radius:7px; padding:10px 12px 7px; margin:7px 0; background:#fcfdfe; }
+  .vcgrid { display:grid; grid-template-columns: 1fr auto 1.15fr auto 1fr; column-gap:0; row-gap:9px; align-items:center; }
+  .vcyard { border:1.6px solid #5b7fa6; background:#eef3f8; border-radius:6px; padding:5px 8px; text-align:center; font-size:8.4pt; font-weight:700; color:#14365c; }
+  .vcyard .vsub { display:block; font-weight:400; font-size:7.4pt; color:#777; margin-top:1px; }
+  .vchub { border:2.4px solid #d98b2b; background:#fdf6ea; border-radius:7px; padding:7px 9px; text-align:center; font-size:8.8pt; font-weight:700; color:#b5651d; grid-row:span 2; box-shadow:0 1px 2px rgba(0,0,0,.07); }
+  .vchub .vsub { display:block; font-weight:400; font-size:7.4pt; color:#9a7b4f; margin-top:1px; }
+  .vcdest { border:1.6px solid #2e6d4f; background:#eef6f1; border-radius:6px; padding:5px 8px; text-align:center; font-size:8.2pt; font-weight:700; color:#235a40; }
+  .vcdest .vsub { display:block; font-weight:400; font-size:7.3pt; color:#6b8577; margin-top:1px; }
+  .vcarr { text-align:center; font-size:7.4pt; color:#5b7fa6; font-weight:700; white-space:nowrap; padding:0 6px; }
+  .vcarr .ln { display:block; font-size:9pt; letter-spacing:-1px; color:#8aa3bd; }
+  .smschip { display:inline-block; background:#1f4e79; color:#fff; border-radius:9px; padding:0 8px; font-size:6.9pt; font-weight:700; margin-left:4px; vertical-align:1px; }
+</style>
+</head>
+<body>
+
+<h1>Functional Design (Part 1) — Domain Model, Allocation Decision Model &amp; Engineering Basis</h1>
+<h2 class="sub">Louta &amp; Benguerir Mine Stockyards → MPH M16 Hub · M17 Sulphur  ·  Phase 1</h2>
+<div class="meta"><strong>Status:</strong> Draft functional design — implemented engineering baseline &nbsp;|&nbsp; <strong>Companion to:</strong> Job‑Allocation Scope note &nbsp;|&nbsp; <strong>Date:</strong> 8 September 2026 (Rev AD)</div>
+
+<h3>1. Domain / Data Model (planning digital twin)</h3>
+<p>The layer keeps a <strong>planning abstraction</strong>, continuously refreshed from the authoritative SMS/SQMS 3D inventory and machine state, then augmented with demand, routes, recipes and jobs. It never replaces the physical twin. The canonical three-site value chain, system boundary and assets are defined once in scope §§1, 4 and 13; this part defines only the information and optimisation model.</p>
+
+<h4>1.1 Entities</h4>
+<table>
+<thead><tr><th>Entity</th><th>Key attributes</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td><strong>Site</strong></td><td>SMS endpoint, role, spaces and assets</td><td>configuration + SMS</td></tr>
+<tr><td><strong>StockSpace / Inventory</strong></td><td>capacity/state; material profile; aggregate planning quality; optional grade-distribution metadata; 1-m segment mass, quality and age</td><td>SMS/SQMS + planning</td></tr>
+<tr><td><strong>MaterialProfile</strong></td><td>process state (<code>raw_screened</code>, <code>washed</code>, <code>dry</code>), physical envelope and evidence</td><td>engineering + master data</td></tr>
+<tr><td><strong>QualityClass</strong></td><td>stage-compatible chemistry, receiving intervals and anti-contamination matrix</td><td>operations master data</td></tr>
+<tr><td><strong>Machine</strong></td><td>rate, reachability, rail, travel/setup, separation, calendar, state and position</td><td>SMS state + configured capability</td></tr>
+<tr><td><strong>RouteGraph</strong></td><td>nodes/links/gates, rates, conflicts, transitions, delays and valid paths</td><td>PFD/GA + planning</td></tr>
+<tr><td><strong>Destination / Demand</strong></td><td>dated grade campaign, physical tonnes/rate, intraday window and priority; several non-overlapping campaigns may target one unit in one day</td><td>ERP/operations</td></tr>
+<tr><td><strong>Job</strong></td><td>machine, space, type, route, pattern, rate, tonnes, timing and status</td><td>planning output</td></tr>
+<tr><td><strong>BlendCampaign</strong></td><td>target stockpile, eligible incoming grades, fixed matrix or optimised shares, physical batch tonnes, readiness and execution-lock state (§2.6)</td><td>operator configuration + planning output</td></tr>
+<tr><td><strong>GradeCostModel</strong></td><td>grade-dependent consumption and rock value; data not yet received</td><td>process engineering/finance</td></tr>
+</tbody>
+</table>
+
+<h4>1.2 Route graph (layer‑owned) — versus the ASP "Route"</h4>
+<table class="nb">
+<tr><th style="width:38%;">ASP “Route”</th><th>Route graph owned by this layer</th></tr>
+<tr><td><code>(Device, JobType, free-text Location)</code>; filters plan-editor choices</td><td>Physical nodes/links/gates; capacities/minimum rates; delays/in-transit mass; states, conflicts, transitions, availability and valid source→destination paths</td></tr>
+</table>
+<p>Every emitted job passes the physical graph first; ASP is a <strong>second gate</strong>. PFD/TBE data define connectivity and rates; GA/plot-plan data are still required for metric travel and transition times.</p>
+
+<h4>1.3 Entity relationships</h4>
+<div class="erd">
+  <div class="erow">
+    <span class="ebox">Machine</span><span class="earr">─ serves (work area) ►</span>
+    <span class="ebox key">StockSpace</span><span class="earr">─ holds ►</span>
+    <span class="ebox">Inventory <small>(quality)</small></span><span class="earr">─ typed by ►</span>
+    <span class="ebox">QualityClass <small>(spec + compat)</small></span>
+  </div>
+  <div class="erow"><span class="ebox">MaterialProfile</span><span class="earr">─ process state + allowable grades for ►</span><span class="ebox key">StockSpace / Inventory / QualityClass</span></div>
+  <div class="erow"><span style="width:150px;"></span><span class="edown">│ via <strong>RouteGraph path (gates)</strong> &nbsp;▼ feeds</span></div>
+  <div class="erow">
+    <span class="ebox">Demand</span><span class="earr">─ targets ►</span>
+    <span class="ebox">Destination</span>
+  </div>
+  <div class="erow" style="margin-top:6px;border-top:1px dashed #dfe6ec;padding-top:6px;">
+    <span class="ebox job">Job <small>(output → SMS)</small></span><span class="earr">─ assigns ►</span>
+    <span class="ebox">Machine</span><span class="earr">+</span><span class="ebox key">StockSpace</span><span class="earr">+</span><span class="ebox">RouteGraph path</span><span class="earr">+</span><span class="ebox">BlendCampaign / Pattern</span>
+  </div>
+</div>
+
+<h4>1.4 Phase 1 instances (from the scope note)</h4>
+<table class="compact">
+<thead><tr><th>Domain / site</th><th>Planning role</th><th>Solver coverage</th><th>Canonical evidence</th></tr></thead><tbody>
+<tr><td>Louta</td><td>110LG ore stock → L1/L2 recovery → 130/140LG product yard → C1</td><td><strong>Stocked route solver-backed from 110LG through C1; only 102MG remains reference-only</strong></td><td>Scope §13.1/13.5; evidence §16</td></tr>
+<tr><td>Benguerir</td><td>Mine storage → raw storage → three washing campaigns → washed-product yard → C2/train</td><td>Six stockpiles and nine mobile machines are solver-backed; washing lines are recovery-bearing process stages</td><td>Scope §13.3; evidence §16</td></tr>
+<tr><td>MPH M16</td><td>Receive, construct humid-product blends, buffer and reclaim → PAP/drying</td><td>Current bays, routes and machines modelled; PAP-2 is configurable and Future by default</td><td>Scope §13.1; evidence §16</td></tr>
+<tr><td>MPH M17</td><td>Open/manual → closed → melting</td><td>Domain-B abstraction; open reclaim exogenous</td><td>Scope §13.1; evidence §16</td></tr>
+</tbody>
+</table>
+<p class="note">Exact capacities, assets, statuses and source conflicts are intentionally not repeated here; scope §13 is the asset summary and §16 the authoritative evidence register.</p>
+
+<h3>2. Allocation Decision Model</h3>
+<p>Each planning cycle selects mass flows, assets, routes and timing to meet on-grade demand while respecting the coupled three-site constraints.</p>
+
+<h4>2.1 Decision variables</h4>
+<table class="nb compact">
+<tr><th>Variable</th><th>Meaning</th><th>Domain</th></tr>
+<tr><td><code>m[mine, c, t]</code></td><td>mine reclaim rate onto its <strong>dedicated corridor</strong> <code>c</code> in bucket <em>t</em> (TPH), with quality</td><td>≥ 0</td></tr>
+<tr><td><code>x[s, d, t]</code></td><td>reclaim <strong>mass flow</strong> from space <em>s</em> to destination <em>d</em> in bucket <em>t</em> (TPH) — <strong>the primary blend variable</strong></td><td>≥ 0</td></tr>
+<tr><td><code>delivered[d, t]</code></td><td>total feed to destination <em>d</em>: <code>delivered[d,t] = Σ_s x[s,d,t]</code> (TPH)</td><td>derived</td></tr>
+<tr><td><code>unmet[d, t]</code></td><td><strong>unmet‑demand slack</strong> for destination <em>d</em> (TPH) — see eq. (4)</td><td>≥ 0</td></tr>
+<tr><td><code>f[s, d, t]</code></td><td>blend fraction — <strong>derived, reporting only</strong>: <code>f[s,d,t] = x[s,d,t] / delivered[d,t]</code></td><td>[0,1], Σ = 1</td></tr>
+<tr><td><code>a[reclaimer, s, t]</code></td><td>reclaimer assigned to a space</td><td>{0,1}</td></tr>
+<tr><td><code>y[stacker, s, pattern, t]</code></td><td>stacker building a space with a pattern</td><td>{0,1}</td></tr>
+<tr><td><code>b[p, g]</code></td><td>whole physical tonnes of incoming grade <em>g</em> assigned to blend campaign/pile <em>p</em></td><td>integer ≥ 0</td></tr>
+<tr><td><code>ready[p]</code></td><td>exact minute at which construction of campaign <em>p</em> is complete and reclaim may begin</td><td>integer minutes</td></tr>
+<tr><td><code>g[gate/route, t]</code></td><td>gate / route‑path selection (per reclaim stream: which clamshell gate bank routes toward PAP or drying)</td><td>{0,1}</td></tr>
+<tr><td><code>seq / start[job]</code></td><td>job ordering &amp; timing</td><td>—</td></tr>
+</table>
+<blockquote><strong>Flow and fraction are not independent.</strong> The model is solved in <strong>mass flows <code>x</code></strong> (linear); blend fractions satisfy the identity <code>x[s,d,t] = f[s,d,t] · delivered[d,t]</code> and are recovered after solving. Treating <code>f</code> and the delivered rate as independent variables would decouple recipe from throughput and make the quality constraints nonlinear.</blockquote>
+
+<h4>2.2 Objective — minimise a weighted sum</h4>
+<table class="compact">
+<thead><tr><th>Term (weight)</th><th>Drives</th><th>Priority</th></tr></thead>
+<tbody>
+<tr class="hl"><td><code>w₁</code> unmet demand <code>Σ unmet[d,t]·Δt</code> (eq. 4)</td><td><strong>Feed continuity</strong> — no starving PAP / molten‑S; <strong><code>w₁</code> dominates all other weights</strong></td><td>highest</td></tr>
+<tr class="hl"><td><code>w₂</code> off‑spec deviation</td><td><strong>On‑spec grade</strong></td><td>highest</td></tr>
+<tr><td><code>w₃</code> downstream process cost <em>(grade‑dependent)</em></td><td>Placeholder for governed PAP consumption curves; <strong>inactive (<code>0</code>) in the implemented baseline</strong></td><td>inactive</td></tr>
+<tr><td><code>w₄</code> rock value consumed (give‑away)</td><td>Don't waste scarce high‑grade rock beyond its economic return</td><td>high</td></tr>
+<tr><td><code>w₅</code> machine moves / changeovers / start‑stops</td><td>Efficiency, wear</td><td>medium</td></tr>
+<tr><td><code>w₆</code> safety‑stock violation</td><td>Strategic stock cover</td><td>medium</td></tr>
+<tr><td><code>w₇</code> handled-flow / utilisation reward <em>(maximise)</em></td><td>Optional throughput/coverage preference; <strong>inactive (<code>0</code>) by default</strong></td><td>configurable</td></tr>
+</tbody>
+</table>
+<p class="note"><em>The active scenario exposes the implemented weights beside the Results KPIs: <code>w₁</code> unmet demand, <code>w₂</code> off-spec deviation, <code>w₄</code> quality give-away/rock value, <code>w₅</code> moves/changeovers, <code>w₆</code> safety-stock violation and <code>w₇</code> utilisation. They are operator-configurable and persisted with the planning assumptions. <code>w₃</code> remains inactive until validated GradeCostModel curves are supplied; the interface does not imply an economic optimum that the available data cannot support.</em></p>
+<div class="guard"><strong>S0 Louta objective ruling.</strong> Machine coverage is disabled (<code>MACHINE_COVERAGE_REWARD=0</code>), and a small positive cost is applied to every commanded tonne (<code>FLOW_TONNE_PENALTY=1</code>). Exact stocked-route constraints create the work; the objective removes unnecessary excess and tie-driven token jobs. This is an <strong>ASSUMED demonstration policy</strong>, not a rule found in either Louta design document.</div>
+
+<h4>2.3 Dimensional formulation — units, mass balance, quality, delay</h4>
+<p><strong>Conventions.</strong> The operator baseline is a civil week: <strong>T = 168 buckets of Δt = 1 h</strong>. An optional rolling-refinement mode uses 15-minute decisions in the first four hours and an hourly tail. Outage, derate, readiness and actual-event boundaries retain their exact minutes; therefore emitted jobs are continuous variable-duration runs and are not forced to one-hour length. Every stockpile capacity, inventory, machine/conveyor/plant rate, demand and scheduled job is expressed in <strong>physical/as-handled tonnes or t/h</strong> at that material stage.</p>
+<div class="nb"><p style="margin-bottom:1px;"><strong>(1) Space mass balance</strong> — for every space <em>s</em> and bucket <em>t</em> (dimensionally consistent: tonnes = tonnes + h·t/h):</p>
+<div class="eq">inventory[s, t+1] = inventory[s, t]
+                  + Δt · stacked_rate[s, t]
+                  − Δt · reclaimed_rate[s, t]              [tonnes]
+
+0 ≤ inventory[s, t] ≤ capacity[s]
+reclaimed_rate[s, t] = Σ_d x[s, d, t]</div>
+<p class="eqcap"><em>Initial condition:</em> <code>inventory[s, 1]</code> = live SMS snapshot (<code>SpaceValueResponse</code>). <em>Horizon boundary:</em> terminal stock <code>inventory[s, T+1]</code> is held ≥ the safety‑stock target (soft, <code>w₆</code>) so the optimiser cannot "win" by emptying the yard at the end of the horizon.</p></div>
+<div class="nb"><p style="margin-bottom:1px;"><strong>(2) Delivered flow &amp; blend coupling</strong> — solve in mass flow, report in fractions:</p>
+<div class="eq">delivered[d, t] = Σ_s x[s, d, t]                            [TPH]
+x[s, d, t] = f[s, d, t] · delivered[d, t]   (identity; f recovered post-solve)</div></div>
+<div class="nb"><p style="margin-bottom:1px;"><strong>(3) Mass‑weighted quality</strong> — per destination <em>d</em>, parameter <em>k</em>, bucket <em>t</em> (linear in <code>x</code>; enforced <strong>per bucket</strong>, i.e. continuous compliance, not a horizon average):</p>
+<div class="eq">Σ_s q_k[s, t] · x[s, d, t]  ≥  q_k_min[d] · delivered[d, t]     (min specs, e.g. BPL)
+Σ_s q_k[s, t] · x[s, d, t]  ≤  q_k_max[d] · delivered[d, t]     (max specs, e.g. Cd)</div>
+<p class="eqcap"><code>q_k[s, t]</code> comes from the planning twin (1‑m segments aggregated over the planned reclaim cut). When stacking modifies a space, its quality updates mass‑weighted: <code>q_k[s,t+1] = (inventory·q_k + Δt·stacked_rate·q_k_in) / (inventory + Δt·stacked_rate)</code>. For an M16 constructed blend, chemistry is weighted by <strong>dry-solids mass</strong> and moisture by physical mass, so a wetter tonne is not treated as containing the same solids as a drier tonne.</p></div>
+<div class="nb"><p style="margin-bottom:1px;"><strong>(3a) Stage-aware physical ↔ TSM conversion</strong> — one editable yield/moisture profile is selected per merchant grade; no size-cut variant is inferred:</p>
+<div class="eq">raw_to_TSM       = raw_physical × (1 − raw_moisture) × beneficiation_yield
+wet_product      = TSM / (1 − wet_product_moisture)
+wet_product_TSM  = wet_product_physical × (1 − wet_product_moisture)
+after drying:      1 physical dry tonne = 1 TSM</div>
+<p class="eqcap">Yield loss occurs through washing/beneficiation; retained water explains why wet-product physical mass remains above TSM. The planning balance never substitutes TSM for the physical capacity or rate of handling equipment.</p></div>
+<div class="nb"><p style="margin-bottom:1px;"><strong>(4) Demand with unmet slack</strong> — <strong>no hard <code>delivered ≥ demand</code> constraint</strong> (a hard constraint plus a penalty on the same quantity is redundant and makes tight periods infeasible):</p>
+<div class="eq">delivered[d, t] + unmet[d, t] ≥ demand[d, t],    unmet[d, t] ≥ 0
+objective += w₁ · Σ_{d,t} unmet[d, t] · Δt       (w₁ ≫ every other weight)</div>
+<p class="eqcap">The slack guarantees the model stays feasible when demand physically cannot be met; the <strong>dominant penalty</strong> ensures any feasible way of serving demand is always preferred, and the reported <code>unmet</code> is an honest feed‑gap signal.</p></div>
+<div class="nb"><p style="margin-bottom:1px;"><strong>(5) Corridor transport delay &amp; in‑transit inventory</strong> — with <code>L_c = round(delay[c]/Δt)</code> whole buckets (Δt = 1 h → provisional L_C1 ≈ 2, L_C2 ≈ 4; Louta/C1 nearer and Benguerir/C2 farther is user-confirmed; exact metric values are TBC):</p>
+<div class="eq">MPH_arrival[c, t] = mine_dispatch[c, t − L_c]               for t &gt; L_c
+MPH_arrival[c, t] = belt_profile₀[c, t]                     for t ≤ L_c
+in_transit[c, t+1] = in_transit[c, t] + Δt · (mine_dispatch[c, t] − MPH_arrival[c, t])</div>
+<p class="eqcap"><code>belt_profile₀</code> is the <strong>material already on the belt at the start of the horizon</strong> (mass <em>and</em> quality along the belt, from mine‑SMS dispatch history / belt scales) — it arrives during the first <code>L_c</code> buckets regardless of any new decision. <strong>Dispatch time and MPH arrival time are distinct</strong>: a mine job dispatched at <em>t</em> only becomes MPH stock at <em>t + L_c</em>; the quality arriving at MPH at <em>t</em> is the quality dispatched at <em>t − L_c</em>. Mine jobs must <strong>lead</strong> MPH needs by <code>L_c</code>.</p></div>
+<div class="nb"><p style="margin-bottom:1px;"><strong>(6) Louta process transfer, recovery and residence</strong> — L1/L2 are transformation stages, not mobile machines:</p>
+<div class="eq">recovered_output[line] = recovery[case] × ore_feed[line]
+WIP[line, t+1] = WIP[line, t] + recovered_output[line, t] − product_stacked[line, t]
+product_stack_start ≥ ore_reclaim_finish + 30 min</div>
+<p class="eqcap">The BT, High-Cd and Low-Cd feed/recovery pairs (<strong>584 t/h / 68.22%</strong>, <strong>579 t/h / 68.83%</strong>, <strong>588 t/h / 67.71%</strong>) are documented design cases. The <strong>30-min overall residence is ASSUMED</strong>; only the scrubber’s 2.5–3 min is confirmed by the BoD and is included within, not added to, that total. Same-bucket passthrough is prohibited. A cumulative matured-mass constraint permits product stacking only after enough washing output has completed its execution window plus the 30-min delay; transient WIP may carry between hourly boundaries and must finish the horizon at 0 t.</p></div>
+
+<h4>2.4 Constraints</h4>
+<table>
+<thead><tr><th style="width:20%;">Constraint</th><th>Rule / formalisation</th><th style="width:20%;">MPH source</th></tr></thead>
+<tbody>
+<tr><td><strong>Corridor (dedicated)</strong></td><td>Louta only on <code>C1</code>, Benguerir only on <code>C2</code>; flow ≤ 2600 TPH each</td><td>dedicated per mine</td></tr>
+<tr><td><strong>Louta S0 purpose targets</strong></td><td>When enabled: exact C1 dispatch = <strong>8,000 t</strong>; exact recovered output = <strong>4,000 t per L1/L2</strong>; exact terminal <code>110LG-OL1/-OL2</code> = <strong>123,568.5 t each</strong>, <code>LT-P1/-P2</code> = <strong>95,756 t each</strong>, and line WIP = <strong>0 t</strong>. L1 BT→TBT and L2 Low-Cd→BT are <strong>ASSUMED</strong> mappings.</td><td>project-team demonstration policy; not in design PDFs</td></tr>
+<tr><td><strong>Louta shared paths</strong></td><td>Common RB4/RB5 limited conservatively to <strong>588 t/h</strong> and one ore reclaimer per bucket; unresolved RL3/RL4/C1 confluence permits one product reclaimer per bucket. <code>130LG-ST-01</code> uses a <strong>1,000 t/h ASSUMED S0 envelope</strong> because no stacker/SL11 rate is supplied.</td><td>process-description topology + conservative assumptions</td></tr>
+<tr><td><strong>Corridor transport lag</strong></td><td>eq. (5): arrival(t) = dispatch(t − L_c); <strong>C1/Louta NEARER, provisional Δ_C1 ≈ 2 h 05; C2/Benguerir FARTHER, provisional Δ_C2 ≈ 4 h 10</strong> (30/60 km @ 4 m/s working values); initial full-rate <code>belt_profile₀</code> ≈5,400 / ≈10,800 t. Relative order user-confirmed 22-Jul-2026; exact lengths/speeds/dwell TBC.</td><td>project team + provisional 30 / 60 km · 4 m/s</td></tr>
+<tr><td><strong>Mine stock</strong></td><td>mine reclaim ≤ mine-yard inventory; mine build follows its plan. Benguerir contention is <strong>stage-internal</strong>: raw outlets share upstream reclaim capacity; washed outlets share RC2/RC3. Raw and washed stages share no piles/reclaimers (see §§13.2, 16).</td><td>mine SMS / B02 BoD</td></tr>
+<tr><td><strong>End‑to‑end continuity</strong></td><td>mine ship + in‑transit + MPH buffer sustain the MPH→PAP feed over the horizon</td><td>chain coupling</td></tr>
+<tr><td><strong>Mass balance &amp; capacity</strong></td><td>eq. (1) per space/bucket, with initial + terminal conditions</td><td>physical</td></tr>
+<tr><td><strong>Blend / grade spec</strong></td><td>eq. (3): mass‑weighted quality per bucket (<code>Σ q·x ≥ q_min·delivered</code>, <code>Σ q·x ≤ q_max·delivered</code>)</td><td>quality specs; Cd for SPH</td></tr>
+<tr><td><strong>Machine rate, reach &amp; stability</strong></td><td><code>min_stable_rate·run ≤ x ≤ max_rate·run</code> (semi‑continuous); only <strong>reachable</strong> (machine, space) pairs — machine‑to‑pile reachability from configured <strong>work areas</strong></td><td>machine data / work areas</td></tr>
+<tr><td><strong>Machine positioning &amp; setup</strong></td><td>The post-solve minute schedule inserts a separate <strong>non-material</strong> cross-space activity before the next job: estimated translation time (job-range midpoint→midpoint at configured travel speed) + setup time. A <strong>green</strong> bar is an exact reserved minute interval; the machine may position early and wait around a blocked calendar. A <strong>red positioning conflict</strong> means no valid interval was reserved and targeted replanning is required; that exact-profile job is withheld from ASP plan-item export until timing validates. Positioning carries no tonnage/grade/path. Blank time is idle/unallocated. First-job positioning and same-space face progression are not separate bars.</td><td>current geometry/speed/setup are ASSUMED; obtain plot plan / GA, surveyed common rail frame, live position and operating travel/setup data</td></tr>
+<tr><td><strong>Same‑device exclusivity</strong></td><td>a device executes <strong>one job at a time</strong>; no overlapping jobs (ASP ERROR)</td><td>ASP Same‑Device Overlap</td></tr>
+<tr><td><strong>Reclaimer↔space exclusivity</strong></td><td>a reclaimer serves <strong>one space at a time, movable</strong> (<code>Σ_s a ≤ 1</code>)</td><td>confirmed movable</td></tr>
+<tr><td><strong>Concurrent stack+reclaim on a space</strong></td><td><strong>PERMITTED at MPH M16 (project‑team confirmation, 15‑Jul‑2026)</strong>: stacking and reclaiming may occur simultaneously on the same stockpile, subject to spatial separation, work‑zone, route, geometry and ACS/PLC constraints; the scheduler prevents collisions and overlapping work zones and must <strong>not</strong> prohibit same‑pile concurrency categorically (no fixed A/B double‑buffering rule). <strong>Exact numerical safety limits remain TBC</strong> (YardMaster/ASP configuration, ACS specification, machine supplier data); applicability at Louta/Benguerir stays configurable/TBC</td><td>project team 15‑Jul‑2026 · ASP UC‑28</td></tr>
+<tr><td><strong>Spatial minimum separation</strong></td><td>machines on the same (or, per <code>CurrentPileOnly</code> switch, any) pile keep ≥ the <strong>configurable minimum distance</strong> (1‑D X positions)</td><td>ASP Spatial Conflict (WARNING)</td></tr>
+<tr><td><strong>Maintenance / work calendars</strong></td><td>no job in a global or device‑specific calendar window (recurring entries expanded ≤ 1 year)</td><td>ASP Work Calendar (ERROR)</td></tr>
+<tr><td><strong>Whole-run and timed controls</strong></td><td>machines, conveyors, washing lines and receiving plants obey their selected lifecycle/availability state and physical rate; timed outage or derate windows split capacity at exact-minute boundaries</td><td>operator scenario + contingencies</td></tr>
+<tr><td><strong>Routing / gate (graph)</strong></td><td>every job on a <strong>valid source→destination path</strong> of the route graph (§1.2): link capacities, min stable rates, gate states (each clamshell gate bank routes its stream toward PAP or drying — one destination per bank per bucket), <strong>route conflicts / shared conveyors mutually exclusive</strong>, transition times between successive gate states</td><td>route graph (layer‑owned)</td></tr>
+<tr><td><strong>Anti‑contamination</strong></td><td>incompatible qualities not co‑stacked in a space</td><td>compatibility matrix</td></tr>
+<tr><td><strong>Constructed blend readiness</strong></td><td>exact grade tonnes close to the campaign batch; eligible-share and receiving-quality intervals hold; target capacity and all incoming routes/resources remain feasible; no reclaim precedes the exact completion minute; executed matrix is immutable on replan</td><td>implemented M16 blend campaign</td></tr>
+<tr><td><strong>Sulphur (two‑stage)</strong></td><td>open reclaim exogenous (payloader→<code>CLOSED‑1</code>); layer runs <code>RC01</code>→melting; <strong>start/stop limits</strong> ≤ <strong>8 start‑stops/hr</strong> (lime dosing)</td><td>payloader manual; 8/hr</td></tr>
+<tr><td><strong>Drying‑feed cap</strong></td><td>humid→dry reclaim ≤ drying‑plant intake capacity</td><td>drying plant (OOS)</td></tr>
+<tr><td><strong>Demand service</strong></td><td>eq. (4): <code>delivered + unmet ≥ demand</code> with dominant <code>w₁</code> penalty — <strong>no separate hard feed constraint</strong></td><td>PAP / molten‑S demand</td></tr>
+<tr><td><strong>FIFO / material age</strong> <em>(soft)</em></td><td>prefer reclaiming older material of the same grade first (stacking‑age per 1‑m segment); avoid degradation of exposed stock</td><td>ASP FIFO (INFO) / age analysis</td></tr>
+</tbody>
+</table>
+<p class="note"><em><strong>Defense in depth:</strong> every constraint marked with an ASP rule is also enforced vendor‑side — plans submitted to ASP are re‑validated (<code>AspEvaluatePlanResponse</code>), an independent second gate (§2.7).</em></p>
+
+<h4>2.5 Implemented solve and replanning approach</h4>
+<table class="nb">
+<tr><th>Layer</th><th>Horizon / cadence</th><th>Solves</th><th>Implemented method</th></tr>
+<tr><td><strong>Weekly tactical planner</strong></td><td>7 civil days · 168 × 60 min by default</td><td>demand campaigns, physical mass, machines, conveyors, routes, washing transfers, inventory and M16 blend construction</td><td>deterministic <strong>OR‑Tools CP‑SAT</strong>, decomposed by civil day with carried inventory and plan hints</td></tr>
+<tr><td><strong>Rolling refinement</strong></td><td>optional 15-min first 4 h → hourly tail</td><td>the same coupled decisions with finer near-term timing</td><td>mixed-resolution CP‑SAT; exact-minute event boundaries retained</td></tr>
+<tr><td><strong>Event/replan loop</strong></td><td>on outage, derate, state/rate deviation or job feedback</td><td>preserve executed work; regenerate feasible remaining work</td><td>replay actuals, lock executed blend composition, update calendars/capacities and re-solve</td></tr>
+</table>
+<p>Machines, conveyors, washing lines and receiving plants can be Available, Disabled/Future where applicable, or subject to a physical rate cap for the whole run. Exact timed <code>UNAVAILABLE</code> and <code>RATE_CAP</code> windows model planned or sudden contingencies. Demand is never silently deleted: an unreachable campaign remains visible as unmet demand.</p>
+
+<h4>2.6 Implemented M16 stockpile-construction blending</h4>
+<p>The current implemented blend point is <strong>construction of an M16 humid-phosphate stockpile before PAP/drying feed</strong>. Several eligible incoming qualities are stacked into the selected stockpile; only after the campaign is complete may one reclaimer withdraw the homogenised campaign toward PAP‑1, PAP‑2 or DRY‑FEED. The model does not claim a direct simultaneous two-stream reclaim blend.</p>
+<table class="nb">
+<tr><th>Mode</th><th>Operator supplies</th><th>Planner decides</th></tr>
+<tr><td><strong>Blend matrix</strong></td><td>fixed physical mass percentages for each eligible grade</td><td>feasible routes, equipment, timing and readiness</td></tr>
+<tr><td><strong>Optimized shares</strong></td><td>eligible grades and min/max share bounds</td><td>integer physical tonnes and percentages <strong>jointly</strong> with inventory, competing stockpiles, routes, machines, calendars, outages, derates and the weekly schedule</td></tr>
+</table>
+<p>For campaign <code>p</code>, the exact construction closure is <code>Σ_g b[p,g] = batch[p]</code>; each selected grade respects its share bounds and dry-solids-weighted chemistry must satisfy the receiving interval. Scheduled stacking tonnes for every grade equal <code>b[p,g]</code>. Reclaim is prohibited before the exact <code>ready[p]</code> minute. Status progresses <code>NOT_STARTED → BUILDING → COMPLETE → DEPLETED</code>. A proposed but unexecuted matrix may change on replan; the first positive executed stacking movement locks the physical matrix and replanning preserves it.</p>
+<p class="note">A focused 12,000 t verification case produced one feasible incumbent of 1,000 t TBT plus 11,000 t BT‑LOW‑CD and held reclaim until the configured 48-hour readiness boundary. This is <strong>test evidence, not a fixed product recipe</strong>: optimized shares depend on the scenario, quality intervals, stocks and active resource controls. More detailed within-pile layer/zone composition during reclaim, Benguerir washed-product blending to BG‑TRAIN and raw-feed blending before washing remain future extensions.</p>
+
+<h4>2.7 ASP validation rules — severities, governance &amp; quality limits</h4>
+<p>The vendor‑side severities matter for how the layer treats the second gate:</p>
+<table class="nb">
+<tr><th style="width:13%;">ASP severity</th><th style="width:33%;">Rules</th><th style="width:21%;">Vendor behaviour</th><th>This layer</th></tr>
+<tr><td><strong>ERROR</strong> <em>(blocking)</em></td><td><strong>Parameter sanity</strong> · <strong>Work area</strong> · <strong>Inventory availability</strong> (mass within StartX–StopX + analysis availability + <strong>most‑prevalent grade</strong> = requested) · <strong>Same‑device overlap</strong> · <strong>Work calendar</strong></td><td>plan item invalid; critical errors raise a notification</td><td>modelled as hard constraints (§2.4) — an AUTO item should never draw an ERROR</td></tr>
+<tr><td><strong>WARNING</strong> <em>(non‑blocking)</em></td><td><strong>Device availability / busy</strong> · <strong>Spatial proximity</strong> (1‑D min distance, <code>CurrentPileOnly</code> switch)</td><td>operator may proceed</td><td>treated as <strong>hard constraints internally</strong>; <strong>project governance may promote selected ASP WARNINGs to blocking conditions in the external optimiser / dispatch gate</strong> (configuration decision)</td></tr>
+<tr><td><strong>INFO</strong> <em>(advisory)</em></td><td><strong>FIFO</strong> (older same‑grade surface material first, incl. other piles)</td><td>advisory only</td><td>soft objective term (age/FIFO, §2.4)</td></tr>
+</table>
+<p><strong>ASP quality limitations (why blending is owned here).</strong> For a reclaim item ASP checks inventory <strong>mass</strong>, <strong>analysis availability</strong> and the <strong>most‑prevalent grade within StartX–StopX</strong> — it does <strong>not</strong> prove that a simultaneous multi‑source blend meets <strong>continuous SQP limits</strong>. <strong>One ASP job corresponds to one material grade</strong>; the separate <strong>YardMaster Blending Simulation</strong> may display blend results but <strong>has no role in ASP</strong> (or its validation). The <strong>SQP‑versus‑operator‑defined Sub‑Grade behaviour remains an unresolved ICD/configuration question</strong> (the FRS states SQP is outside ASP, yet Sub‑Grades built on SQP combinations should reflect in ASP). Consequence: all blend/quality optimisation and continuous spec compliance are computed and guaranteed by <strong>this layer</strong>; ASP validates per‑job grade plausibility only.</p>
+
+<h4>2.8 Execution interface &amp; closed loop — mapping to the vendor ASP (Digimine‑YardMaster)</h4>
+<p>Our <strong>Job</strong> maps directly onto the vendor's <strong>AspPlanItem</strong> (per FRS Q80130‑MZI‑M16‑TAK‑45000183621‑DG):</p>
+<table class="nb">
+<tr><th>Our model</th><th>AspPlanItem field</th><th>Our model</th><th>AspPlanItem field</th></tr>
+<tr><td>Machine</td><td>Device</td><td>target pile / repère range</td><td>Pile + metre-canonical StartX / StopX</td></tr>
+<tr><td>job type</td><td>JobType (Stacking / Reclaiming / …)</td><td>stacking pattern</td><td><strong>Method</strong> (e.g. cone‑shell)</td></tr>
+<tr><td>QualityClass</td><td>Material + Grade</td><td>gate / conveyor routing</td><td>Source / Destination (<strong>ASP Route</strong> — 2nd gate only; real routing validated on the route graph §1.2)</td></tr>
+<tr><td>quantity + rate</td><td>PlannedTonnage + Rate</td><td>timing</td><td>StartTime (end = start + tonnage/rate)</td></tr>
+</table>
+<p>The UI and operating plan display <code>R_start–R_stop</code>; the adapter converts those values to physical <code>StartX/StopX</code> using the selected pile's approved R0/R1000 calibration. The optimiser and all distance-based rules continue to use metres.</p>
+<p><strong>Dispatch loop:</strong> the layer submits plan items (<code>AspPlanItem</code> telegram) → ASP validates against its 8 rules and returns <code>AspEvaluatePlanResponse</code> (second feasibility gate, §2.7) → jobs are <strong>auto time‑triggered</strong> to YardMaster job management with operator <strong>Accept/Reject</strong> (human‑in‑the‑loop) → <strong><code>JobUpdated</code> telegrams return actuals</strong> → the layer re‑validates and <strong>re‑plans</strong> on deviations.</p>
+<p style="margin-bottom:1px;"><strong>Closed‑loop feedback content (<code>JobUpdated</code>) and what it drives:</strong></p>
+<table class="nb">
+<tr><th style="width:38%;">Fed back</th><th>Used by the layer for</th></tr>
+<tr><td><strong>actual status</strong> (job state; Run / Finished / Cancelled …)</td><td>job lifecycle: Run sets <strong>actual start</strong>, Finished/Cancelled set <strong>actual end</strong></td></tr>
+<tr><td><strong>actual start / end times</strong></td><td>plan‑vs‑actual deviation tracking</td></tr>
+<tr><td><strong>moved mass + material progress</strong></td><td>remaining‑work estimate; inventory reconciliation with the twin</td></tr>
+<tr><td><strong>effective rate</strong> (from moved mass)</td><td>rate‑shortfall detection; recalibrating job‑duration models</td></tr>
+<tr><td><strong>forecast completion</strong></td><td>look‑ahead conflict check for successor jobs on the same device/route</td></tr>
+<tr><td><strong>current machine position</strong> (X/Y/Z)</td><td>travel‑time estimate for the machine's next assignment</td></tr>
+<tr><td><strong>source / target + quality</strong></td><td>verification of executed routing and grade against the plan</td></tr>
+</table>
+<p><strong>Deviation → validation → replanning:</strong> each <code>JobUpdated</code> republishes the linked <code>AspPlanItem</code> and re‑triggers plan evaluation vendor‑side (critical errors raise a notification). Layer‑side, configurable thresholds on <strong>rate shortfall, forecast‑end slip, quality mismatch, cancellation/fault</strong> first fire the <strong>dispatcher</strong> (re‑sequence within the tactical plan); deviations beyond the tactical plan's envelope trigger a <strong>tactical re‑solve</strong>. ASP's Inventory Forecasting (60‑day projection, depletion alerts) and Planning Deviation Report complement the layer's own KPIs.</p>
+
+<h4>2.9 Implemented operator workflow, diagram and results</h4>
+<table class="compact">
+<tr><th style="width:27%;">Area</th><th>Current behaviour</th></tr>
+<tr><td><strong>Configure → Grade configuration</strong></td><td>One coherent page with Chemical grades, Yield &amp; moisture, Material profiles and Receiving limits. The grade catalogue is add/delete editable and persisted in <code>config/grade_catalog.json</code>; a referenced grade must first be reassigned. User-facing grade names use the canonical BT naming only.</td></tr>
+<tr><td><strong>Plan → Demand planning</strong></td><td>One dated weekly table; each plant/unit/day can contain several grade campaigns, each with physical quantity, priority and intraday start/end. Positive windows for the same unit/day may not overlap.</td></tr>
+<tr><td><strong>Plan → Blending</strong></td><td>Dedicated page, enabled per user-facing humid stockpile. Only implemented points expose a toggle; current implementation is M16 humid-stockpile construction with matrix or optimized-share mode.</td></tr>
+<tr><td><strong>Plan → Routing availability</strong></td><td>Uses the same global flow diagram as Monitor. Clicking a machine, conveyor, washing line or destination sets whole-run state/rate or an exact timed control. The former Planned contingencies page is consolidated here (a compatibility alias only). PAP‑1, PAP‑2 and DRY‑FEED use the same Available/Disabled/Future selector; PAP‑2 defaults Future.</td></tr>
+<tr><td><strong>Monitor → global flow</strong></td><td>Site filter All/Louta/Benguerir/MPH; reduced labels; explicit machine/plant/conveyor status and rate. Stockpile fill width is proportional to physical occupancy. Hover exposes component grade, tonnes, quality, capacity/fill, material stage and TSM equivalent when a conversion profile exists.</td></tr>
+<tr><td><strong>Monitor → Results / Job Schedule</strong></td><td>Readiness, solver and objective cards; demand/service, quality, inventory/safety, machine/route coverage and contingency/replan results. The job chart has site/machine/operation/status filters plus Full run or exact-day selection. Touching solver slices are coalesced; real gaps, route changes, positioning and exact-minute events start a new run.</td></tr>
+</table>
+<p>The objective-driver cards show their active scenario weight beside the measure. Current demonstration defaults are:</p>
+<table class="compact nb">
+<tr><th>Driver</th><th style="width:14%;">Weight</th><th>Results interpretation</th></tr>
+<tr><td>unmet demand</td><td><code>w₁ = 1000</code></td><td>physical tonnes unserved; operational service remains a separate KPI</td></tr>
+<tr><td>soft quality deviation</td><td><code>w₂ = 200</code></td><td>tonne × quality-unit outside a preferred interval</td></tr>
+<tr><td>downstream process cost</td><td><code>w₃ = 0</code></td><td>inactive until validated consumption curves exist</td></tr>
+<tr><td>BPL give-away / scarce quality use</td><td><code>w₄ = 5</code></td><td>tonne × BPL-point above the necessary target</td></tr>
+<tr><td>activity changes</td><td><code>w₅ = 2</code></td><td>machine moves/changeovers/start-stop burden</td></tr>
+<tr><td>safety-stock shortfall</td><td><code>w₆ = 20</code></td><td>tonne-buckets below safety target</td></tr>
+<tr><td>handled-flow/utilisation reward</td><td><code>w₇ = 0</code></td><td>inactive by default; coverage is still reported</td></tr>
+</table>
+<p class="note">Emergency overflow/unstacked-arrival slack uses a protected dominant penalty; <code>FLOW_TONNE_PENALTY=1</code>, <code>MACHINE_COVERAGE_REWARD=0</code>, and mixed-resolution active buckets use a default penalty of 25. These are model controls, not business KPI targets. Operational KPIs remain delivered-versus-demand/unmet, on-spec delivery, grade give-away, feed interruptions, stock risk/capacity, equipment and route utilisation/coverage, conflicts, solve status/time, replan count/latency/stability, and physical↔TSM traceability.</p>
+
+<h3>3. Evidence &amp; Traceability Register</h3>
+<p class="note">Status vocabulary: <strong>Confirmed</strong> (stated in a referenced document) · <strong>Derived</strong> (computed from confirmed values) · <strong>Inferred</strong> (working hypothesis, confirmation required) · <strong>Conflicting</strong> (two sources / internal inconsistency, preserved) · <strong>TBC</strong> (awaiting document/decision). Confidence H/M/L.</p>
+<table class="reg">
+<thead><tr><th style="width:9%;">Site / domain</th><th style="width:12%;">Parameter / rule</th><th style="width:22%;">Value [unit]</th><th style="width:14%;">Source · rev · ref</th><th style="width:10%;">Status</th><th style="width:4%;">Conf.</th><th style="width:14%;">Design impact</th><th>Owner / action</th></tr></thead>
+<tbody>
+<tr><td>MPH · M16</td><td>humid open storage</td><td>8 spaces × 125,000 t (→ 12 future)</td><td>PRO‑0001 / PFD‑0001 [3]</td><td>Confirmed</td><td>H</td><td>yard capacity model</td><td>—</td></tr>
+<tr><td>MPH · M16</td><td>machine lines, bays &amp; reachability</td><td><strong>FOUR two-hangar bays with the machine lines interleaved between them</strong>: <code>M16A-A-T06</code> (M16A-A-ST01, 2,600 TPH) · bay 1 · <code>M16A-A-T11</code> (M16A-A-RC01, 2,500 TPH) · bay 2 · <code>M16A-B-T06</code> (M16A-B-ST01) · bay 3 · <code>M16A-B-T11</code> (M16A-B-RC01) · bay 4 · <code>M16A-C-T06</code> (M16A-C-ST01). The mimic draws each bay as <strong>one side-by-side horizontal hangar pair</strong>, with every serving line spanning both members (display ruling 26-Jul-2026). <strong>No shared T06/T11 corridor.</strong> Reach follows the project-team bay-adjacency rule: ST01-A→bay 1 · RC01-A→bays 1-2 · ST01-B→bays 2-3 · RC01-B→bays 3-4 · ST01-C→bay 4 — never all-to-all. FUTURE continues bay 5 · <code>M16A-C-T11</code> (M16A-C-RC01) · bay 6 · <code>M16A-D-T06</code> (M16A-D-ST01) + 4 × 125,000 t hangars</td><td><code>Q80130-MZI-M16-ME-PFD-0001[3]</code> Rev 3, IFU, 28-Oct-2025 + project-team reach rule 25-Jul-2026 + display ruling 26-Jul-2026</td><td><strong>Machine identities, rates, lines and the bay sequence CONFIRMED</strong>; hangar names and left/right order inside a bay <strong>INFERRED</strong>; metric positions schematic (flow sheet, not to scale); horizontal pairing is geometry-only and changes no solver input</td><td>H</td><td>machine set, machine lines, <code>reachable_spaces</code>, solver candidates, ASP work-area rule and the mimic</td><td>plot plan / surveyed GA + official SMS pile-ID register + per-line travel limits</td></tr>
+<tr><td>MPH · M16</td><td>same‑pile concurrent stack+reclaim</td><td>permitted subject to spatial separation, work‑zone, route, geometry and ACS/PLC constraints; numerical safety limits TBC; Louta/Benguerir applicability configurable/TBC</td><td>project‑team confirmation, 15‑Jul‑2026</td><td>Confirmed</td><td>H</td><td>scheduler concurrency rule (§2.4)</td><td>obtain numerical separations (YardMaster/ACS/machine supplier)</td></tr>
+<tr><td>MPH · M16</td><td>PAP / drying take-off</td><td><strong>TWO separate clamshell + rod gate banks</strong>, one per reclaim stream: <code>M16A-A-H01…H04</code> and <code>M16A-B-H01…H04</code>. Each stream keeps its own <code>T11</code> → <code>T11S</code> magnetic separator → <code>T12</code> (belt scale <code>T12W</code>) → gate bank → <code>T13</code> outbound belt at 1,500 TPH. PAP is fed by six parallel 1,500 TPH conveyors (3 running + 3 future); the drying unit by two parallel 1,299 TPH conveyors, both OUT OF SCOPE</td><td><code>Q80130-MZI-M16-ME-PFD-0001[3]</code> Rev 3 + <code>Q80130-MZI-M16-PR-PRO-0001</code> Rev 2 §2.1</td><td><strong>Gate banks + belt ratings Confirmed</strong> and modelled as the confirmed links <code>L-H-A</code>/<code>L-H-B</code>; the <strong>destination assignment is DERIVED/TBC</strong> and modelled separately as <code>L-RTE-{A,B}-{PAP,DRY}</code> — the earlier ‘2-of-4: 2→PAP, 2→drying’ reading is withdrawn, and confirmed ratings never confirm the assignment. Changeover documented but not modelled</td><td>H</td><td>route‑graph arcs: <code>HUB:M16-T13-{A,B}</code> then one PAP and one drying link per bank, mutually exclusive (DERIVED from the single outbound belt)</td><td><strong>PAP/drying route confluence TBC</strong> + gate→conveyor assignment from the downstream sheets</td></tr>
+<tr><td>MPH · M16</td><td>PAP feed</td><td>≈1500 TPH/line; Phase 1: one line</td><td>PRO‑0001</td><td>Confirmed</td><td>H</td><td>demand model</td><td>—</td></tr>
+<tr><td>MPH · M16</td><td>dry closed storage</td><td>2 × 50,000 t → rail → SPH</td><td>PRO‑0001 / PFD‑0001</td><td>Confirmed</td><td>H</td><td>dry‑stream buffer</td><td>—</td></tr>
+<tr><td>MPH · M16</td><td>reception analysers</td><td>PGNAA (BPL·Cd·MgO·SiO₂·CaO/CO₂) + microwave moisture; autosampler + lab</td><td>TEN‑0002 [B]</td><td>Confirmed</td><td>H</td><td>quality inputs</td><td>—</td></tr>
+<tr><td>MPH · M17</td><td>sulphur two‑stage</td><td>open 2 × 100,000 t (payloaders ≈300 TPH, manual) → closed 1 × 100,000 t (RC01 1100 TPH)</td><td>PRO‑0001 / PFD‑0004 [3]</td><td>Confirmed</td><td>H</td><td>Domain B model</td><td>—</td></tr>
+<tr><td>MPH · M17</td><td>start‑stop limit</td><td>≤ 8 start‑stops/h (lime dosing)</td><td>PRO‑0001</td><td>Confirmed</td><td>H</td><td>dispatch constraint</td><td>—</td></tr>
+<tr><td>Corridors</td><td>C1 Louta→MPH</td><td><strong>NEARER (user-confirmed)</strong> · 2600 TPH · provisional ≈30 km / 4 m/s</td><td>capacity: TBE/PFD; proximity: project team 22-Jul-2026</td><td>Relative order Confirmed; distance/speed TBC</td><td>M</td><td>corridor model</td><td>obtain TBE/datasheet or surveyed route length + effective speed/dwell</td></tr>
+<tr><td>Corridors</td><td>C1 transit / in‑transit</td><td>provisional ≈2 h 05 · ≈5,400 t @ full rate</td><td>derived from provisional length/speed</td><td>Assumed / Derived</td><td>L</td><td>lag <code>L_c</code> (eq. 5)</td><td>replace with measured lag + live belt profile</td></tr>
+<tr><td>Corridors</td><td>C2 Benguerir→MPH</td><td><strong>FARTHER (user-confirmed)</strong> · 2600/3120 TPH · provisional ≈60 km / ≈4 h 10 / ≈10,800 t</td><td>capacity: B02 BoD; proximity: project team 22-Jul-2026</td><td>Relative order Confirmed; distance/lag TBC</td><td>M</td><td>corridor model</td><td>obtain TBE/datasheet or surveyed route length + effective speed/dwell</td></tr>
+<tr><td>Benguerir (B02 washed‑product yard)</td><td>stockpiles</td><td>2 × 191,512 t (total 383,024 t) · combined autonomy ≈6.1 d nom / ≈5.1 d design (BoD 5/6 d)</td><td>Q80130‑BEN‑B02‑ME‑BOD‑0001 Rev B, IFR, 05‑Feb‑2025 §2.3.3</td><td>Confirmed</td><td>H</td><td>mine‑yard model</td><td>reconcile earlier ≈10‑day datasheet claim (document conflict)</td></tr>
+<tr><td>Benguerir (cfg B)</td><td>3 qualities on 2 piles</td><td>in‑pile segregation via SMS 1‑m tracking (assumed)</td><td>—</td><td>Inferred</td><td>L</td><td>blending/inventory model</td><td>confirm operating rule (zones / campaigns)</td></tr>
+<tr><td>Benguerir (B02)</td><td>machines</td><td>ONE twin‑boom stacker <code>ST3**</code> 2100/2520 · reclaimers <code>RC2**</code>/<code>RC3**</code> 2600/3120 [TPH nom/design]</td><td>Q80130‑BEN‑B02‑ME‑BOD‑0001 Rev B, IFR, 05‑Feb‑2025 §2.3.2 + project‑team current‑state instruction 21‑Jul‑2026</td><td><strong>Current configuration confirmed; <code>**</code> is source notation only</strong></td><td>H</td><td>current machine set</td><td>—</td></tr>
+<tr><td>Benguerir (B02)</td><td>outlets</td><td>C2: washed 2600/3120 + <strong>conditional raw</strong> (hopper mod / RB9‑RB10) · train: raw + washed 1000/1200 each (one station — sharing ASSUMED/TBC)</td><td>Q80130‑BEN‑B02‑ME‑BOD‑0001 Rev B, IFR, 05‑Feb‑2025 §2.6</td><td>Confirmed; <strong>train planning scope TBC</strong></td><td>H</td><td>route model — raw train + conditional raw→C2 may share <strong>upstream raw‑yard reclaim</strong>; washed train + washed→C2 may share the <strong>downstream product‑yard reclaimers</strong>; one shared loading station <strong>ASSUMED/TBC</strong></td><td>confirm train planning scope + raw‑route prerequisites</td></tr>
+<tr><td>Benguerir (B01 2023 screening — connected upstream stage)</td><td>lines &amp; storage</td><td>TM1 + TSM2 + TSM3 → common transfer tower <code>04BG‑DT‑01</code>; 1 reclaimer <code>04BG‑RC‑01</code>; stacker 2200 TPH nom; direct beneficiation bypass (mode deferred)</td><td>REP‑0002 Rev B, 26‑Jul‑2023 (IFR)</td><td>Confirmed (PFDs indicative; vendor simulation pending)</td><td>M</td><td>connected upstream stage — tag mapping to B02 unproven, registers kept separate</td><td>reconcile B01↔B02 via PFD‑0010/0011 + DBD‑0001</td></tr>
+<tr><td>Benguerir (Table 20 — upstream screened-product ore storage)</td><td>topology, machines &amp; starting state</td><td>2 stockpiles × 200,000 t; 100,000 t assumed t0 each; 2 dedicated stackers plus 1 shared reclaimer; physical/as-handled rates 2,100/2,500 t/h</td><td>User-supplied Table 20 + project-team topology and starting-state instructions</td><td>Topology/capacity USER_CONFIRMED; t0 is an assumption rather than timestamped telemetry</td><td>H/M</td><td><strong>BG-MINE-1/2 are solver-backed</strong>; source package still marks the reclaimer out of its scope, so operational authority remains TBC</td><td>obtain timestamped SMS stock/grade, source document revision, tags and GA</td></tr>
+<tr><td>Benguerir upstream raw piles</td><td>shared raw grades + assumed t0 composition</td><td><code>RAW-BT</code>, <code>RAW-BT-HIGH-CD</code> and <code>RAW-BT-LOW-CD</code> are mine-neutral. Demonstration t0: BG-RAW-1 = 50% BT + 50% High-Cd; BG-RAW-2 = 50% BT + 50% Low-Cd, 100,000 t per pile.</td><td>Louta BoD chemistry proxy + project-team scenario assumptions</td><td>Grade identities configured; composition and chemistry are ASSUMED, not live Benguerir assays</td><td>M</td><td><strong>BG-RAW-1/2, their stackers/shared reclaimer, inventories and jobs are solver-backed</strong>; quality participates where a profile exists</td><td>replace with SQMS segments, dated assays and approved grade/receiving intervals</td></tr>
+<tr><td>Louta 102MG mine storage</td><td>assumed demonstration baseline</td><td><code>102MG-SP-01/-02</code>: <strong>100,000 t assumed capacity each; 50,000 t t0 each (50%)</strong>. SP-01 = 25,000 t BT + 25,000 t High-Cd; SP-02 = 25,000 t BT + 25,000 t Low-Cd. Components occupy schematic R0–R250 and R250–R500 ranges.</td><td>Project-team demonstration baseline, 26-Jul-2026; chemistry vectors from Louta BoD Rev B §6.1</td><td><strong>ASSUMED display values.</strong> Actual capacity, live mass, grade order and route/rate/reach remain TBC. The documented <strong>494,274 t belongs to 110/120LG</strong>. Neither Louta PDF contains <code>102MG</code> or a 102MG→110LG route.</td><td>M</td><td><strong>reference only</strong>; absent from solver inventory/machines/jobs/KPIs; <code>MODELLING_GAP[MISSING_ROUTE_RATE_REACH]</code></td><td>capacity schedule, timestamped SMS/SQMS segments, surveyed repères and complete route/rate/reach matrix</td></tr>
+<tr><td>Louta 110/120LG homogenized ore storage</td><td>topology, machines, capacity + starting state</td><td><strong>2 homogenized stockpiles</strong> · shared <code>110LG-ST-01</code> 2,100 TPH wet · <code>120LG-RC-01/-02</code> 3,000 TPH wet · common RB4/RB5 to L1/L2 · total <strong>494,274 t</strong> → <strong>2 × 247,137 t DERIVED</strong> · starting and exact S0 terminal mass <strong>123,568.5 t each ASSUMED</strong> · displayed OL1/OL2 bands ASSUMED</td><td>Process description Rev B §3.1 pp.7–8; total/profiles: Louta BoD Rev B. <strong>Document-control inconsistency:</strong> cover <code>REP-00002</code> vs body <code>REP-00004</code>.</td><td>Counts/topology/rates CONFIRMED in the tagged description; split, stocks, bands and pairing ASSUMED/DERIVED. <strong>Count conflict:</strong> BoD p.20 says one ore reclaimer; tagged description says two; tagged configuration used.</td><td>M</td><td><code>110LG-OL1/-OL2</code>, <code>110LG-ST-01</code> and <code>120LG-RC-01/-02</code> are <strong>solver-backed</strong>; bands remain display metadata</td><td>live stocks/assays, pile schedule, reach/GA, common-route capacity/concurrency and approved campaigns</td></tr>
+<tr><td>Louta washing / beneficiation</td><td>line configuration, cases, recovery + residence</td><td><strong>2 parallel L1/L2 lines, 3 Mt tsm/year each</strong>; BT <strong>584 t/h / 68.22%</strong>, High-Cd <strong>579 / 68.83%</strong>, Low-Cd <strong>588 / 67.71%</strong>; scrubber <strong>2.5–3 min CONFIRMED</strong>; overall line <strong>30 min ASSUMED</strong></td><td>Process description Rev B p.5; case data and scrubber: Louta BoD Rev B; overall residence: project-team instruction 26-Jul-2026</td><td>Case data and scrubber residence CONFIRMED design values; 30 min and S0 BT→L1→TBT / Low-Cd→L2→BT mapping <strong>ASSUMED</strong>. PDFs do not map cases to TBT/BT/MT.</td><td>M</td><td><strong>solver-backed process-transfer stages</strong> with mass yield, no same-bucket passthrough, cumulative matured-mass availability and terminal WIP = 0 t; not <code>Machine</code> objects</td><td>validate residence; obtain availability, approved campaign map and shared-tank/filter concurrency rules</td></tr>
+<tr><td>Louta 130/140LG product handling</td><td>stack/reclaim topology + S0 envelope</td><td>One <code>130LG-ST-01</code> on SL11; <code>140LG-RC-01/-02</code> at 3,000 TPH; RL1/RL2 → flip gates → RL3/RL4 → outbound <code>BL</code>. S0 uses a <strong>1,000 TPH ASSUMED stacker envelope</strong> and conservative pairing/confluence exclusivity.</td><td>Louta Process description Rev B §3.1 p.8; S0 envelope/pairings: project-team assumptions</td><td>Tagged machine configuration CONFIRMED; rate/pairing/confluence TBC. <strong>Count conflict:</strong> BoD p.20 says one product reclaimer; tagged description says two. Neither PDF labels the outbound as C1.</td><td>M</td><td><code>130LG-ST-01</code>, <code>140LG-RC-01/-02</code>, LT-P1/P2 and C1 material movement are <strong>solver-backed</strong>. The operator schedule labels 140LG work by its physical <strong>reclaim</strong> operation; the former green dispatch category is reserved for explicit non-material positioning.</td><td>product arrangement, stacker/SL11 rating, reach, confluence capacity and live state</td></tr>
+<tr><td>Louta S0 stocked-route policy</td><td>explicit purpose targets and source boundary</td><td>Exact: C1 <strong>8,000 t</strong>; recovered L1/L2 <strong>4,000 t each</strong>; terminal OL1/OL2 <strong>123,568.5 t each</strong>; terminal LT-P1/P2 <strong>95,756 t each</strong>; WIP <strong>0 t</strong>. Two <strong>10,000 t ASSUMED mine-handoff</strong> sources feed 110LG and are not 102MG. Coverage reward 0; flow penalty 1.</td><td>Project-team demonstration policy, 28-Jul-2026; implementation configuration</td><td><strong>ASSUMED policy</strong>, not a source-document operating requirement. Opening product stock can otherwise satisfy demand with legitimate upstream idleness; direct ore/product bypasses are documented.</td><td>M</td><td>every S0 job has a corridor, process-output or terminal-stock purpose; no coverage/token jobs; switch-off returns demand-only mode</td><td>replace with approved source allocation, end-stock, bypass and campaign policy</td></tr>
+<tr><td>Louta machine disposition</td><td>selected solver machines versus gaps</td><td>Structured result for <code>110LG-ST-01</code>, <code>120LG-RC-01/-02</code>, <code>130LG-ST-01</code>, <code>140LG-RC-01/-02</code>: scheduled, unavailable, no inventory, no target/free capacity, missing route, shared-route peer selected, or target met without machine. PDFs do not call either pair duty/standby.</td><td>Solver result semantics + Louta source review</td><td>Model behaviour; disposition is explanatory, not evidence of operating duty</td><td>M</td><td>explains justified work or legitimate idleness without manufacturing activity</td><td>connect live availability, routes, inventories and operating duty rules</td></tr>
+<tr><td>Louta L02 product piles</td><td>starting inventory + grade distribution</td><td>Capacity <strong>191,512 t each</strong>; starting mass <strong>95,756 t each (50%)</strong>. <strong>LT-P1 = 60% TBT + 40% BT</strong> → BPL 71.6% · Cd 25.2 ppm · MgO 0.92% · SiO₂ 2.32% · moisture 12%. <strong>LT-P2 = 60% BT + 40% MT</strong> → BPL 66.0% · Cd 32.0 ppm · MgO 1.22% · SiO₂ 3.08% · moisture 12%. Yard aggregate = 30% TBT / 50% BT / 20% MT.</td><td>Capacity derived as equal split of documented 383,024 t total; starting state and distribution: project-team demonstration instruction 24-Jul-2026</td><td><strong>ASSUMED distribution.</strong> TBT/BT/MT are washed demonstration vectors; Louta operating mapping/cut-offs TBC. Bands are mass shares, not spatial order. The shared raw <code>RAW-BT-*</code> grades stay a separate material state and are never applied to these washed-product lines.</td><td>M</td><td>solver uses each pile's mass-weighted aggregate <code>StockSpace.quality</code>; no profile-selective reclaim or zone allocation</td><td>replace with timestamped pile/segment masses, surveyed boundaries, active reclaim face and Grade/SQP mapping</td></tr>
+<tr><td>Louta L02</td><td>combined product specification</td><td>BPL 68.29% · MgO &lt;0.6% · CO₂ 6.81% · SiO₂ &lt;4% · Cd 17 ppm · moisture &lt;22% · SG 3</td><td><code>Q80130-LOU-L02-PR-BOD-0001</code> Rev B, 12-Apr-2023, p. 18</td><td>Documented design specification; retained under the source's own stage wording, <strong>not relabelled as washed-only</strong></td><td>H</td><td>reference only; does not replace TBT/BT/MT demonstration vectors</td><td>confirm operating product grade/SQP IDs, acceptance limits and sampling basis</td></tr>
+<tr><td>Benguerir Table 20 ↔ B02</td><td>reclaimer capacity conflict</td><td>Table 20: 2,100/2,500 TPH humid vs B02 expansion interface: 2,600/3,120 TPH — whether B02 upgrades, replaces or supplements the Table 20 reclaimer is TBC</td><td>Table 20 vs Q80130‑BEN‑B02‑ME‑BOD‑0001 Rev B §2.3.2</td><td><strong>Conflicting — not resolved by inference</strong></td><td>M</td><td>raw→C2 demonstration at 2,600 TPH assumes the B02 interface selected and the Table 20 bottleneck resolved</td><td>equipment list / PFD proving equivalence or supersession</td></tr>
+<tr><td>Benguerir (cfg A)</td><td>stream rates</td><td>line feed 1300 · primary undersize 1208 · secondary feeds 2 × 604 · crusher 541 · oversize reject 89 · product handling 1055 [TPH]</td><td>REP‑0002 Rev B</td><td>Confirmed in doc</td><td>M</td><td>none yet (out of model)</td><td>—</td></tr>
+<tr><td>Benguerir (cfg A)</td><td>reject total</td><td>541 + 89 = <strong>630</strong> vs stated <strong>628</strong> TPH</td><td>REP‑0002 Rev B</td><td><strong>Conflicting</strong></td><td>—</td><td>preserved, not normalised</td><td>resolve with vendor</td></tr>
+<tr><td>Benguerir (cfg A)</td><td>undersize vs handling</td><td><strong>1208</strong> TPH screen undersize vs <strong>1055</strong> TPH product‑handling capacity</td><td>REP‑0002 Rev B</td><td><strong>Conflicting / unexplained</strong></td><td>—</td><td>possible surge / split logic unknown</td><td>resolve flow basis</td></tr>
+<tr><td>Benguerir B01↔B02</td><td>process relationship</td><td>raw/screened mine storage → washing/filtration/settling → washed‑product storage → C2/train (+conditional raw→C2 · raw/washed→train)</td><td>Q80130‑BEN‑B02‑ME‑BOD‑0001 Rev B, IFR, 05‑Feb‑2025 §2.6</td><td><strong>Confirmed at stage level; exact phase/tag/PFD reconciliation TBC</strong></td><td>H</td><td>staged Benguerir model</td><td>obtain PFD‑0010/0011 + BFD DBD‑0001 (tag mapping)</td></tr>
+<tr><td>Benguerir washing lines</td><td>planning lifecycle and rate controls</td><td><code>BEN-WASH-L1/L2/L3</code> are executable recovery-bearing stages with scenario-configurable state and physical rate</td><td>Project-team model baseline through 8-Sep-2026; operating/as-built status not independently evidenced</td><td>Implemented planning resources; live status remains TBC</td><td>M</td><td>all three can create feed/recovery/stacking work and obey whole-run or timed outage/derate controls</td><td>obtain current commissioning status, canonical tags, capacities and effective dates</td></tr>
+<tr><td>Benguerir washing / beneficiation</td><td>yield, moisture and residence</td><td>3 configurable washing campaigns; scrubber 3 min CONFIRMED; overall line 30 min ASSUMED; editable grade yield/raw moisture/wet-product moisture</td><td><code>Q80130-BEN-B02-PR-BOD-0001</code> Rev 0 + project-team conversion/residence assumptions</td><td>Mixed evidence; conversion defaults are visible scenario assumptions</td><td>M</td><td><strong>solver-backed recovery-bearing process transfers</strong>; yield reduces dry product mass and residence delays product availability</td><td>validate campaign mapping, yield, moisture and overall residence from operating data</td></tr>
+<tr><td>Louta</td><td>stockpiles</td><td><code>MINE STOCKPILE‑01</code> / <code>‑02</code> (colored base arrangement)</td><td>cropped layout drawing (doc no./rev/title block TBC)</td><td>Confirmed visible</td><td>M</td><td>2 piles exist; nothing quantitative derived</td><td>obtain full drawing + legend</td></tr>
+<tr><td>Louta</td><td>equipment tags</td><td><code>102MG‑ST‑01</code> · <code>102MG‑TR‑06</code> · <code>CP‑07</code> · <code>CP‑08</code> · <code>CP‑10</code> · <code>CP‑11</code></td><td>cropped layout drawing</td><td>Confirmed visible; functions/connectivity TBC</td><td>M</td><td>no capacities/machine counts/routes derived from the crop</td><td>machine‑to‑pile / route matrix</td></tr>
+<tr><td>Louta</td><td><code>TO DIGUE (OPTION‑2)</code> grey layout</td><td>separate option incl. RAW/PRODUCT STOCKPILE BENEFICIATION‑01/‑02</td><td>cropped layout drawing</td><td>Option — <strong>excluded from Phase‑1 baseline</strong></td><td>—</td><td>not in model</td><td>confirm selected option</td></tr>
+<tr><td>MPH SMS · ASP</td><td>route semantics</td><td><code>AspRoute</code> = (Device, JobType, free‑text Location) only — no network model</td><td>FRS §3.1</td><td>Confirmed</td><td>H</td><td>layer owns route graph (§1.2)</td><td>ICD</td></tr>
+<tr><td>MPH SMS · ASP</td><td>rule severities</td><td>5 ERROR · 2 WARNING · 1 INFO (§2.7)</td><td>FRS UC‑22…30</td><td>Confirmed</td><td>H</td><td>validation‑gate design; warning promotion</td><td>governance decision</td></tr>
+<tr><td>MPH SMS · ASP</td><td>quality model</td><td>1 job = 1 grade; SQP outside ASP; Blending Simulation separate ("no role in ASP"); Sub‑Grade behaviour unresolved</td><td>FRS Q&amp;A</td><td>Confirmed / <strong>Unresolved (SQP/Sub‑Grade)</strong></td><td>M</td><td>blending owned by this layer</td><td>ICD / configuration question</td></tr>
+<tr><td>MPH SMS · ASP</td><td>inventory cache</td><td>per‑pile 1‑m X segments (mass · prevalent grade · age), ~10‑min or on‑demand refresh</td><td>FRS</td><td>Confirmed</td><td>H</td><td>twin sync design</td><td>—</td></tr>
+<tr><td>All stockpiles · SMS/ASP</td><td>longitudinal job location / repère</td><td>Operator scale <strong>R0–R1000 = 1,000 equal intervals</strong>; jobs use a range such as <strong>R400–R600</strong>. Physical X metres remain canonical and are calculated per pile.</td><td>Start/End positions and 1‑m inventory: Innomotics FRS Table 26, UC‑22/23/24/26/28/30 and §3.7.1; repère name/scale: project team 24‑Jul‑2026</td><td><strong>FRS position model Confirmed; repère convention User-confirmed; physical calibration TBC</strong></td><td>H/M</td><td>job authoring, grade placement, machine display, inventory selection and spatial checks</td><td>obtain each pile's R0 endpoint/direction, surveyed origin/usable length and production ICD StartX/StopX units/scale</td></tr>
+<tr><td>Simulator mimic</td><td>Initial / Final state and planning controls</td><td><strong>Initial</strong> = scenario t0; <strong>Final</strong> = terminal weekly inventory. Physical fill is proportional; hover exposes component mass/quality. Louta 102MG remains reference-only; the six Benguerir piles and Louta 110LG/product spaces are solver-backed.</td><td>Project-team UI instructions and implementation through 8-Sep-2026</td><td>Implemented engineering behaviour; scenario values are not live telemetry</td><td>M</td><td>shared Monitor/Routing diagram, state/rate controls and terminal-plan inspection</td><td>validate against live SMS/SQMS and surveyed geometry</td></tr>
+<tr><td>Interfaces</td><td>RabbitMQ telegram schemas</td><td><code>AspPlanItem</code> / <code>AspEvaluatePlanResponse</code> / <code>JobUpdated</code> / <code>SpaceValueRequest/Response</code> — ICD not yet received</td><td>FRS (hypothesis H1)</td><td>TBC</td><td>—</td><td>integration design</td><td>request ICD (vendor workshop)</td></tr>
+<tr><td>Economics</td><td>GradeCostModel curves</td><td>PAP specific consumptions vs feed grade + rock values per quality</td><td>—</td><td><strong>Required, not received</strong></td><td>—</td><td>w₃/w₄ objective terms</td><td>process engineering / finance</td></tr>
+</tbody>
+</table>
+
+<h3>4. Simulation Readiness</h3>
+<p>What the allocation/simulation model needs, by readiness class:</p>
+<table class="nb compact">
+<tr><th style="width:26%;">Class</th><th>Items</th></tr>
+<tr><td><strong>Implemented engineering MVP</strong></td><td>deterministic weekly CP‑SAT planning; dated multi-campaign demand; physical inventory/rate constraints; washing yield/moisture conversion; editable grade catalogue and receiving intervals; timed equipment/conveyor/line controls; global status diagram; results/KPI and day-filtered job schedule; M16 fixed/optimized pile-construction blending.</td></tr>
+<tr><td><strong>Configurable assumptions</strong> (visible and editable)</td><td>travel/setup/minimum separation · weekly demand campaigns · initial inventory and pile distributions · yield/moisture profiles · chemistry vectors and receiving intervals · work calendars · equipment/routing states and physical rate caps · objective weights. Demonstration B02 defaults are MT 75.73%, BT 66.63%, TBT 62.64%, raw moisture 12% and wet-product moisture 17.5%; these are assumptions, not live measurements.</td></tr>
+<tr><td><strong>Required before a realistic operational simulation</strong></td><td>timestamped SMS/SQMS stocks and assays · validated grade-class intervals and raw↔washed mappings · per-pile repère calibration and metric GA · route confluences/capacities, reach and transition data · current machine/conveyor/plant state and calendars · validated washing residence/yield/moisture by campaign · drying intake · approved operating contingencies and a real GradeCostModel. More detailed within-pile layer/zone reclaim composition and the two non-M16 blend points are not implemented.</td></tr>
+<tr><td><strong>Required only before live SMS integration</strong></td><td>RabbitMQ ICD / telegram schemas + credentials (H1), including confirmed StartX/StopX units, axis origin/orientation and scale · site‑specific mine‑SMS configuration (H2 <strong>resolved at solution level — identical Innomotics/YardMaster SMS at all three sites, user‑confirmed</strong>; per‑site endpoints, queue/exchange names, Device/Pile IDs, Material/Grade/SubGrade mappings, AspRoutes and permissions remain TBC) · plan co‑authoring governance &amp; write access (H3) · final configured Material/Grade/SQP/Sub‑Grade behaviour · LIMS/CMS/ERP endpoints · OT/IT &amp; cybersecurity engineering</td></tr>
+</table>
+<p class="note"><strong>Rev AC verification history (8 September 2026).</strong> The focused blending/integration suite reports <strong>61 passing tests</strong>. A real seven-day default solve returned FEASIBLE with exact 12,000 t blend construction and no reclaim before the 48-hour boundary. The broader repository run reported <strong>755 passes and 55 legacy/baseline failures</strong>; therefore this report does not claim that every historical UI/report assertion is green.</p>
+
+<h3>5. Acceptance Criteria (measurable)</h3>
+<p>Numeric targets marked TBC are to be fixed at Phase‑1 design review; the <em>measures</em> are fixed now so every criterion is testable in simulation before live integration.</p>
+<table class="compact">
+<thead><tr><th style="width:4%;">#</th><th style="width:24%;">Criterion</th><th>Measure</th><th style="width:20%;">Target</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>No impossible route allocations</td><td>jobs dispatched whose path is absent from the route graph's valid‑path set</td><td><strong>0</strong></td></tr>
+<tr><td>2</td><td>No machine double booking</td><td>overlapping jobs per device (ASP Same‑Device‑Overlap ERRORs on AUTO items)</td><td><strong>0</strong></td></tr>
+<tr><td>3</td><td>Inventory conservation</td><td>per‑space physical mass-balance closure over the full 168-hour week, including washing conversion and carried WIP</td><td>≤ ε % drift (TBC)</td></tr>
+<tr><td>4</td><td>Destination quality compliance</td><td>% of buckets with delivered mass‑weighted quality within spec (eq. 3), per destination</td><td>≥ target % (TBC)</td></tr>
+<tr><td>5</td><td>Demand service</td><td><code>Σ delivered / Σ demand</code> per destination; <code>unmet</code> tracked per bucket</td><td>≥ target % (TBC)</td></tr>
+<tr><td>6</td><td>Safety‑stock compliance</td><td>% of horizon with <code>inventory ≥ safety level</code>, per space class</td><td>≥ target % (TBC)</td></tr>
+<tr><td>7</td><td>Solve time</td><td>tactical optimiser wall‑clock per rolling solve</td><td>≤ limit (TBC, order of minutes)</td></tr>
+<tr><td>8</td><td>Replanning latency</td><td>event (JobUpdated deviation / fault) → new dispatched plan</td><td>≤ limit (TBC, order of seconds–minutes)</td></tr>
+<tr><td>9</td><td>ASP validation success</td><td>AUTO plan items passing ASP with <strong>zero ERRORs</strong> at first submission</td><td>≥ target % (TBC)</td></tr>
+<tr><td>10</td><td>Operator override preservation</td><td>human‑authored/modified items never edited or reverted by the layer</td><td><strong>100 %</strong></td></tr>
+<tr><td>11</td><td>Deterministic replay</td><td>re‑running a stored scenario (inputs + config + seed) reproduces the identical plan</td><td><strong>exact match</strong></td></tr>
+<tr><td>12</td><td>Multi-campaign daily demand</td><td>all same-unit/day campaign quantities, windows and grades survive input→solve→result reconciliation</td><td><strong>exact conservation; no positive-window overlap</strong></td></tr>
+<tr><td>13</td><td>Timed contingency response</td><td>outage/derate at a non-grid minute changes no work before the boundary and produces no use above availability/rate after it</td><td><strong>0 violations</strong></td></tr>
+<tr><td>14</td><td>Blend construction integrity</td><td>scheduled grade tonnes equal selected matrix, total equals batch, all bounds/quality intervals hold and no reclaim starts before exact readiness</td><td><strong>exact integer-tonne closure; 0 early reclaim</strong></td></tr>
+<tr><td>15</td><td>Stage mass traceability</td><td>physical raw, TSM and wet-product values reconcile with the selected yield/moisture profile</td><td><strong>within configured numeric tolerance</strong></td></tr>
+</tbody>
+</table>
+
+<div class="footref">Companion to the Job‑Allocation Scope note. Vendor interface per Innomotics "Digimine‑YardMaster Planning &amp; Scheduling" FRS (TAKRAF, Q80130‑MZI‑M16‑TAK‑45000183621‑DG).</div>
+
+</body>
+</html>

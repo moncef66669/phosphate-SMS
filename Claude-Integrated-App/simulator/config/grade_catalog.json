@@ -1,0 +1,346 @@
+{
+  "version": 1,
+  "grades": [
+    {
+      "id": "TBT",
+      "name": "TBT — demonstration quality vector; assay TBC",
+      "quality": {
+        "BPL": 63.0,
+        "Cd": 35.0,
+        "MgO": 1.4,
+        "SiO2": 3.5,
+        "moisture": 12.0
+      },
+      "rock_value": 65.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "simulation-only vector; corrected to the BoD semantic order TBT < BT < MT; numeric assays still require the project Grade/SQP register. Benguerir B02 beneficiation yield is documented; 12% raw moisture and 17.5% wet-product moisture are planning assumptions."
+      },
+      "source_grade_id": "RAW-BT",
+      "beneficiation_yield": 0.6264,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "BT",
+      "name": "BT — demonstration quality vector; assay TBC",
+      "quality": {
+        "BPL": 68.0,
+        "Cd": 30.0,
+        "MgO": 1.1,
+        "SiO2": 2.8,
+        "moisture": 12.0
+      },
+      "rock_value": 80.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "simulation-only vector; corrected TBT < BT < MT semantic order; numeric assay remains TBC. Benguerir B02 beneficiation yield is documented; 12% raw moisture and 17.5% wet-product moisture are planning assumptions."
+      },
+      "source_grade_id": "RAW-BT",
+      "beneficiation_yield": 0.6663,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "MT",
+      "name": "MT — demonstration quality vector; assay TBC",
+      "quality": {
+        "BPL": 74.0,
+        "Cd": 22.0,
+        "MgO": 0.8,
+        "SiO2": 2.0,
+        "moisture": 12.0
+      },
+      "rock_value": 100.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "simulation-only vector; corrected to the BoD semantic order TBT < BT < MT; numeric assay remains TBC. Benguerir B02 beneficiation yield is documented; 12% raw moisture and 17.5% wet-product moisture are planning assumptions."
+      },
+      "source_grade_id": "RAW-BT",
+      "beneficiation_yield": 0.7573,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "TBT-HIGH-CD",
+      "name": "TBT — High-Cd washed profile",
+      "quality": {
+        "BPL": 62.0,
+        "Cd": 41.67,
+        "MgO": 1.5,
+        "SiO2": 4.1,
+        "moisture": 12.0
+      },
+      "rock_value": 65.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+      },
+      "source_grade_id": "RAW-BT-HIGH-CD",
+      "beneficiation_yield": 0.6264,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "TBT-LOW-CD",
+      "name": "TBT — Low-Cd washed profile",
+      "quality": {
+        "BPL": 64.5,
+        "Cd": 21.67,
+        "MgO": 1.2,
+        "SiO2": 2.9,
+        "moisture": 12.0
+      },
+      "rock_value": 65.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+      },
+      "source_grade_id": "RAW-BT-LOW-CD",
+      "beneficiation_yield": 0.6264,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "BT-HIGH-CD",
+      "name": "BT — High-Cd washed profile",
+      "quality": {
+        "BPL": 67.0,
+        "Cd": 35.71,
+        "MgO": 1.2,
+        "SiO2": 3.4,
+        "moisture": 12.0
+      },
+      "rock_value": 80.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+      },
+      "source_grade_id": "RAW-BT-HIGH-CD",
+      "beneficiation_yield": 0.6663,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "BT-LOW-CD",
+      "name": "BT — Low-Cd washed profile",
+      "quality": {
+        "BPL": 69.5,
+        "Cd": 18.57,
+        "MgO": 0.9,
+        "SiO2": 2.2,
+        "moisture": 12.0
+      },
+      "rock_value": 80.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+      },
+      "source_grade_id": "RAW-BT-LOW-CD",
+      "beneficiation_yield": 0.6663,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "MT-HIGH-CD",
+      "name": "MT — High-Cd washed profile",
+      "quality": {
+        "BPL": 73.0,
+        "Cd": 26.19,
+        "MgO": 0.9,
+        "SiO2": 2.6,
+        "moisture": 12.0
+      },
+      "rock_value": 100.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+      },
+      "source_grade_id": "RAW-BT-HIGH-CD",
+      "beneficiation_yield": 0.7573,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "MT-LOW-CD",
+      "name": "MT — Low-Cd washed profile",
+      "quality": {
+        "BPL": 75.5,
+        "Cd": 13.62,
+        "MgO": 0.6,
+        "SiO2": 1.4,
+        "moisture": 12.0
+      },
+      "rock_value": 100.0,
+      "material_class": "washed",
+      "profile_id": "",
+      "evidence": {
+        "source": "placeholder (this MVP)",
+        "status": "ASSUMED",
+        "confidence": "L",
+        "note": "Provisional washed chemistry preserving the raw Cd lineage. Cd follows the raw-profile ratio relative to BT; BPL, MgO and SiO2 are modest ordered simulation adjustments. The family yield/moisture basis is inherited; all assay values require the approved washed-product grade register."
+      },
+      "source_grade_id": "RAW-BT-LOW-CD",
+      "beneficiation_yield": 0.7573,
+      "raw_moisture_pct": 12.0,
+      "product_moisture_pct": 17.5
+    },
+    {
+      "id": "RAW-MT",
+      "name": "Raw MT — nominal profile",
+      "quality": {
+        "BPL": 58.93,
+        "Cd": 13.0,
+        "MgO": 1.1,
+        "SiO2": 10.13,
+        "CO2": 6.54,
+        "moisture": 12.0
+      },
+      "rock_value": 0.0,
+      "material_class": "raw_screened",
+      "profile_id": "",
+      "evidence": {
+        "source": "Q80130-BEN-B02-PR-BOD-0001[0], §5.2.1",
+        "status": "CONFIRMED",
+        "confidence": "H",
+        "note": "§5.2.1 raw-feed chemistry; shared mine-neutral grade identity. The displayed 12% moisture is the planning midpoint of the documented 10–14% range, not a live pile measurement."
+      },
+      "source_grade_id": "",
+      "beneficiation_yield": null,
+      "raw_moisture_pct": null,
+      "product_moisture_pct": null
+    },
+    {
+      "id": "RAW-BT",
+      "name": "BT",
+      "quality": {
+        "BPL": 56.06,
+        "Cd": 21.0,
+        "MgO": 1.49,
+        "SiO2": 13.71,
+        "CO2": 8.21,
+        "moisture": 15.0
+      },
+      "rock_value": 0.0,
+      "material_class": "raw_screened",
+      "profile_id": "",
+      "evidence": {
+        "source": "Q80130-LOU-L02-PR-BOD-0001 Rev B, 12-Apr-2023, §§1.2 and 6.1–6.3 + project-team clarification 28-Jul-2026",
+        "status": "CONFIRMED",
+        "confidence": "H",
+        "note": "§6.1.1 pp.14–15 declared average raw-ore profile; shared Louta/Benguerir grade identity confirmed by the project team; chemistry is the current design vector, not a live pile assay; site moisture remains separate"
+      },
+      "source_grade_id": "",
+      "beneficiation_yield": null,
+      "raw_moisture_pct": null,
+      "product_moisture_pct": null
+    },
+    {
+      "id": "RAW-BT-HIGH-CD",
+      "name": "Raw BT — High-Cd profile",
+      "quality": {
+        "BPL": 55.11,
+        "Cd": 25.0,
+        "MgO": 1.5,
+        "SiO2": 16.28,
+        "CO2": 8.41,
+        "moisture": 15.0
+      },
+      "rock_value": 0.0,
+      "material_class": "raw_screened",
+      "profile_id": "",
+      "evidence": {
+        "source": "Q80130-LOU-L02-PR-BOD-0001 Rev B, 12-Apr-2023, §§1.2 and 6.1–6.3 + project-team clarification 28-Jul-2026",
+        "status": "CONFIRMED",
+        "confidence": "H",
+        "note": "§6.1.2 p.14 declared average raw-ore profile; shared Louta/Benguerir grade identity confirmed by the project team; not a live pile assay"
+      },
+      "source_grade_id": "",
+      "beneficiation_yield": null,
+      "raw_moisture_pct": null,
+      "product_moisture_pct": null
+    },
+    {
+      "id": "RAW-BT-LOW-CD",
+      "name": "Raw BT — Low-Cd profile",
+      "quality": {
+        "BPL": 58.28,
+        "Cd": 13.0,
+        "MgO": 1.13,
+        "SiO2": 10.22,
+        "CO2": 8.75,
+        "moisture": 15.0
+      },
+      "rock_value": 0.0,
+      "material_class": "raw_screened",
+      "profile_id": "",
+      "evidence": {
+        "source": "Q80130-LOU-L02-PR-BOD-0001 Rev B, 12-Apr-2023, §§1.2 and 6.1–6.3 + project-team clarification 28-Jul-2026",
+        "status": "CONFIRMED",
+        "confidence": "H",
+        "note": "§6.1.3 pp.14–15 declared average raw-ore profile; shared Louta/Benguerir grade identity confirmed by the project team; not a live pile assay"
+      },
+      "source_grade_id": "",
+      "beneficiation_yield": null,
+      "raw_moisture_pct": null,
+      "product_moisture_pct": null
+    },
+    {
+      "id": "RAW-TBT",
+      "name": "Raw TBT — nominal profile",
+      "quality": {
+        "BPL": 54.1,
+        "Cd": 16.0,
+        "MgO": 1.52,
+        "SiO2": 14.39,
+        "CO2": 8.32,
+        "moisture": 12.0
+      },
+      "rock_value": 0.0,
+      "material_class": "raw_screened",
+      "profile_id": "",
+      "evidence": {
+        "source": "project-team supplied TBT assay, 19-Sep-2026; Q80130-BEN-B02-PR-BOD-0001[0] moisture basis",
+        "status": "CONFIRMED",
+        "confidence": "M",
+        "note": "BPL/Cd/MgO/SiO2/CO2 use the supplied TBT assay. Its 5% H2O value is intentionally excluded; the displayed 12% moisture remains the midpoint of the documented 10–14% planning range."
+      },
+      "source_grade_id": "",
+      "beneficiation_yield": null,
+      "raw_moisture_pct": null,
+      "product_moisture_pct": null
+    }
+  ]
+}

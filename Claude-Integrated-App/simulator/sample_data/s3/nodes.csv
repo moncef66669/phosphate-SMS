@@ -1,0 +1,55 @@
+id,site,kind,label,x,y
+SPACE:HP-01,MPH,space,HP-01,2,1
+SPACE:HP-02,MPH,space,HP-02,2,2
+SPACE:HP-03,MPH,space,HP-03,2,3
+SPACE:HP-04,MPH,space,HP-04,2,4
+SPACE:HP-05,MPH,space,HP-05,2,5
+SPACE:HP-06,MPH,space,HP-06,2,6
+SPACE:HP-07,MPH,space,HP-07,2,7
+SPACE:HP-08,MPH,space,HP-08,2,8
+TOWER:M16-REC,MPH,tower,M16 reception tower,1,4
+DEST:PAP-1,MPH,dest,PAP line 1 (wet),4,3
+DEST:PAP-2,MPH,dest,"PAP line 2 (wet, future)",4,4
+DEST:DRY-FEED,MPH,dest,Drying-plant feed (OOS plant),4,5
+HUB:M16-RCL-A,MPH,gate,M16A-A-T11 reclaim stream → M16A-A-T11S magnetic separator → M16A-A-T12 (belt scale M16A-A-T12W) → hopper + clamshell/rod gate bank M16A-A-H01…H04 → M16A-A-T13,3,3
+HUB:M16-RCL-B,MPH,gate,M16A-B-T11 reclaim stream → M16A-B-T11S magnetic separator → M16A-B-T12 (belt scale M16A-B-T12W) → hopper + clamshell/rod gate bank M16A-B-H01…H04 → M16A-B-T13,3,5
+HUB:M16-T13-A,MPH,gate,"M16A-A-T13 outbound belt (1,500 t/h) after gate bank M16A-A-H01…H04 — PAP/drying selection downstream is DERIVED/TBC",3,2
+HUB:M16-T13-B,MPH,gate,"M16A-B-T13 outbound belt (1,500 t/h) after gate bank M16A-B-H01…H04 — PAP/drying selection downstream is DERIVED/TBC",3,6
+SPACE:BG-P1,BENGUERIR,space,BG-P1,0,8
+SPACE:BG-P2,BENGUERIR,space,BG-P2,0,9
+HUB:BG-OUT,BENGUERIR,tower,BG product reclaim collect (RL12/RL13),1,8
+HUB:C2-HEAD,BENGUERIR,tower,C2 corridor head — ONE physical corridor,2,8
+SRC:BG-RAW,BENGUERIR,source,"BBE raw/screened mine storage — Table 20 confirms 400,000 t total live yard capacity; project-team instruction 22-Jul-2026 sets BG-RAW-1 = 200,000 t and BG-RAW-2 = 200,000 t capacity; project-team current-state instruction 24-Jul-2026 sets BG-RAW-1 = 100,000 t and BG-RAW-2 = 100,000 t starting mass. In the six-pile built-in these are solver-backed inventories; the calibrated G10 demonstration uses nominal RAW-TBT on BG-RAW-1 and Low-Cd on BG-RAW-2. Multiple profiles may physically coexist, but no surveyed segment sequence or live/pile-specific Benguerir assay is available. Physical tags and metric GA remain TBC; the starting masses are scenario inputs, not timestamped telemetry. This aggregate source node is retained only for the conditional raw-to-C2 route.",0,7
+DEST:BG-TRAIN-PROD,BENGUERIR,dest,Train loading station — washed product,2,9
+DEST:BG-TRAIN-RAW,BENGUERIR,dest,Train loading station — raw phosphate,1,7
+SPACE:BG-HOP-TM1,BENGUERIR,source,BG-HOP-TM1,0,0
+SPACE:BG-HOP-TSM2,BENGUERIR,source,BG-HOP-TSM2,0,0
+SPACE:BG-HOP-TSM3,BENGUERIR,source,BG-HOP-TSM3,0,0
+SPACE:BG-MINE-1,BENGUERIR,space,BG-MINE-1,0,0
+SPACE:BG-MINE-2,BENGUERIR,space,BG-MINE-2,0,0
+SPACE:BG-RAW-1,BENGUERIR,space,BG-RAW-1,0,0
+SPACE:BG-RAW-2,BENGUERIR,space,BG-RAW-2,0,0
+SPACE:BG-SCREEN-L1-WIP,BENGUERIR,space,BG-SCREEN-L1-WIP,0,0
+SPACE:BG-WASH-L1-WIP,BENGUERIR,space,BG-WASH-L1-WIP,0,0
+SPACE:BG-SCREEN-L2-WIP,BENGUERIR,space,BG-SCREEN-L2-WIP,0,0
+SPACE:BG-WASH-L2-WIP,BENGUERIR,space,BG-WASH-L2-WIP,0,0
+SPACE:BG-SCREEN-L3-WIP,BENGUERIR,space,BG-SCREEN-L3-WIP,0,0
+SPACE:BG-WASH-L3-WIP,BENGUERIR,space,BG-WASH-L3-WIP,0,0
+HUB:BG-MINE-STK,BENGUERIR,tower,TM1/TSM2/TSM3 mine-pile stacking distribution,1,20
+HUB:BG-MINE-RCL,BENGUERIR,tower,shared mine-pile reclaim collection,2,20
+HUB:BG-RAW-STK,BENGUERIR,tower,screened-pile stacking distribution,3,20
+HUB:BG-RAW-WASH,BENGUERIR,tower,shared screened-product reclaim to washing,4,20
+HUB:BG-PROD-STK,BENGUERIR,tower,ST3 washed-product stacking distribution,5,20
+SPACE:LT-MINE-FEED-GLOBAL,LOUTA,source,direct mine inlet handoff — BT case,0,15
+SPACE:LT-MINE-FEED-LOW-CD,LOUTA,source,direct mine inlet handoff — Low-Cd case,0,16
+HUB:LT-ORE-STK,LOUTA,tower,110LG-TC-01 / 110LG-BC-01 stacking transfer,1,15
+SPACE:110LG-OL1,LOUTA,space,110LG homogenized ore pile 1,2,15
+SPACE:110LG-OL2,LOUTA,space,110LG homogenized ore pile 2,2,16
+HUB:LT-RB45,LOUTA,tower,RB4/RB5 common ore transfer,3,15
+HUB:LT-WASH-SPLIT,LOUTA,gate,RB6/RB7 washing-line selection,4,15
+SPACE:LT-WASH-L1-WIP,LOUTA,space,L1 recovered-product process buffer,5,14
+SPACE:LT-WASH-L2-WIP,LOUTA,space,L2 recovered-product process buffer,5,16
+HUB:LT-SL11,LOUTA,tower,shared 130LG-CV-11 / SL11 product stacking transfer,6,15
+SPACE:LT-P1,LOUTA,space,LT-P1 — L02 product lane 1 (schematic abstraction),0,11
+SPACE:LT-P2,LOUTA,space,LT-P2 — L02 product lane 2 (schematic abstraction),0,12
+HUB:LT-OUT,LOUTA,tower,140LG reclaim routes RL1/RL2 → flip gates → RL3/RL4,1,11

@@ -1,0 +1,2 @@
+scope,start_bucket,end_bucket,reason,start_minute,end_minute,action,rate_tph
+ST01-C,0,5,planned maintenance (demo),,,UNAVAILABLE,

@@ -1,0 +1,2 @@
+id,site,node_id,priority,spec,demand_default_tph,requested_grade,demand_kind,process_stage,source,evidence_status,confidence
+MOLTEN-S,MPH,DEST:MOLTEN-S,1,"[{""param"": ""moisture"", ""pmin"": null, ""pmax"": 2.0, ""target"": null, ""hard"": false, ""averaging_h"": 1.0, ""margin"": 0.0}]",800,S-STD,delivery,,placeholder (this MVP),ASSUMED,L

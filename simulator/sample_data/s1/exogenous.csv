@@ -1,0 +1,2 @@
+id,target_space,rate_tph,grade,source_space,start_bucket,end_bucket,quality,source,evidence_status,confidence
+PAYLOAD-1,M17-CLOSED-1,300,S-STD,M17-OPEN-1,0,1000000,{},Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3],CONFIRMED,H

@@ -1,0 +1,12 @@
+# MPH stockyard job-allocation simulator — engineering MVP
+# Python 3.11+ (developed & tested on 3.12.10, Windows 11)
+streamlit>=1.55,<2
+plotly>=6,<7
+pandas>=2.2
+numpy>=1.26
+ortools>=9.10          # CP-SAT planning engine (deterministic single-worker mode)
+openpyxl>=3.1          # XLSX import/export
+
+# development / QA only
+pytest>=8
+playwright>=1.50       # optional: headless screenshots (python -m playwright install chromium)

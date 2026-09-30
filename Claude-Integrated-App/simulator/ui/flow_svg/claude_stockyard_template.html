@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<!--
+  ==========================================================================
+  GLOBAL STOCKYARD LAYOUT & FLOW — standalone visual + interaction layer
+  ==========================================================================
+  Design prototype for integration into an existing Python/Streamlit planning
+  application. Self-contained: no CDNs, no external fonts, no network calls.
+  Contains NO backend, scheduling or planning logic.
+
+  FILE STRUCTURE (single file, three clearly separated sections in <script>):
+    1. LAYOUT      — static schematic geometry. Never changes at runtime.
+    2. MOCK_DATA   — ALL mock operating data (piles / machines / routes /
+                     processLines / destinations / hoppers / timeline).
+                     Replace this object with real data from the host app.
+    3. RENDERER    — builds the static SVG once, then applies state.
+
+  INTEGRATION ENTRY POINT
+    window.updateStockyardState(data)
+      data: partial or full snapshot, shape identical to MOCK_DATA:
+        {
+          stateTime: "13 Jul 2026 · 14:00",
+          piles:        [{ id, site, massT, capacityT, grades:[{grade,fraction}],
+                           fillPct, repereFrom, repereTo, materialClass,
+                           tsmEquivalentT, tsmLabel }],
+          machines:     [{ id, type, railId, state, jobId, targetId,
+                           positionRepere, rateTph, maximumRateTph }],
+          routes:       [{ id, fromId, toId, state, flowTph, capacityTph }],
+          processLines: [{ id, state, residenceMinutes }],
+          destinations: [{ id, lifecycleState, requestedGrade, demandT,
+                           plannedDeliveryT }],
+          hoppers:      [{ id, state, rateTph, maximumRateTph, feedsId }]
+        }
+      Arrays are merged BY id, so partial updates are allowed:
+        window.updateStockyardState({ machines: [{ id: 'M16-ST-A', state: 'Idle' }] });
+      The static layout (SVG nodes, geometry, rails, labels) is never rebuilt;
+      only inventory, grades, states, jobs, flows, positions, destination
+      lifecycle and hover/selection content are refreshed.
+
+    window.getStockyardState()  -> current merged snapshot (read-only copy)
+
+  STABLE IDENTIFIERS
+    Every physical element carries data-asset-id (= the id used in the data
+    object) and data-asset-kind (pile | machine | rail | route | hopper |
+    processLine | corridor | destination). Query e.g.
+      document.querySelector('[data-asset-id="HP-01"]')
+
+  VALID STATES
+    machines / hoppers / routes : Running, Stacking, Reclaiming, Travelling,
+                                  Idle, Maintenance, Unavailable, Future
+    processLines / destinations : Available, Future, Disabled
+  ==========================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Global Stockyard Layout &amp; Flow — handoff prototype</title>
+<style>
+  :root {
+    --ink: #2f353b;
+    --navy: #1f3a5f;
+    --mute: #98a0a7;
+    --line: #d7dbde;
+    --sans: ui-sans-serif, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #f4f5f6; color: var(--ink); font-family: var(--sans); }
+  a { color: var(--navy); }
+  a:hover { color: #2b5f9e; }
+  #app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+  /* ---------- toolbar ---------- */
+  #toolbar {
+    flex: 0 0 auto; min-height: 52px; display: flex; flex-wrap: wrap; align-items: center;
+    gap: 10px 18px; padding: 7px 18px; background: #fff; border-bottom: 1px solid var(--line);
+  }
+  .tb-group { display: flex; align-items: center; gap: 6px; }
+  .tb-group + .tb-group { border-left: 1px solid #e3e6e8; padding-left: 18px; }
+  .tb-cap { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+  .brand { font-size: 14px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--navy); }
+  .brand-sub { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+  button, select {
+    font-family: var(--sans); font-size: 11px; color: var(--ink);
+    border: 1px solid var(--line); background: #fff; border-radius: 3px; cursor: pointer;
+  }
+  button:disabled, select:disabled { opacity: 1; cursor: default; }
+  .btn { font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 6px 12px; white-space: nowrap; }
+  .btn.primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .btn.on { background: #eaeef2; border-color: var(--navy); color: var(--navy); }
+  .btn.tab { padding: 5px 10px; }
+  .btn.tab.on { background: #eaeef2; border-color: var(--navy); color: var(--navy); }
+  .step { width: 22px; height: 22px; padding: 0; color: #5f686f; font-size: 12px; }
+  select { padding: 4px 6px; }
+  .chip {
+    font-family: var(--mono); font-size: 10px; padding: 4px 7px 4px 5px; border-radius: 3px;
+    display: flex; align-items: center; gap: 5px; background: #f4f6f7; border-color: #b9c1c7;
+  }
+  .chip.off { background: #fff; border-color: #e3e6e8; color: #a7aeb4; opacity: .6; }
+  .chip i { width: 9px; height: 9px; border-radius: 1px; display: block; }
+  .zoom { font-family: var(--mono); font-size: 11px; color: var(--mute); }
+  .spacer { margin-left: auto; }
+  #timeLabel { font-family: var(--mono); font-size: 12px; }
+  #planningSummary { display: none; align-items: center; gap: 6px; }
+  .resource-summary {
+    display: inline-flex; align-items: center; gap: 5px; min-height: 28px;
+    padding: 4px 8px; border: 1px solid #cfd5d9; border-radius: 4px;
+    background: #f7f8f9; color: #55616b; white-space: nowrap;
+    font-family: var(--mono); font-size: 10px; font-weight: 650;
+  }
+  .resource-summary i { width: 9px; height: 9px; border-radius: 50%; }
+  .resource-summary.warn { border-color: #d5a04a; background: #fff8e8; }
+  .resource-summary.bad { border-color: #c46b6b; background: #fdf0f0; }
+
+  /* Routing configuration is the exact Monitor drawing with a quieter
+     presentation. State-bearing resources stay dominant; inventory detail
+     remains available through hover and selection. */
+  body.routing-availability #timeGroup,
+  body.routing-availability #gradeGroup,
+  body.routing-availability #equipmentGroup,
+  body.routing-availability #pap2Group { display: none; }
+  body.routing-availability #planningSummary { display: flex; }
+  body.routing-availability #toolbar { min-height: 48px; gap: 8px 14px; }
+  body.routing-availability .routing-detail-label { display: none; }
+  body.routing-availability .hint b { color: var(--navy); }
+
+  /* ---------- stage ---------- */
+  #stage {
+    position: relative; flex: 1 1 auto; overflow: hidden; cursor: grab; background: #f4f5f6;
+    background-image: radial-gradient(#dfe3e6 1px, transparent 1px); background-size: 28px 28px;
+  }
+  #stage.dragging { cursor: grabbing; }
+  #svg { position: absolute; inset: 0; display: block; }
+  #svg text { user-select: none; pointer-events: none; }
+
+  .hint {
+    position: absolute; right: 14px; bottom: 14px; display: flex; align-items: center; gap: 10px;
+    padding: 6px 11px; background: rgba(255,255,255,.92); border: 1px solid #dfe3e6; border-radius: 4px;
+    font-size: 10px; color: #b3bac0; z-index: 3;
+  }
+  .hint b { font-family: var(--mono); font-weight: 400; letter-spacing: .04em; color: #6c757c; }
+
+  /* ---------- hover card ---------- */
+  #hoverCard {
+    position: absolute; left: 0; top: 0; z-index: 5; pointer-events: none; display: none;
+    min-width: 190px; max-width: 290px; background: #fff; border: 1px solid #c7ccd1;
+    border-left: 4px solid var(--navy); border-radius: 4px; padding: 9px 11px 10px;
+    box-shadow: 0 8px 22px rgba(31,40,48,.16);
+  }
+  #hoverCard .hc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  #hoverCard .hc-id { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--navy); }
+  #hoverCard .hc-kind { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; }
+  .kv .k { font-size: 11px; color: #8a9199; }
+  .kv .v { font-family: var(--mono); font-size: 11px; text-align: right; }
+
+  /* ---------- details panel ---------- */
+  #details {
+    position: absolute; right: 14px; top: 14px; bottom: 14px; width: 306px; display: none;
+    flex-direction: column; background: #fff; border: 1px solid #d0d5d9; border-radius: 5px;
+    box-shadow: 0 10px 30px rgba(31,40,48,.12); z-index: 6;
+  }
+  #details.open { display: flex; }
+  .dp-head { padding: 13px 15px 11px; border-bottom: 1px solid #e6e9eb; display: flex; align-items: flex-start; gap: 10px; }
+  .dp-kind { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-bottom: 4px; }
+  .dp-id { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--navy); }
+  .dp-close { width: 24px; height: 24px; color: #6c757c; font-size: 13px; }
+  .dp-state { padding: 12px 15px; border-bottom: 1px solid #e6e9eb; display: flex; align-items: center; gap: 8px; }
+  .dp-state i { width: 11px; height: 11px; border-radius: 50%; }
+  .dp-state b { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  .dp-state span { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--mute); }
+  .dp-body { flex: 1 1 auto; overflow: auto; padding: 4px 15px 14px; }
+  .dp-body .kv { grid-template-columns: auto 1fr; gap: 0 14px; align-items: baseline; }
+  .dp-body .kv .k, .dp-body .kv .v { font-size: 11.5px; padding: 7px 0; border-bottom: 1px solid #f0f2f3; }
+  .dp-sub { margin: 15px 0 8px; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tags span { font-family: var(--mono); font-size: 10px; padding: 3px 7px; border: 1px solid var(--line); border-radius: 3px; background: #f7f8f9; color: #4e565d; }
+
+  /* ---------- legend ---------- */
+  #legend {
+    position: absolute; left: 14px; bottom: 14px; width: 470px; display: none; z-index: 4;
+    background: #fff; border: 1px solid #d0d5d9; border-radius: 5px; padding: 13px 15px 14px;
+    box-shadow: 0 10px 26px rgba(31,40,48,.12);
+  }
+  #legend.open { display: block; }
+  .lg-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 11px; }
+  .lg-head b { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--navy); }
+  .lg-head span { font-size: 10px; color: var(--mute); }
+  .lg-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; }
+  .lg-cap { font-size: 9px; letter-spacing: .13em; text-transform: uppercase; color: var(--mute); margin-bottom: 7px; }
+  .lg-items { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
+  .lg-item { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #4e565d; }
+  .lg-item .sw { width: 13px; height: 11px; border-radius: 1px; border: 1px solid rgba(0,0,0,.18); }
+  .lg-item .lamp { width: 13px; height: 13px; border-radius: 50%; color: #fff; font-family: var(--mono);
+    font-size: 8px; display: flex; align-items: center; justify-content: center; }
+  .lg-item code { font-family: var(--mono); font-size: 10px; }
+  .lg-sym { grid-column: 1 / -1; border-top: 1px solid #eef0f1; padding-top: 11px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 12px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="toolbar">
+    <div class="tb-group">
+      <span class="brand">Global Stockyard</span>
+      <span class="brand-sub">Layout &amp; Flow</span>
+    </div>
+    <div class="tb-group">
+      <span class="tb-cap">Site</span>
+      <div id="siteTabs" style="display:flex;gap:4px"></div>
+    </div>
+    <div class="tb-group" id="timeGroup">
+      <span class="tb-cap">State time</span>
+      <span id="timeLabel">—</span>
+      <button class="step" id="timeBack" disabled aria-disabled="true"
+              title="Select the state time in the planning application">&#8249;</button>
+      <button class="step" id="timeFwd" disabled aria-disabled="true"
+              title="Select the state time in the planning application">&#8250;</button>
+    </div>
+    <div class="tb-group" id="gradeGroup">
+      <span class="tb-cap">Grade</span>
+      <div id="gradeChips" style="display:flex;gap:4px"></div>
+    </div>
+    <div class="tb-group" id="equipmentGroup">
+      <span class="tb-cap">Equipment</span>
+      <select id="stateFilter"></select>
+    </div>
+    <div class="tb-group" id="pap2Group">
+      <span class="tb-cap">PAP-2</span>
+      <select id="pap2State" disabled aria-disabled="true"
+              aria-label="PAP-2 lifecycle, read only"
+              title="Configured in Scenario planning">
+        <option>Available</option><option>Future</option><option>Disabled</option>
+      </select>
+    </div>
+    <div class="tb-group" id="planningSummary" aria-label="Planning resource availability summary"></div>
+    <div class="tb-group spacer" style="border-left:0;padding-left:0">
+      <span class="zoom" id="zoomLabel">100%</span>
+      <button class="btn primary" id="fitBtn">Fit view</button>
+      <button class="btn" id="legendBtn">Legend</button>
+    </div>
+  </div>
+
+  <div id="stage">
+    <svg id="svg" width="100%" height="100%"><g id="world"></g></svg>
+
+    <div id="hoverCard">
+      <div class="hc-head"><span class="hc-id"></span><span class="hc-kind"></span></div>
+      <div class="kv"></div>
+    </div>
+
+    <div id="details">
+      <div class="dp-head">
+        <div style="flex:1 1 auto">
+          <div class="dp-kind"></div>
+          <div class="dp-id"></div>
+        </div>
+        <button class="dp-close" id="detailsClose">&#215;</button>
+      </div>
+      <div class="dp-state"><i></i><b></b><span></span></div>
+      <div class="dp-body">
+        <div class="kv"></div>
+        <div class="dp-sub">Connected path</div>
+        <div class="tags"></div>
+      </div>
+    </div>
+
+    <div id="legend"></div>
+
+    <div class="hint"><b>SCHEMATIC · NOT TO SCALE</b><span>wheel zoom · drag pan · double-click fit</span></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* =========================================================================
+   0. SHARED VOCABULARY (presentation constants — not operating data)
+   ========================================================================= */
+var NAVY = '#1f3a5f', MUTE = '#98a0a7';
+var FONT_SANS = 'ui-sans-serif, "Helvetica Neue", Helvetica, Arial, sans-serif';
+var FONT_MONO = 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace';
+
+var GRADE_COLOR = {
+  'HIGH-CD': '#8e4a63', 'LOW-CD': '#c1592c',
+  'TBT': '#1c6b73', 'BT': '#3f7fa6', 'MT': '#6b4fa8', 'LT': '#f0b429'
+};
+/* state -> [colour, single-character code]. Colour is never the only carrier. */
+var STATE = {
+  Running: ['#2f7d4f', 'R'], Stacking: ['#2f7d4f', 'S'], Reclaiming: ['#2f7d4f', 'C'],
+  Travelling: ['#2b5f9e', 'T'], Idle: ['#8a9099', 'I'], Maintenance: ['#c08a1e', 'M'],
+  Unavailable: ['#a83232', 'U'], Future: ['#6b4fa8', 'F'],
+  Available: ['#2f7d4f', 'A'], Partial: ['#b7791f', 'P'],
+  Reference: ['#8a9099', 'R'], Disabled: ['#9aa1a7', 'D']
+};
+var KIND_LABEL = {
+  pile: 'Stockpile', machine: 'Machine', rail: 'Machine rail', route: 'Conveyor route',
+  hopper: 'Mine hopper', processLine: 'Process line', destination: 'Destination',
+  corridor: 'Corridor interface'
+};
+
+/* =========================================================================
+   1. LAYOUT — static schematic geometry (world units). Read-only at runtime.
+      PH  = stockpile footprint height
+      RUP = stacker-rail offset above a pile row
+      RDN = reclaimer-rail offset below a pile row
+   ========================================================================= */
+var PH = 56, RUP = 40, RDN = 44;
+
+var LAYOUT = {
+  world: { w: 2800, h: 1620 },
+
+  sites: [
+    { id: 'LOUTA',     label: 'LOUTA',     sub: 'MINE HOPPERS 2 · WASHING LINES 2', x: 40,   y: 40,  w: 1450, h: 545 },
+    { id: 'BENGUERIR', label: 'BENGUERIR', sub: 'MINE HOPPERS 3 · WASHING LINES 3', x: 40,   y: 750, w: 1450, h: 830 },
+    { id: 'MPH',       label: 'MPH M16',   sub: '4 BAYS · 8 STOCKPILES',            x: 1780, y: 40,  w: 600,  h: 1340 }
+  ],
+
+  groups: [
+    { id: 'L-MS',  site: 'LOUTA',     label: 'MINE STORAGE',    x: 150,  w: 340 },
+    { id: 'L-RAW', site: 'LOUTA',     label: 'RAW MATERIAL',    x: 515,  w: 340 },
+    { id: 'L-WP',  site: 'LOUTA',     label: 'WASHED PRODUCT',  x: 1115, w: 310 },
+    { id: 'B-MS',  site: 'BENGUERIR', label: 'MINE ORE',        x: 150,  w: 370 },
+    { id: 'B-RAW', site: 'BENGUERIR', label: 'RAW MATERIAL',    x: 545,  w: 330 },
+    { id: 'B-WP',  site: 'BENGUERIR', label: 'WASHED PRODUCT',  x: 1135, w: 330 },
+    { id: 'M-B1',  site: 'MPH',       label: 'BAY 1',           x: 1845, w: 460 },
+    { id: 'M-B2',  site: 'MPH',       label: 'BAY 2',           x: 1845, w: 460 },
+    { id: 'M-B3',  site: 'MPH',       label: 'BAY 3',           x: 1845, w: 460 },
+    { id: 'M-B4',  site: 'MPH',       label: 'BAY 4',           x: 1845, w: 460 }
+  ],
+
+  /* Each row = one machine line pair (stacker rail above, reclaimer rail below)
+     plus the stockpile footprints those machines serve. */
+  rows: [
+    { id: 'R-L-MS-1',  group: 'L-MS',  y: 170,  stackerRail: 'RL-L-MS-1',  reclaimerRail: 'RC-L-MS-1',  stacker: '102MG-ST-01',  reclaimer: '110MG-RC-01', piles: [{ id: '102MG-SP-01', x: 165,  w: 310 }] },
+    { id: 'R-L-MS-2',  group: 'L-MS',  y: 430,  stackerRail: 'RL-L-MS-2',  reclaimerRail: 'RC-L-MS-2',  stacker: '102MG-ST-02',  reclaimer: '110MG-RC-02', piles: [{ id: '102MG-SP-02', x: 165,  w: 310 }] },
+    { id: 'R-L-RAW-1', group: 'L-RAW', y: 170,  stackerRail: 'RL-L-RAW-1', reclaimerRail: 'RC-L-RAW-1', stacker: '110LG-ST-01',  reclaimer: '120LG-RC-01', piles: [{ id: '110LG-OL1',   x: 530,  w: 310 }] },
+    { id: 'R-L-RAW-2', group: 'L-RAW', y: 430,  stackerRail: 'RL-L-RAW-2', reclaimerRail: 'RC-L-RAW-2', stacker: '110LG-ST-02',  reclaimer: '120LG-RC-02', piles: [{ id: '110LG-OL2',   x: 530,  w: 310 }] },
+    { id: 'R-L-WP-1',  group: 'L-WP',  y: 170,  stackerRail: 'RL-L-WP-1',  reclaimerRail: 'RC-L-WP-1',  stacker: '130LG-ST-01',  reclaimer: '140LG-RC-01', piles: [{ id: 'LT-P1',       x: 1120, w: 300 }] },
+    { id: 'R-L-WP-2',  group: 'L-WP',  y: 430,  stackerRail: 'RL-L-WP-2',  reclaimerRail: 'RC-L-WP-2',  stacker: '130LG-ST-02',  reclaimer: '140LG-RC-02', piles: [{ id: 'LT-P2',       x: 1120, w: 300 }] },
+
+    { id: 'R-B-MS-1',  group: 'B-MS',  y: 900,  stackerRail: 'RL-B-MS-1',  reclaimerRail: 'RC-B-MS-1',  stacker: 'BG-MINE-ST-1', reclaimer: 'BG-MINE-RC-1', piles: [{ id: 'BG-MINE-P1', x: 165,  w: 340 }] },
+    { id: 'R-B-MS-2',  group: 'B-MS',  y: 1140, stackerRail: 'RL-B-MS-2',  reclaimerRail: 'RC-B-MS-2',  stacker: 'BG-MINE-ST-2', reclaimer: 'BG-MINE-RC-2', piles: [{ id: 'BG-MINE-P2', x: 165,  w: 340 }] },
+    { id: 'R-B-RAW-1', group: 'B-RAW', y: 900,  stackerRail: 'RL-B-RAW-1', reclaimerRail: 'RC-B-RAW-1', stacker: 'BG-RAW-ST-1',  reclaimer: 'BG-RAW-RC-1',  piles: [{ id: 'BG-RAW-P1',  x: 560,  w: 300 }] },
+    { id: 'R-B-RAW-2', group: 'B-RAW', y: 1140, stackerRail: 'RL-B-RAW-2', reclaimerRail: 'RC-B-RAW-2', stacker: 'BG-RAW-ST-2',  reclaimer: 'BG-RAW-RC-2',  piles: [{ id: 'BG-RAW-P2',  x: 560,  w: 300 }] },
+    { id: 'R-B-WP-1',  group: 'B-WP',  y: 1220, stackerRail: 'RL-B-WP-1',  reclaimerRail: 'RC-B-WP-1',  stacker: 'BG-ST-3',      reclaimer: 'BG-RC-2',      piles: [{ id: 'BG-P1',      x: 1150, w: 300 }] },
+    { id: 'R-B-WP-2',  group: 'B-WP',  y: 1420, stackerRail: 'RL-B-WP-2',  reclaimerRail: 'RC-B-WP-2',  stacker: 'BG-ST-4',      reclaimer: 'BG-RC-3',      piles: [{ id: 'BG-P2',      x: 1150, w: 300 }] },
+
+    { id: 'R-M-B1',    group: 'M-B1',  y: 180,  stackerRail: 'RL-M-B1',    reclaimerRail: 'RC-M-B1',    stacker: 'M16-ST-A',     reclaimer: 'M16-RC-A',     piles: [{ id: 'HP-01', x: 1860, w: 200 }, { id: 'HP-05', x: 2090, w: 200 }] },
+    { id: 'R-M-B2',    group: 'M-B2',  y: 520,  stackerRail: 'RL-M-B2',    reclaimerRail: 'RC-M-B2',    stacker: 'M16-ST-B',     reclaimer: 'M16-RC-B',     piles: [{ id: 'HP-02', x: 1860, w: 200 }, { id: 'HP-06', x: 2090, w: 200 }] },
+    { id: 'R-M-B3',    group: 'M-B3',  y: 860,  stackerRail: 'RL-M-B3',    reclaimerRail: 'RC-M-B3',    stacker: 'M16-ST-C',     reclaimer: 'M16-RC-C',     piles: [{ id: 'HP-03', x: 1860, w: 200 }, { id: 'HP-07', x: 2090, w: 200 }] },
+    { id: 'R-M-B4',    group: 'M-B4',  y: 1200, stackerRail: 'RL-M-B4',    reclaimerRail: 'RC-M-B4',    stacker: 'M16-ST-D',     reclaimer: 'M16-RC-D',     piles: [{ id: 'HP-04', x: 1860, w: 200 }, { id: 'HP-08', x: 2090, w: 200 }] }
+  ],
+
+  hoppers: [
+    { id: 'LO-HOP-1', x: 90, y: 170 }, { id: 'LO-HOP-2', x: 90, y: 430 },
+    { id: 'BG-HOP-1', x: 90, y: 900 }, { id: 'BG-HOP-2', x: 90, y: 1020 }, { id: 'BG-HOP-3', x: 90, y: 1140 }
+  ],
+
+  processLines: [
+    { id: 'LINE L1', x: 880, y: 150,  w: 180, h: 72 },
+    { id: 'LINE L2', x: 880, y: 410,  w: 180, h: 72 },
+    { id: 'LINE 1',  x: 900, y: 890,  w: 180, h: 60 },
+    { id: 'LINE 2',  x: 900, y: 975,  w: 180, h: 60 },
+    { id: 'LINE 3',  x: 900, y: 1060, w: 180, h: 60 }
+  ],
+
+  destinations: [
+    { id: 'PAP-2',    x: 2560, y: 235,  w: 190, h: 90 },
+    { id: 'PAP-1',    x: 2560, y: 575,  w: 190, h: 90 },
+    { id: 'DRY-FEED', x: 2560, y: 915,  w: 190, h: 90 },
+    { id: 'BG-TRAIN', x: 1545, y: 900,  w: 170, h: 80 }
+  ],
+
+  /* Corridor interfaces: the physical hand-over points into MPH M16. */
+  corridors: [
+    { id: 'IF-C1-M16', label: 'C1', route: 'C1', x: 1746, y: 96,   w: 56, h: 28 },
+    { id: 'IF-C2-M16', label: 'C2', route: 'C2', x: 1746, y: 1286, w: 56, h: 28 }
+  ],
+
+  /* Conveyor route geometry. Route state/flow comes from MOCK_DATA.routes. */
+  routePaths: {
+    'LO-HOP-1 FEED':      'M118 170 H140 V130 H155',
+    'LO-HOP-2 FEED':      'M118 430 H140 V390 H155',
+    'L-MS→RAW 1':         'M485 270 H508 V390 H520',
+    'L-MS→RAW 2':         'M485 530 H502 V130 H520',
+    'L1 FEED':            'M850 270 H866 V186 H880',
+    'L2 FEED':            'M850 530 H866 V446 H880',
+    'L1 PRODUCT':         'M1060 186 H1090 V130 H1120',
+    'L2 PRODUCT':         'M1060 446 H1090 V390 H1120',
+    'C1':                 'M1420 530 H1620 V110 H1806',
+    'BG-HOP-1 FEED':      'M118 900 H140 V860 H155',
+    'BG-HOP-2 FEED':      'M118 1020 H130 V860 H155',
+    'BG-HOP-3 FEED':      'M118 1140 H140 V1100 H155',
+    'B-MS→RAW 1':         'M515 1000 H532 V860 H550',
+    'B-MS→RAW 2':         'M515 1240 H532 V1100 H550',
+    'LINE 1 FEED':        'M870 1000 H886 V920 H900',
+    'LINE 2 FEED':        'M870 1240 H886 V1005 H900',
+    'LINE 3 FEED':        'M878 1240 V1090 H900',
+    'LINE 1 PRODUCT':     'M1080 920 H1105 V1180 H1140',
+    'LINE 2 PRODUCT':     'M1080 1005 H1118 V1380 H1140',
+    'BG-TRAIN ROUTE':     'M1460 1320 H1500 V940 H1545',
+    'C2':                 'M1460 1520 H1650 V1300 H1806',
+    'M16 IN-FEED':        'M1810 110 V1300',
+    'BAY 1 SPUR':         'M1810 140 H1850',
+    'BAY 2 SPUR':         'M1810 480 H1850',
+    'BAY 3 SPUR':         'M1810 820 H1850',
+    'BAY 4 SPUR':         'M1810 1160 H1850',
+    'M16 OUT COLLECTOR':  'M2300 280 H2460 V1300 M2300 620 H2460 M2300 960 H2460 M2300 1300 H2460',
+    'PAP-2 FEED':         'M2460 280 H2560',
+    'PAP-1 FEED':         'M2460 620 H2560',
+    'DRY-FEED FEED':      'M2460 960 H2560'
+  },
+  /* Routes that carry an on-canvas caption (corridor trunks only). */
+  routeCaptions: { 'C1': 'C1 · LOUTA → M16', 'C2': 'C2 · BENGUERIR → M16', 'BG-TRAIN ROUTE': 'BG-TRAIN' }
+};
+
+/* =========================================================================
+   2. MOCK_DATA — ALL mock operating data lives here and nowhere else.
+      Replace wholesale from the host application, or push partial updates
+      through window.updateStockyardState().
+   ========================================================================= */
+var MOCK_DATA = {
+  stateTime: '13 Jul 2026 · 06:00',
+
+  piles: [
+    { id: '102MG-SP-01', site: 'LOUTA', massT: 41400, capacityT: 60000, fillPct: 69, repereFrom: 120, repereTo: 690, grades: [{ grade: 'BT', fraction: 0.42 }, { grade: 'HIGH-CD', fraction: 0.27 }] },
+    { id: '102MG-SP-02', site: 'LOUTA', massT: 33000, capacityT: 60000, fillPct: 55, repereFrom: 60,  repereTo: 520, grades: [{ grade: 'BT', fraction: 0.33 }, { grade: 'LOW-CD', fraction: 0.22 }] },
+    { id: '110LG-OL1',   site: 'LOUTA', massT: 29250, capacityT: 45000, fillPct: 65, repereFrom: 80,  repereTo: 640, grades: [{ grade: 'BT', fraction: 0.40 }, { grade: 'HIGH-CD', fraction: 0.25 }] },
+    { id: '110LG-OL2',   site: 'LOUTA', massT: 18000, capacityT: 45000, fillPct: 40, repereFrom: 140, repereTo: 500, grades: [{ grade: 'BT', fraction: 0.25 }, { grade: 'LOW-CD', fraction: 0.15 }] },
+    { id: 'LT-P1',       site: 'LOUTA', massT: 19500, capacityT: 30000, fillPct: 65, repereFrom: 100, repereTo: 650, grades: [{ grade: 'TBT', fraction: 0.40 }, { grade: 'BT', fraction: 0.25 }] },
+    { id: 'LT-P2',       site: 'LOUTA', massT: 12000, capacityT: 30000, fillPct: 40, repereFrom: 220, repereTo: 580, grades: [{ grade: 'BT', fraction: 0.25 }, { grade: 'MT', fraction: 0.15 }] },
+
+    { id: 'BG-MINE-P1',  site: 'BENGUERIR', massT: 58500, capacityT: 90000, fillPct: 65, repereFrom: 60, repereTo: 700, grades: [{ grade: 'BT', fraction: 0.40 }, { grade: 'HIGH-CD', fraction: 0.25 }] },
+    { id: 'BG-MINE-P2',  site: 'BENGUERIR', massT: 45000, capacityT: 90000, fillPct: 50, repereFrom: 140, repereTo: 620, grades: [{ grade: 'BT', fraction: 0.30 }, { grade: 'LOW-CD', fraction: 0.20 }] },
+    { id: 'BG-RAW-P1',   site: 'BENGUERIR', massT: 30000, capacityT: 50000, fillPct: 60, repereFrom: 90, repereTo: 610, grades: [{ grade: 'BT', fraction: 0.35 }, { grade: 'HIGH-CD', fraction: 0.25 }] },
+    { id: 'BG-RAW-P2',   site: 'BENGUERIR', massT: 17500, capacityT: 50000, fillPct: 35, repereFrom: 260, repereTo: 540, grades: [{ grade: 'BT', fraction: 0.20 }, { grade: 'LOW-CD', fraction: 0.15 }] },
+    { id: 'BG-P1',       site: 'BENGUERIR', massT: 21000, capacityT: 35000, fillPct: 60, repereFrom: 70,  repereTo: 680, grades: [{ grade: 'TBT', fraction: 0.60 }] },
+    { id: 'BG-P2',       site: 'BENGUERIR', massT: 14000, capacityT: 35000, fillPct: 40, repereFrom: 180, repereTo: 560, grades: [{ grade: 'BT', fraction: 0.40 }] },
+
+    { id: 'HP-01', site: 'MPH', massT: 16250, capacityT: 25000, fillPct: 65, repereFrom: 40,  repereTo: 620, grades: [{ grade: 'TBT', fraction: 0.65 }] },
+    { id: 'HP-05', site: 'MPH', massT: 11250, capacityT: 25000, fillPct: 45, repereFrom: 80,  repereTo: 500, grades: [{ grade: 'TBT', fraction: 0.45 }] },
+    { id: 'HP-02', site: 'MPH', massT: 15000, capacityT: 25000, fillPct: 60, repereFrom: 60,  repereTo: 660, grades: [{ grade: 'LT', fraction: 0.35 }, { grade: 'BT', fraction: 0.25 }] },
+    { id: 'HP-06', site: 'MPH', massT: 8750,  capacityT: 25000, fillPct: 35, repereFrom: 120, repereTo: 470, grades: [{ grade: 'BT', fraction: 0.35 }] },
+    { id: 'HP-03', site: 'MPH', massT: 12500, capacityT: 25000, fillPct: 50, repereFrom: 90,  repereTo: 590, grades: [{ grade: 'MT', fraction: 0.50 }] },
+    { id: 'HP-07', site: 'MPH', massT: 0,     capacityT: 25000, fillPct: 0,  repereFrom: 0,   repereTo: 0,   grades: [] },
+    { id: 'HP-04', site: 'MPH', massT: 10000, capacityT: 25000, fillPct: 40, repereFrom: 150, repereTo: 520, grades: [{ grade: 'TBT', fraction: 0.40 }] },
+    { id: 'HP-08', site: 'MPH', massT: 0,     capacityT: 25000, fillPct: 0,  repereFrom: 0,   repereTo: 0,   grades: [] }
+  ],
+
+  machines: [
+    { id: '102MG-ST-01',  type: 'Stacker',   railId: 'RL-L-MS-1',  state: 'Stacking',    jobId: 'JOB-1041', targetId: '102MG-SP-01', positionRepere: 420, rateTph: 1180, maximumRateTph: 1600 },
+    { id: '110MG-RC-01',  type: 'Reclaimer', railId: 'RC-L-MS-1',  state: 'Reclaiming',  jobId: 'JOB-1042', targetId: '110LG-OL1',   positionRepere: 250, rateTph: 940,  maximumRateTph: 1400 },
+    { id: '102MG-ST-02',  type: 'Stacker',   railId: 'RL-L-MS-2',  state: 'Idle',        jobId: null,       targetId: null,          positionRepere: 620, rateTph: 0,    maximumRateTph: 1600 },
+    { id: '110MG-RC-02',  type: 'Reclaimer', railId: 'RC-L-MS-2',  state: 'Travelling',  jobId: 'JOB-1044', targetId: '102MG-SP-02', positionRepere: 780, rateTph: 0,    maximumRateTph: 1400 },
+    { id: '110LG-ST-01',  type: 'Stacker',   railId: 'RL-L-RAW-1', state: 'Stacking',    jobId: 'JOB-1045', targetId: '110LG-OL1',   positionRepere: 380, rateTph: 1050, maximumRateTph: 1500 },
+    { id: '120LG-RC-01',  type: 'Reclaimer', railId: 'RC-L-RAW-1', state: 'Reclaiming',  jobId: 'JOB-1046', targetId: 'LINE L1',     positionRepere: 300, rateTph: 880,  maximumRateTph: 1300 },
+    { id: '110LG-ST-02',  type: 'Stacker',   railId: 'RL-L-RAW-2', state: 'Idle',        jobId: null,       targetId: null,          positionRepere: 700, rateTph: 0,    maximumRateTph: 1500 },
+    { id: '120LG-RC-02',  type: 'Reclaimer', railId: 'RC-L-RAW-2', state: 'Reclaiming',  jobId: 'JOB-1048', targetId: 'LINE L2',     positionRepere: 420, rateTph: 760,  maximumRateTph: 1300 },
+    { id: '130LG-ST-01',  type: 'Stacker',   railId: 'RL-L-WP-1',  state: 'Stacking',    jobId: 'JOB-1049', targetId: 'LT-P1',       positionRepere: 460, rateTph: 990,  maximumRateTph: 1400 },
+    { id: '140LG-RC-01',  type: 'Reclaimer', railId: 'RC-L-WP-1',  state: 'Idle',        jobId: null,       targetId: null,          positionRepere: 200, rateTph: 0,    maximumRateTph: 2600 },
+    { id: '130LG-ST-02',  type: 'Stacker',   railId: 'RL-L-WP-2',  state: 'Maintenance', jobId: 'WO-3312',  targetId: null,          positionRepere: 620, rateTph: 0,    maximumRateTph: 1400 },
+    { id: '140LG-RC-02',  type: 'Reclaimer', railId: 'RC-L-WP-2',  state: 'Reclaiming',  jobId: 'JOB-1052', targetId: 'C1',          positionRepere: 540, rateTph: 1850, maximumRateTph: 2600 },
+
+    { id: 'BG-MINE-ST-1', type: 'Stacker',   railId: 'RL-B-MS-1',  state: 'Stacking',    jobId: 'JOB-2011', targetId: 'BG-MINE-P1',  positionRepere: 400, rateTph: 1420, maximumRateTph: 1800 },
+    { id: 'BG-MINE-RC-1', type: 'Reclaimer', railId: 'RC-B-MS-1',  state: 'Reclaiming',  jobId: 'JOB-2012', targetId: 'BG-RAW-P1',   positionRepere: 180, rateTph: 1210, maximumRateTph: 1600 },
+    { id: 'BG-MINE-ST-2', type: 'Stacker',   railId: 'RL-B-MS-2',  state: 'Stacking',    jobId: 'JOB-2013', targetId: 'BG-MINE-P2',  positionRepere: 660, rateTph: 1360, maximumRateTph: 1800 },
+    { id: 'BG-MINE-RC-2', type: 'Reclaimer', railId: 'RC-B-MS-2',  state: 'Idle',        jobId: null,       targetId: null,          positionRepere: 300, rateTph: 0,    maximumRateTph: 1600 },
+    { id: 'BG-RAW-ST-1',  type: 'Stacker',   railId: 'RL-B-RAW-1', state: 'Stacking',    jobId: 'JOB-2015', targetId: 'BG-RAW-P1',   positionRepere: 350, rateTph: 1120, maximumRateTph: 1600 },
+    { id: 'BG-RAW-RC-1',  type: 'Reclaimer', railId: 'RC-B-RAW-1', state: 'Reclaiming',  jobId: 'JOB-2016', targetId: 'LINE 1',      positionRepere: 480, rateTph: 1050, maximumRateTph: 1500 },
+    { id: 'BG-RAW-ST-2',  type: 'Stacker',   railId: 'RL-B-RAW-2', state: 'Unavailable', jobId: 'WO-3318',  targetId: null,          positionRepere: 720, rateTph: 0,    maximumRateTph: 1600 },
+    { id: 'BG-RAW-RC-2',  type: 'Reclaimer', railId: 'RC-B-RAW-2', state: 'Reclaiming',  jobId: 'JOB-2018', targetId: 'LINE 2',      positionRepere: 380, rateTph: 830,  maximumRateTph: 1500 },
+    { id: 'BG-ST-3',      type: 'Stacker',   railId: 'RL-B-WP-1',  state: 'Stacking',    jobId: 'JOB-2019', targetId: 'BG-P1',       positionRepere: 430, rateTph: 1080, maximumRateTph: 1500 },
+    { id: 'BG-RC-2',      type: 'Reclaimer', railId: 'RC-B-WP-1',  state: 'Reclaiming',  jobId: 'JOB-2020', targetId: 'BG-TRAIN',    positionRepere: 240, rateTph: 1150, maximumRateTph: 1800 },
+    { id: 'BG-ST-4',      type: 'Stacker',   railId: 'RL-B-WP-2',  state: 'Idle',        jobId: null,       targetId: null,          positionRepere: 640, rateTph: 0,    maximumRateTph: 1500 },
+    { id: 'BG-RC-3',      type: 'Reclaimer', railId: 'RC-B-WP-2',  state: 'Reclaiming',  jobId: 'JOB-2022', targetId: 'C2',          positionRepere: 520, rateTph: 1620, maximumRateTph: 2600 },
+
+    { id: 'M16-ST-A', type: 'Stacker',   railId: 'RL-M-B1', state: 'Stacking',   jobId: 'JOB-3001', targetId: 'HP-01',    positionRepere: 300, rateTph: 2100, maximumRateTph: 2600 },
+    { id: 'M16-RC-A', type: 'Reclaimer', railId: 'RC-M-B1', state: 'Idle',       jobId: null,       targetId: null,       positionRepere: 640, rateTph: 0,    maximumRateTph: 2400 },
+    { id: 'M16-ST-B', type: 'Stacker',   railId: 'RL-M-B2', state: 'Travelling', jobId: 'JOB-3003', targetId: 'HP-06',    positionRepere: 720, rateTph: 0,    maximumRateTph: 2600 },
+    { id: 'M16-RC-B', type: 'Reclaimer', railId: 'RC-M-B2', state: 'Reclaiming', jobId: 'JOB-3004', targetId: 'PAP-1',    positionRepere: 260, rateTph: 1980, maximumRateTph: 2400 },
+    { id: 'M16-ST-C', type: 'Stacker',   railId: 'RL-M-B3', state: 'Idle',       jobId: null,       targetId: null,       positionRepere: 480, rateTph: 0,    maximumRateTph: 2600 },
+    { id: 'M16-RC-C', type: 'Reclaimer', railId: 'RC-M-B3', state: 'Reclaiming', jobId: 'JOB-3006', targetId: 'DRY-FEED', positionRepere: 380, rateTph: 1240, maximumRateTph: 2400 },
+    { id: 'M16-ST-D', type: 'Stacker',   railId: 'RL-M-B4', state: 'Future',     jobId: null,       targetId: null,       positionRepere: 300, rateTph: 0,    maximumRateTph: 2600 },
+    { id: 'M16-RC-D', type: 'Reclaimer', railId: 'RC-M-B4', state: 'Idle',       jobId: null,       targetId: null,       positionRepere: 700, rateTph: 0,    maximumRateTph: 2400 }
+  ],
+
+  routes: [
+    { id: 'LO-HOP-1 FEED',     fromId: 'LO-HOP-1',     toId: '102MG-ST-01',  state: 'Running',     flowTph: 1180, capacityTph: 1600 },
+    { id: 'LO-HOP-2 FEED',     fromId: 'LO-HOP-2',     toId: '102MG-ST-02',  state: 'Idle',        flowTph: 0,    capacityTph: 1600 },
+    { id: 'L-MS→RAW 1',        fromId: '110MG-RC-01',  toId: '110LG-ST-02',  state: 'Running',     flowTph: 940,  capacityTph: 1400 },
+    { id: 'L-MS→RAW 2',        fromId: '110MG-RC-02',  toId: '110LG-ST-01',  state: 'Idle',        flowTph: 0,    capacityTph: 1400 },
+    { id: 'L1 FEED',           fromId: '120LG-RC-01',  toId: 'LINE L1',      state: 'Running',     flowTph: 880,  capacityTph: 1300 },
+    { id: 'L2 FEED',           fromId: '120LG-RC-02',  toId: 'LINE L2',      state: 'Running',     flowTph: 760,  capacityTph: 1300 },
+    { id: 'L1 PRODUCT',        fromId: 'LINE L1',      toId: '130LG-ST-01',  state: 'Running',     flowTph: 720,  capacityTph: 1200 },
+    { id: 'L2 PRODUCT',        fromId: 'LINE L2',      toId: '130LG-ST-02',  state: 'Unavailable', flowTph: 0,    capacityTph: 1200 },
+    { id: 'C1',                fromId: '140LG-RC-02',  toId: 'IF-C1-M16',    state: 'Running',     flowTph: 1850, capacityTph: 2600 },
+    { id: 'BG-HOP-1 FEED',     fromId: 'BG-HOP-1',     toId: 'BG-MINE-ST-1', state: 'Running',     flowTph: 1420, capacityTph: 1800 },
+    { id: 'BG-HOP-2 FEED',     fromId: 'BG-HOP-2',     toId: 'BG-MINE-ST-1', state: 'Running',     flowTph: 1310, capacityTph: 1800 },
+    { id: 'BG-HOP-3 FEED',     fromId: 'BG-HOP-3',     toId: 'BG-MINE-ST-2', state: 'Unavailable', flowTph: 0,    capacityTph: 1800 },
+    { id: 'B-MS→RAW 1',        fromId: 'BG-MINE-RC-1', toId: 'BG-RAW-ST-1',  state: 'Running',     flowTph: 1210, capacityTph: 1600 },
+    { id: 'B-MS→RAW 2',        fromId: 'BG-MINE-RC-2', toId: 'BG-RAW-ST-2',  state: 'Idle',        flowTph: 0,    capacityTph: 1600 },
+    { id: 'LINE 1 FEED',       fromId: 'BG-RAW-RC-1',  toId: 'LINE 1',       state: 'Running',     flowTph: 1050, capacityTph: 1500 },
+    { id: 'LINE 2 FEED',       fromId: 'BG-RAW-RC-2',  toId: 'LINE 2',       state: 'Running',     flowTph: 830,  capacityTph: 1500 },
+    { id: 'LINE 3 FEED',       fromId: 'BG-RAW-RC-2',  toId: 'LINE 3',       state: 'Future',      flowTph: 0,    capacityTph: 1500 },
+    { id: 'LINE 1 PRODUCT',    fromId: 'LINE 1',       toId: 'BG-ST-3',      state: 'Running',     flowTph: 1080, capacityTph: 1400 },
+    { id: 'LINE 2 PRODUCT',    fromId: 'LINE 2',       toId: 'BG-ST-4',      state: 'Idle',        flowTph: 0,    capacityTph: 1400 },
+    { id: 'BG-TRAIN ROUTE',    fromId: 'BG-RC-2',      toId: 'BG-TRAIN',     state: 'Running',     flowTph: 1150, capacityTph: 1800 },
+    { id: 'C2',                fromId: 'BG-RC-3',      toId: 'IF-C2-M16',    state: 'Running',     flowTph: 1620, capacityTph: 2600 },
+    { id: 'M16 IN-FEED',       fromId: 'IF-C1-M16',    toId: 'M16-ST-A',     state: 'Running',     flowTph: 3470, capacityTph: 5200 },
+    { id: 'BAY 1 SPUR',        fromId: 'M16 IN-FEED',  toId: 'M16-ST-A',     state: 'Running',     flowTph: 2100, capacityTph: 2600 },
+    { id: 'BAY 2 SPUR',        fromId: 'M16 IN-FEED',  toId: 'M16-ST-B',     state: 'Idle',        flowTph: 0,    capacityTph: 2600 },
+    { id: 'BAY 3 SPUR',        fromId: 'M16 IN-FEED',  toId: 'M16-ST-C',     state: 'Idle',        flowTph: 0,    capacityTph: 2600 },
+    { id: 'BAY 4 SPUR',        fromId: 'M16 IN-FEED',  toId: 'M16-ST-D',     state: 'Future',      flowTph: 0,    capacityTph: 2600 },
+    { id: 'M16 OUT COLLECTOR', fromId: 'M16-RC-B',     toId: 'PAP-1 FEED',   state: 'Running',     flowTph: 3220, capacityTph: 5000 },
+    { id: 'PAP-2 FEED',        fromId: 'M16 OUT COLLECTOR', toId: 'PAP-2',    state: 'Future',     flowTph: 0,    capacityTph: 2400 },
+    { id: 'PAP-1 FEED',        fromId: 'M16 OUT COLLECTOR', toId: 'PAP-1',    state: 'Running',    flowTph: 1980, capacityTph: 2400 },
+    { id: 'DRY-FEED FEED',     fromId: 'M16 OUT COLLECTOR', toId: 'DRY-FEED', state: 'Running',    flowTph: 1240, capacityTph: 2400 }
+  ],
+
+  processLines: [
+    { id: 'LINE L1', state: 'Available', residenceMinutes: 38 },
+    { id: 'LINE L2', state: 'Available', residenceMinutes: 41 },
+    { id: 'LINE 1',  state: 'Available', residenceMinutes: 36 },
+    { id: 'LINE 2',  state: 'Available', residenceMinutes: 39 },
+    { id: 'LINE 3',  state: 'Future',    residenceMinutes: null }
+  ],
+
+  destinations: [
+    { id: 'PAP-2',    lifecycleState: 'Future',    requestedGrade: 'G10', demandT: null, plannedDeliveryT: null },
+    { id: 'PAP-1',    lifecycleState: 'Available', requestedGrade: 'G10', demandT: 1900, plannedDeliveryT: 44600 },
+    { id: 'DRY-FEED', lifecycleState: 'Available', requestedGrade: 'MT',  demandT: 1250, plannedDeliveryT: 28800 },
+    { id: 'BG-TRAIN', lifecycleState: 'Available', requestedGrade: 'TBT', demandT: 1150, plannedDeliveryT: 8400 }
+  ],
+
+  hoppers: [
+    { id: 'LO-HOP-1', state: 'Running',     rateTph: 1180, maximumRateTph: 1600, feedsId: '102MG-SP-01' },
+    { id: 'LO-HOP-2', state: 'Idle',        rateTph: 0,    maximumRateTph: 1600, feedsId: '102MG-SP-02' },
+    { id: 'BG-HOP-1', state: 'Running',     rateTph: 1420, maximumRateTph: 1800, feedsId: 'BG-MINE-P1' },
+    { id: 'BG-HOP-2', state: 'Running',     rateTph: 1310, maximumRateTph: 1800, feedsId: 'BG-MINE-P1' },
+    { id: 'BG-HOP-3', state: 'Maintenance', rateTph: 0,    maximumRateTph: 1800, feedsId: 'BG-MINE-P2' }
+  ],
+
+  /* Mock time control. Each entry is a sparse patch applied over the base
+     snapshot above — the host app would instead push real snapshots. */
+  timeline: [
+    { stateTime: '13 Jul 2026 · 06:00', patch: {} },
+    { stateTime: '13 Jul 2026 · 14:00', patch: {
+        piles: [{ id: '102MG-SP-01', massT: 36000, fillPct: 60 }, { id: 'HP-01', massT: 19000, fillPct: 76, grades: [{ grade: 'TBT', fraction: 0.76 }] }, { id: 'HP-07', massT: 5000, fillPct: 20, grades: [{ grade: 'MT', fraction: 0.20 }] }],
+        machines: [{ id: '110MG-RC-02', state: 'Reclaiming', jobId: 'JOB-1061', targetId: '110LG-OL2', positionRepere: 420, rateTph: 1120 }, { id: 'M16-ST-C', state: 'Stacking', jobId: 'JOB-3011', targetId: 'HP-07', positionRepere: 620, rateTph: 1900 }],
+        routes: [{ id: 'BAY 3 SPUR', state: 'Running', flowTph: 1900 }, { id: 'L-MS→RAW 2', state: 'Running', flowTph: 1120 }]
+      } },
+    { stateTime: '13 Jul 2026 · 22:00', patch: {
+        piles: [{ id: 'LT-P2', massT: 6000, fillPct: 20, grades: [{ grade: 'BT', fraction: 0.20 }] }, { id: 'BG-P2', massT: 20000, fillPct: 57, grades: [{ grade: 'BT', fraction: 0.57 }] }],
+        machines: [{ id: '130LG-ST-02', state: 'Idle', jobId: null, rateTph: 0 }, { id: 'BG-ST-4', state: 'Stacking', jobId: 'JOB-2044', targetId: 'BG-P2', rateTph: 1300 }, { id: 'M16-RC-A', state: 'Reclaiming', jobId: 'JOB-3021', targetId: 'PAP-1', rateTph: 2200 }],
+        routes: [{ id: 'LINE 2 PRODUCT', state: 'Running', flowTph: 1300 }, { id: 'L2 PRODUCT', state: 'Idle', flowTph: 0 }]
+      } },
+    { stateTime: '14 Jul 2026 · 06:00', patch: {
+        piles: [{ id: 'BG-MINE-P1', massT: 72000, fillPct: 80, grades: [{ grade: 'BT', fraction: 0.50 }, { grade: 'HIGH-CD', fraction: 0.30 }] }, { id: 'HP-08', massT: 4000, fillPct: 16, grades: [{ grade: 'TBT', fraction: 0.16 }] }],
+        machines: [{ id: 'BG-RAW-ST-2', state: 'Idle', jobId: null }, { id: 'M16-ST-B', state: 'Stacking', jobId: 'JOB-3031', targetId: 'HP-06', positionRepere: 800, rateTph: 2050 }],
+        routes: [{ id: 'B-MS→RAW 2', state: 'Running', flowTph: 1400 }, { id: 'BAY 2 SPUR', state: 'Running', flowTph: 2050 }],
+        processLines: [{ id: 'LINE 3', state: 'Available', residenceMinutes: 37 }]
+      } }
+  ]
+};
+
+/* =========================================================================
+   3. RENDERER — static layout build + state application. No planning logic.
+   ========================================================================= */
+var SVGNS = 'http://www.w3.org/2000/svg';
+function svg(tag, attrs, parent) {
+  var n = document.createElementNS(SVGNS, tag);
+  if (attrs) for (var k in attrs) if (attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function txt(parent, x, y, s, opts) {
+  opts = opts || {};
+  var t = svg('text', {
+    x: x, y: y, 'font-size': opts.size || 15, fill: opts.fill || '#5f686f',
+    'text-anchor': opts.anchor || 'start', 'font-weight': opts.weight || 400,
+    'font-family': opts.mono ? FONT_MONO : FONT_SANS,
+    'letter-spacing': opts.ls || 0
+  }, parent);
+  t.textContent = s;
+  return t;
+}
+var kt = function (v) { return (v / 1000).toFixed(1); };
+var num = function (v) { return (v || 0).toLocaleString('en-US'); };
+function ratePair(value, capacity, physical) {
+  return num(value) + ' / ' +
+    (capacity == null || !isFinite(Number(capacity)) ? '—' : num(capacity)) +
+    (physical ? ' physical t/h' : ' t/h');
+}
+function utilisation(value, capacity) {
+  var cap = Number(capacity);
+  return isFinite(cap) && cap > 0
+    ? Math.round(Number(value || 0) / cap * 100) + '%'
+    : '—';
+}
+
+/* --- runtime (view/interaction) state, not operating data --- */
+var VIEW = { x: 0, y: 0, k: .5 };
+var HOST_DATA = __PRODUCTION_DATA__;
+Object.keys(HOST_DATA.gradeColors || {}).forEach(function (grade) {
+  GRADE_COLOR[grade] = HOST_DATA.gradeColors[grade];
+});
+var requestedGrades = Array.isArray(HOST_DATA.selectedGrades)
+  ? HOST_DATA.selectedGrades.filter(function (grade) { return !!GRADE_COLOR[grade]; })
+  : [];
+var UI = {
+  hover: null,
+  sel: HOST_DATA.initialSelection || null,
+  grades: requestedGrades.length ? requestedGrades.slice() : Object.keys(GRADE_COLOR).slice(),
+  stateFilter: 'All states',
+  legend: false,
+  dragging: false
+};
+var DATA = clone(HOST_DATA);
+var ROUTING_VIEW = !!(DATA.planningMode && DATA.displayMode === 'routing-availability');
+if (ROUTING_VIEW) document.body.classList.add('routing-availability');
+var REF = { pile: {}, machine: {}, rail: {}, route: {}, hopper: {}, processLine: {}, destination: {}, corridor: {} };
+var stage = document.getElementById('stage'), world = document.getElementById('world');
+
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function byId(list, id) { for (var i = 0; i < (list || []).length; i++) if (list[i].id === id) return list[i]; return null; }
+function assetData(kind, id) {
+  var key = kind === 'processLine' ? 'processLines' : kind + 's';
+  return byId(DATA[key], id);
+}
+function displayId(kind, id) {
+  var item = assetData(kind, id);
+  return item && (item.canonicalId || item.label)
+    ? (item.canonicalId || item.label) : id;
+}
+function row(id) { return byId(LAYOUT.rows, id); }
+function group(id) { return byId(LAYOUT.groups, id); }
+function rowOfPile(pid) {
+  for (var i = 0; i < LAYOUT.rows.length; i++) for (var j = 0; j < LAYOUT.rows[i].piles.length; j++)
+    if (LAYOUT.rows[i].piles[j].id === pid) return LAYOUT.rows[i];
+  return null;
+}
+function rowOfRail(rid) {
+  for (var i = 0; i < LAYOUT.rows.length; i++) if (LAYOUT.rows[i].stackerRail === rid || LAYOUT.rows[i].reclaimerRail === rid) return LAYOUT.rows[i];
+  return null;
+}
+function pileGeom(pid) {
+  var r = rowOfPile(pid); if (!r) return null;
+  for (var j = 0; j < r.piles.length; j++) if (r.piles[j].id === pid) return { row: r, x: r.piles[j].x, w: r.piles[j].w, y: r.y };
+  return null;
+}
+function railGeom(rid) {
+  var r = rowOfRail(rid); if (!r) return null;
+  var g = group(r.group);
+  return { row: r, x1: g.x + 5, x2: g.x + g.w - 5, y: r.stackerRail === rid ? r.y - RUP : r.y + PH + RDN, kind: r.stackerRail === rid ? 'Stacker' : 'Reclaimer' };
+}
+function stateColor(s) { return (STATE[s] || STATE.Idle)[0]; }
+function stateCode(s) { return (STATE[s] || STATE.Idle)[1]; }
+function baselineState(item) {
+  return String(item && item.baselineState || '').toUpperCase();
+}
+function baselineColor(item) {
+  var state = baselineState(item);
+  if (state === 'AVAILABLE') return STATE.Available[0];
+  if (state === 'PARTIAL') return '#b7791f';
+  if (state === 'MAINTENANCE') return STATE.Maintenance[0];
+  if (state === 'FUTURE') return STATE.Future[0];
+  if (state === 'REFERENCE') return '#8a9099';
+  return STATE.Unavailable[0];
+}
+function planningLabel(item, rate) {
+  var out = baselineState(item) || 'REFERENCE';
+  if (rate != null && isFinite(Number(rate))) out += ' · ' + num(rate) + ' t/h';
+  if (Number(item && item.timedChangeCount || 0) > 0)
+    out += ' · CLOCK ' + Number(item.timedChangeCount);
+  return out;
+}
+function planningStateCode(item) {
+  var state = baselineState(item);
+  return state === 'AVAILABLE' ? 'A' : state === 'PARTIAL' ? 'P' :
+    state === 'MAINTENANCE' ? 'M' : state === 'FUTURE' ? 'F' :
+    state === 'REFERENCE' ? 'R' : 'U';
+}
+function planningStateTitle(item) {
+  var state = baselineState(item) || 'REFERENCE';
+  return state.charAt(0) + state.slice(1).toLowerCase();
+}
+function planningFill(item) {
+  var state = baselineState(item);
+  if (state === 'AVAILABLE') return '#e7f3eb';
+  if (state === 'PARTIAL' || state === 'MAINTENANCE') return '#fff4dd';
+  if (state === 'FUTURE') return '#eeeaf6';
+  if (state === 'REFERENCE') return '#eceff1';
+  return '#f8e4e4';
+}
+function planningDash(item) {
+  var state = baselineState(item);
+  if (state === 'PARTIAL') return '12 6';
+  if (state === 'MAINTENANCE') return '14 5 3 5';
+  if (state === 'FUTURE') return '14 9';
+  if (state === 'REFERENCE') return '3 6';
+  if (state !== 'AVAILABLE') return '9 6';
+  return 'none';
+}
+function compactRate(value) {
+  var n = Number(value);
+  if (!isFinite(n)) return '';
+  return n >= 1000 ? (Math.round(n / 100) / 10) + 'k' : Math.round(n).toString();
+}
+function planningCompactLabel(item, rate, includeRate) {
+  var out = planningStateTitle(item);
+  if (includeRate && rate != null && isFinite(Number(rate))) out += ' / ' + compactRate(rate) + ' t/h';
+  if (Number(item && item.timedChangeCount || 0) > 0)
+    out += ' / CLOCK ' + Number(item.timedChangeCount);
+  return out;
+}
+
+/* ---------- 3a. static layout ---------- */
+function buildStaticLayout() {
+  world.innerHTML = '';
+  var lSites = svg('g', null, world), lGroups = svg('g', null, world), lRoutes = svg('g', null, world),
+      lRails = svg('g', null, world), lPiles = svg('g', null, world), lHoppers = svg('g', null, world),
+      lLines = svg('g', null, world), lDests = svg('g', null, world), lCorr = svg('g', null, world),
+      lMachines = svg('g', null, world), lText = svg('g', null, world);
+
+  LAYOUT.sites.forEach(function (s) {
+    svg('rect', { x: s.x, y: s.y, width: s.w, height: s.h, rx: 6, fill: '#e7eaec', stroke: '#cdd2d6', 'stroke-width': 1.5, 'data-asset-kind': 'site', 'data-asset-id': s.id }, lSites);
+    txt(lText, s.x + 18, s.y + 38, s.label, { size: 26, fill: NAVY, weight: 700, ls: 2.6 });
+    txt(lText, s.x + 34 + s.label.length * 20, s.y + 38, s.sub, { size: 15, fill: MUTE, weight: 500, mono: true, ls: 1.2 });
+  });
+
+  LAYOUT.groups.forEach(function (g) {
+    var rows = LAYOUT.rows.filter(function (r) { return r.group === g.id; });
+    if (!rows.length) return;
+    var ys = rows.map(function (r) { return r.y; });
+    var top = Math.min.apply(null, ys) - RUP - 30, bot = Math.max.apply(null, ys) + PH + RDN + 34;
+    svg('rect', { x: g.x, y: top, width: g.w, height: bot - top, rx: 4, fill: '#f7f8f9', stroke: '#d5dade', 'stroke-width': 1.2 }, lGroups);
+    txt(lText, g.x + 10, top + 20, g.label, { size: 16, fill: '#8b939a', weight: 600, ls: 1.8 });
+  });
+
+  /* routes: casing + inner core (state coloured on update) + fat hit line */
+  Object.keys(LAYOUT.routePaths).forEach(function (id) {
+    var d = LAYOUT.routePaths[id];
+    var g = svg('g', { 'data-asset-kind': 'route', 'data-asset-id': id, style: 'cursor:pointer' }, lRoutes);
+    svg('path', { d: d, fill: 'none', stroke: '#aab1b7', 'stroke-width': 11, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, g);
+    svg('path', { d: d, fill: 'none', stroke: '#f2f4f5', 'stroke-width': 7.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, g);
+    var core = svg('path', { d: d, fill: 'none', stroke: '#9aa1a7', 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, g);
+    var routeBadge = svg('g', { display: 'none', 'pointer-events': 'none' }, g);
+    var badgePoint = { x: 0, y: 0 };
+    try { badgePoint = core.getPointAtLength(core.getTotalLength() / 2); } catch (ignore) {}
+    var badgeCircle = svg('circle', { cx: badgePoint.x, cy: badgePoint.y, r: 13, fill: '#8a9099', stroke: '#fff', 'stroke-width': 3 }, routeBadge);
+    var badgeText = svg('text', { x: badgePoint.x, y: badgePoint.y + 4, 'font-size': 12, fill: '#fff', 'text-anchor': 'middle', 'font-weight': 800, 'font-family': FONT_MONO }, routeBadge);
+    REF.route[id] = { g: g, core: core, routeBadge: routeBadge, badgeCircle: badgeCircle, badgeText: badgeText };
+    if (LAYOUT.routeCaptions[id]) {
+      var n = d.match(/-?\d+/g).map(Number);
+      txt(lText, n[0] + 12, n[1] - 14, LAYOUT.routeCaptions[id], { size: 16, fill: '#5f686f', weight: 600, mono: true, ls: .6 });
+      REF.route[id].flowText = txt(lText, n[0] + 12, n[1] + 26, '', { size: 14, fill: '#8b939a', weight: 500, mono: true });
+    } else {
+      /* In planning mode every conveyor still needs a persistent state/rate
+         readout, even when the design handoff did not assign a caption. */
+      var p = d.match(/-?\d+/g).map(Number);
+      REF.route[id].flowText = txt(lText, p[0] + 10, p[1] - 10, '', { size: 11, fill: '#8b939a', weight: 600, mono: true });
+      REF.route[id].configurationOnly = true;
+    }
+  });
+
+  /* rails + machines + piles, row by row */
+  LAYOUT.rows.forEach(function (r) {
+    [[r.stackerRail, r.stacker, 'ST'], [r.reclaimerRail, r.reclaimer, 'RC']].forEach(function (pair) {
+      var rid = pair[0], mid = pair[1], tag = pair[2], gm = railGeom(rid);
+      var rg = svg('g', { 'data-asset-kind': 'rail', 'data-asset-id': rid, style: 'cursor:pointer' }, lRails);
+      var line = svg('line', { x1: gm.x1, y1: gm.y, x2: gm.x2, y2: gm.y, stroke: '#7c858c', 'stroke-width': 2.6 }, rg);
+      svg('path', { d: 'M' + gm.x1 + ' ' + (gm.y - 8) + ' V' + (gm.y + 8) + ' M' + gm.x2 + ' ' + (gm.y - 8) + ' V' + (gm.y + 8), stroke: '#7c858c', 'stroke-width': 2, fill: 'none' }, rg);
+      svg('line', { x1: gm.x1, y1: gm.y, x2: gm.x2, y2: gm.y, stroke: 'transparent', 'stroke-width': 18 }, rg);
+      REF.rail[rid] = { g: rg, line: line };
+
+      /* machine: local coords, positioned by transform on state update */
+      var mg = svg('g', { 'data-asset-kind': 'machine', 'data-asset-id': mid, style: 'cursor:pointer' }, lMachines);
+      svg('path', { d: tag === 'ST' ? 'M8 0 L23 -16 L38 0 Z' : 'M8 28 L23 44 L38 28 Z', fill: '#c9ced3', stroke: '#4e565d', 'stroke-width': 1.6 }, mg);
+      var body = svg('rect', { x: 0, y: 0, width: 46, height: 28, rx: 3, fill: '#d6dbdf', stroke: '#4e565d', 'stroke-width': 1.8 }, mg);
+      var lamp = svg('circle', { cx: 46, cy: -1, r: 9, fill: '#8a9099', stroke: '#fff', 'stroke-width': 1.5 }, mg);
+      var lampT = svg('text', { x: 46, y: 3, 'font-size': 11, fill: '#fff', 'text-anchor': 'middle', 'font-weight': 600, 'font-family': FONT_MONO }, mg);
+      var typeT = svg('text', { x: 23, y: 19, 'font-size': 14, fill: '#3d464e', 'text-anchor': 'middle', 'font-weight': 600, 'font-family': FONT_MONO }, mg);
+      typeT.textContent = tag;
+      var idT = svg('text', { x: 23, y: tag === 'ST' ? -22 : 58, 'font-size': 14, fill: '#697178', 'text-anchor': 'middle', 'font-weight': 500, 'font-family': FONT_MONO }, mg);
+      idT.textContent = displayId('machine', mid);
+      var configT = svg('text', { x: 23, y: tag === 'ST' ? -38 : 74, 'font-size': 10, fill: '#2f7d4f', 'text-anchor': 'middle', 'font-weight': 700, 'font-family': FONT_MONO, 'letter-spacing': .4 }, mg);
+      REF.machine[mid] = { g: mg, body: body, lamp: lamp, lampT: lampT, idT: idT, configT: configT, rail: rid, tag: tag };
+    });
+
+    r.piles.forEach(function (p) {
+      var narrow = p.w < 260;
+      var pg = svg('g', { 'data-asset-kind': 'pile', 'data-asset-id': p.id, style: 'cursor:pointer' }, lPiles);
+      var shell = svg('rect', { x: p.x, y: r.y, width: p.w, height: PH, rx: 3, fill: '#fdfdfd', stroke: '#6b747b', 'stroke-width': 1.8 }, pg);
+      var bands = svg('g', null, pg);
+      var mark = svg('line', { x1: p.x, y1: r.y, x2: p.x, y2: r.y + PH, stroke: '#c3494f', 'stroke-width': 1.6, 'stroke-dasharray': '4 3' }, pg);
+      var td = '';
+      for (var i = 0; i <= 4; i++) {
+        var tx = p.x + (p.w * i) / 4;
+        td += 'M' + tx + ' ' + (r.y + PH) + ' v7 ';
+        if (!(narrow && i === 3)) {
+          var tickLabel = txt(lText, tx, r.y + PH + 22, 'R' + i * 250, { size: 13, fill: '#a7aeb4', anchor: i === 0 ? 'start' : (i === 4 ? 'end' : 'middle'), weight: 500, mono: true });
+          tickLabel.setAttribute('class', 'routing-detail-label');
+        }
+      }
+      svg('path', { d: td, stroke: '#b9c0c5', 'stroke-width': 1.2, fill: 'none', 'class': 'routing-detail-label' }, world.insertBefore(svg('g'), lPiles));
+      txt(lText, p.x + 2, r.y - 8, displayId('pile', p.id), { size: narrow ? 15 : 18, fill: NAVY, weight: 600, mono: true, ls: .3 });
+      var readout = txt(lText, p.x + p.w - 2, r.y - 8, '', { size: narrow ? 12 : 15, fill: '#788188', anchor: 'end', weight: 500, mono: true });
+      readout.setAttribute('class', 'routing-detail-label');
+      var blendBadge = svg('g', { display: 'none' }, pg);
+      var blendBadgeRect = svg('rect', { x: p.x + p.w - 96, y: r.y + 7, width: 89, height: 22, rx: 4, fill: NAVY, stroke: '#fff', 'stroke-width': 1.2 }, blendBadge);
+      var blendBadgeText = svg('text', { x: p.x + p.w - 51.5, y: r.y + 22, 'font-size': 10, fill: '#fff', 'text-anchor': 'middle', 'font-weight': 700, 'font-family': FONT_MONO, 'letter-spacing': .5 }, blendBadge);
+      blendBadgeText.textContent = 'BLEND POINT';
+      REF.pile[p.id] = { g: pg, shell: shell, bands: bands, mark: mark, readout: readout, blendBadge: blendBadge, blendBadgeRect: blendBadgeRect, x: p.x, w: p.w, y: r.y, narrow: narrow, bandLabels: lText };
+    });
+  });
+
+  LAYOUT.hoppers.forEach(function (h) {
+    var g = svg('g', { 'data-asset-kind': 'hopper', 'data-asset-id': h.id, style: 'cursor:pointer' }, lHoppers);
+    var shape = svg('path', { d: 'M' + h.x + ' ' + (h.y - 18) + ' H' + (h.x + 56) + ' L' + (h.x + 38) + ' ' + (h.y + 18) + ' H' + (h.x + 18) + ' Z', fill: '#d6dbdf', stroke: '#4e565d', 'stroke-width': 1.8 }, g);
+    var lamp = svg('circle', { cx: h.x + 56, cy: h.y - 20, r: 8, fill: '#8a9099', stroke: '#fff', 'stroke-width': 1.4 }, g);
+    var lampT = svg('text', { x: h.x + 56, y: h.y - 16, 'font-size': 10, fill: '#fff', 'text-anchor': 'middle', 'font-family': FONT_MONO, 'font-weight': 600 }, g);
+    txt(lText, h.x + 28, h.y + 36, displayId('hopper', h.id), { size: 14, fill: '#697178', anchor: 'middle', weight: 500, mono: true });
+    REF.hopper[h.id] = { g: g, shape: shape, lamp: lamp, lampT: lampT };
+  });
+
+  LAYOUT.processLines.forEach(function (l) {
+    var g = svg('g', { 'data-asset-kind': 'processLine', 'data-asset-id': l.id, style: 'cursor:pointer' }, lLines);
+    var box = svg('rect', { x: l.x, y: l.y, width: l.w, height: l.h, rx: 4, fill: '#fff', stroke: '#9aa2a8', 'stroke-width': 1.6 }, g);
+    var bar = svg('rect', { x: l.x, y: l.y, width: 7, height: l.h, rx: 1, fill: '#8a9099' }, g);
+    var name = txt(lText, l.x + l.w / 2 + 4, l.y + l.h / 2 + 2, displayId('processLine', l.id), { size: 19, fill: NAVY, anchor: 'middle', weight: 700, ls: 1.4 });
+    var sub = txt(lText, l.x + l.w / 2 + 4, l.y + l.h / 2 + 22, '', { size: 13, fill: '#8b939a', anchor: 'middle', weight: 500, mono: true, ls: .6 });
+    REF.processLine[l.id] = { g: g, box: box, bar: bar, name: name, sub: sub };
+  });
+
+  LAYOUT.destinations.forEach(function (d) {
+    var g = svg('g', { 'data-asset-kind': 'destination', 'data-asset-id': d.id, style: 'cursor:pointer' }, lDests);
+    var box = svg('rect', { x: d.x, y: d.y, width: d.w, height: d.h, rx: 4, fill: '#dfe4e8', stroke: '#7c858c', 'stroke-width': 1.6 }, g);
+    var headTop = svg('rect', { x: d.x, y: d.y, width: d.w, height: 26, rx: 4, fill: '#3d464e' }, g);
+    var headBottom = svg('rect', { x: d.x, y: d.y + 14, width: d.w, height: 12, fill: '#3d464e' }, g);
+    txt(lText, d.x + 10, d.y + 18, 'DEST', { size: 12, fill: '#fff', weight: 600, mono: true, ls: 1.4 });
+    var st = txt(lText, d.x + d.w - 10, d.y + 18, '', { size: 12, fill: '#c9e3d3', anchor: 'end', weight: 600, mono: true, ls: 1 });
+    var name = txt(lText, d.x + d.w / 2, d.y + d.h / 2 + 16, displayId('destination', d.id), { size: 22, fill: NAVY, anchor: 'middle', weight: 700, ls: 1.2 });
+    REF.destination[d.id] = { g: g, box: box, headTop: headTop, headBottom: headBottom, st: st, name: name };
+  });
+
+  LAYOUT.corridors.forEach(function (c) {
+    var g = svg('g', { 'data-asset-kind': 'corridor', 'data-asset-id': c.id, style: 'cursor:pointer' }, lCorr);
+    var box = svg('rect', { x: c.x, y: c.y, width: c.w, height: c.h, rx: 3, fill: '#fff', stroke: '#7c858c', 'stroke-width': 1.6 }, g);
+    txt(lText, c.x + c.w / 2, c.y + c.h / 2 + 6, c.label, { size: 16, fill: NAVY, anchor: 'middle', weight: 700, mono: true, ls: .8 });
+    REF.corridor[c.id] = { g: g, box: box };
+  });
+}
+
+/* ---------- 3b. connectivity (for connected-path highlight) ---------- */
+function neighbours(kind, id) {
+  var out = [];
+  var push = function (k, i) { if (i) out.push(k + ':' + i); };
+  var assetKind = function (aid) {
+    if (byId(DATA.piles, aid)) return 'pile';
+    if (byId(DATA.machines, aid)) return 'machine';
+    if (byId(DATA.routes, aid)) return 'route';
+    if (byId(DATA.processLines, aid)) return 'processLine';
+    if (byId(DATA.destinations, aid)) return 'destination';
+    if (byId(DATA.hoppers, aid)) return 'hopper';
+    if (byId(LAYOUT.corridors, aid)) return 'corridor';
+    return null;
+  };
+  if (kind === 'pile') {
+    var r = rowOfPile(id);
+    if (r) { push('machine', r.stacker); push('machine', r.reclaimer); push('rail', r.stackerRail); push('rail', r.reclaimerRail); }
+    DATA.routes.forEach(function (rt) { if (rt.toId === id || rt.fromId === id || (r && (rt.toId === r.stacker || rt.fromId === r.reclaimer))) push('route', rt.id); });
+  } else if (kind === 'machine') {
+    var m = byId(DATA.machines, id), rr = m ? rowOfRail(m.railId) : null;
+    if (rr) { rr.piles.forEach(function (p) { push('pile', p.id); }); push('rail', m.railId); }
+    DATA.routes.forEach(function (rt) { if (rt.toId === id || rt.fromId === id) push('route', rt.id); });
+  } else if (kind === 'rail') {
+    var r2 = rowOfRail(id);
+    if (r2) { r2.piles.forEach(function (p) { push('pile', p.id); }); push('machine', railGeom(id).kind === 'Stacker' ? r2.stacker : r2.reclaimer); }
+  } else if (kind === 'route') {
+    var rt2 = byId(DATA.routes, id);
+    if (rt2) [rt2.fromId, rt2.toId].forEach(function (n) { var k = assetKind(n); if (k) push(k, n); });
+  } else if (kind === 'processLine') {
+    DATA.routes.forEach(function (rt) { if (rt.toId === id || rt.fromId === id) push('route', rt.id); });
+  } else if (kind === 'destination' || kind === 'corridor') {
+    DATA.routes.forEach(function (rt) { if (rt.toId === id || rt.fromId === id) { push('route', rt.id); var k = assetKind(rt.fromId); if (k) push(k, rt.fromId); } });
+  } else if (kind === 'hopper') {
+    DATA.routes.forEach(function (rt) { if (rt.fromId === id) { push('route', rt.id); push('machine', rt.toId); } });
+  }
+  return out;
+}
+function connectedSet(sel) {
+  if (!sel) return { set: {}, path: [] };
+  var set = {}, path = [];
+  var occurrences = [sel.id], selected = assetData(sel.kind, sel.id);
+  if (selected && selected.canonicalId && (sel.kind === 'machine' || sel.kind === 'pile')) {
+    var collection = sel.kind === 'machine' ? DATA.machines : DATA.piles;
+    collection.forEach(function (item) {
+      if (item.canonicalId === selected.canonicalId && occurrences.indexOf(item.id) < 0) occurrences.push(item.id);
+    });
+  }
+  occurrences.forEach(function (occurrence) {
+    set[sel.kind + ':' + occurrence] = 1;
+    neighbours(sel.kind, occurrence).forEach(function (key) {
+      if (!set[key]) {
+        set[key] = 1;
+        var id = key.split(':').slice(1).join(':');
+        if (path.indexOf(id) < 0) path.push(id);
+      }
+    });
+  });
+  return { set: set, path: path };
+}
+
+/* ---------- 3c. apply state (no layout rebuild) ---------- */
+function applyState() {
+  var conn = connectedSet(UI.sel), anySel = !!UI.sel;
+  var hl = function (k, id) { return !!conn.set[k + ':' + id]; };
+  var dimIf = function (on) { return ROUTING_VIEW ? 1 : (anySel && !on ? .32 : 1); };
+  var gradeOn = function (g) { return UI.grades.indexOf(g) >= 0; };
+
+  document.getElementById('timeLabel').textContent = DATA.stateTime || '—';
+
+  DATA.piles.forEach(function (p) {
+    var ref = REF.pile[p.id]; if (!ref) return;
+    var active = !p.grades.length || p.grades.some(function (b) { return gradeOn(b.grade); });
+    var on = hl('pile', p.id);
+    ref.g.setAttribute('opacity', (active ? 1 : .28) * dimIf(on || !anySel));
+    ref.shell.setAttribute('stroke', on ? NAVY : '#6b747b');
+    ref.shell.setAttribute('stroke-width', on ? 3 : 1.8);
+    ref.blendBadge.setAttribute('display', p.blendLocation ? '' : 'none');
+    if (p.blendLocation) {
+      var blendStatus = String(p.blendStatus || '').toUpperCase();
+      var blendColour = /COMPLETE|DEPLETED/.test(blendStatus) ? '#2f7d4f'
+        : /BUILDING|PLANNED|PROPOSED/.test(blendStatus) ? '#b96d17'
+        : blendStatus.indexOf('ENABLED') >= 0 ? NAVY : '#788188';
+      ref.blendBadgeRect.setAttribute('fill', blendColour);
+    }
+    /* The shell is engineering capacity. Coloured length is physical inventory.
+       Repere bounds locate the usable pile zone; they must never make a partly
+       filled pile look full. */
+    var spaceStart = p.repereFrom != null
+      ? Math.max(0, Math.min(1, Number(p.repereFrom) / 1000)) : 0;
+    var spaceEnd = p.repereTo != null
+      ? Math.max(spaceStart, Math.min(1, Number(p.repereTo) / 1000)) : 1;
+    var pct = p.fillPct != null ? Number(p.fillPct) : 100 * p.massT / p.capacityT;
+    var occupiedFraction = Math.max(0, Math.min(1, pct / 100));
+    var occupiedStart = ref.x + ref.w * spaceStart;
+    var occupiedWidth = ref.w * (spaceEnd - spaceStart) * occupiedFraction;
+    var fx = occupiedStart + occupiedWidth;
+    ref.mark.setAttribute('x1', fx); ref.mark.setAttribute('x2', fx);
+    ref.mark.setAttribute('opacity', p.massT > 0 ? 1 : 0);
+    ref.readout.textContent = ref.narrow
+      ? kt(p.massT) + '/' + kt(p.capacityT) + 'kt ' + Math.round(pct) + '%'
+      : kt(p.massT) + '/' + kt(p.capacityT) + ' kt · ' + Math.round(pct) + '%';
+    /* grade bands are data-driven: redrawn inside the existing container */
+    ref.bands.innerHTML = '';
+    var shareTotal = p.grades.reduce(function (sum, b) {
+      var share = b.inventoryShare != null ? Number(b.inventoryShare) : Number(b.fraction || 0);
+      return sum + Math.max(0, share);
+    }, 0);
+    var cursorShare = 0;
+    p.grades.forEach(function (b, bandIndex) {
+      var rawShare = b.inventoryShare != null ? Number(b.inventoryShare) : Number(b.fraction || 0);
+      var share = shareTotal > 0 ? Math.max(0, rawShare) / shareTotal : 0;
+      var startShare = cursorShare;
+      cursorShare += share;
+      var endShare = bandIndex === p.grades.length - 1 ? 1 : cursorShare;
+      var bx = occupiedStart + occupiedWidth * startShare;
+      var bw = occupiedWidth * (endShare - startShare);
+      if (bw <= 0) return;
+      var gOn = gradeOn(b.grade), inset = 5;
+      var d = 'M' + bx + ' ' + (ref.y + PH - 3) + ' L' + (bx + 10) + ' ' + (ref.y + inset) +
+              ' L' + (bx + bw - 10) + ' ' + (ref.y + inset) + ' L' + (bx + bw) + ' ' + (ref.y + PH - 3) + ' Z';
+      svg('path', { d: d, fill: GRADE_COLOR[b.grade] || '#9aa1a7', stroke: 'rgba(0,0,0,.22)', 'stroke-width': 1, opacity: gOn ? 1 : .12, 'data-asset-kind': 'pile', 'data-asset-id': p.id }, ref.bands);
+      if (bw > 62 && !ROUTING_VIEW) {
+        var t = svg('text', { x: bx + bw / 2, y: ref.y + 36, 'font-size': 15, fill: '#fff', 'text-anchor': 'middle', 'font-weight': 600, 'font-family': FONT_MONO, 'letter-spacing': .4, opacity: gOn ? 1 : .2 }, ref.bands);
+        t.textContent = b.grade;
+      }
+    });
+  });
+
+  DATA.machines.forEach(function (m) {
+    var ref = REF.machine[m.id]; if (!ref) return;
+    var gm = railGeom(m.railId); if (!gm) return;
+    var machineScale = ROUTING_VIEW ? 1.32 : 1;
+    var mx = gm.x1 + (m.positionRepere / 1000) * (gm.x2 - gm.x1) - 23 * machineScale;
+    var my = gm.y - 14 * machineScale;
+    ref.g.setAttribute('transform', 'translate(' + mx + ',' + my + ') scale(' + machineScale + ')');
+    var on = hl('machine', m.id);
+    var pass = UI.stateFilter === 'All states' || UI.stateFilter === m.state;
+    ref.g.setAttribute('opacity', (pass ? 1 : .22) * dimIf(on || !anySel));
+    ref.body.setAttribute('stroke', on ? NAVY : (DATA.planningMode && m.baselineState ? baselineColor(m) : '#4e565d'));
+    ref.body.setAttribute('stroke-width', on ? 4 : (ROUTING_VIEW ? 3 : 1.8));
+    ref.body.setAttribute('stroke-dasharray', DATA.planningMode && m.baselineState ? planningDash(m) : (m.state === 'Future' ? '5 4' : 'none'));
+    if (DATA.planningMode && m.baselineState) {
+      ref.lamp.setAttribute('fill', baselineColor(m));
+      ref.lampT.textContent = planningStateCode(m);
+      ref.body.setAttribute('fill', planningFill(m));
+      ref.configT.setAttribute('fill', baselineColor(m));
+      ref.configT.textContent = planningCompactLabel(m, null, false);
+      ref.idT.setAttribute('fill', NAVY);
+      ref.idT.setAttribute('font-weight', ROUTING_VIEW ? 700 : 500);
+    } else {
+      ref.lamp.setAttribute('fill', stateColor(m.state));
+      ref.lampT.textContent = stateCode(m.state);
+      ref.body.setAttribute('fill', '#d6dbdf');
+      ref.configT.textContent = '';
+    }
+  });
+
+  DATA.routes.forEach(function (rt) {
+    var ref = REF.route[rt.id]; if (!ref) return;
+    var on = hl('route', rt.id);
+    var planningRoute = DATA.planningMode && rt.baselineState;
+    var col = planningRoute
+      ? baselineColor(rt)
+      : rt.state === 'Future' ? STATE.Future[0] : rt.state === 'Unavailable' ? STATE.Unavailable[0] : rt.state === 'Idle' ? '#9aa1a7' : STATE.Running[0];
+    ref.core.setAttribute('stroke', on ? NAVY : col);
+    ref.core.setAttribute('stroke-width', on ? (ROUTING_VIEW ? 10 : 6) : (ROUTING_VIEW ? 7 : 4));
+    ref.core.setAttribute('stroke-dasharray', planningRoute ? planningDash(rt) : (rt.state === 'Future' ? '14 9' : (!DATA.planningMode && rt.state === 'Idle') ? '2 6' : 'none'));
+    ref.g.setAttribute('opacity', dimIf(on || !anySel));
+    if (ref.routeBadge) {
+      ref.routeBadge.setAttribute('display', ROUTING_VIEW && planningRoute ? 'block' : 'none');
+      ref.badgeCircle.setAttribute('fill', col);
+      ref.badgeCircle.setAttribute('stroke', on ? NAVY : '#fff');
+      ref.badgeCircle.setAttribute('stroke-width', on ? 4 : 3);
+      ref.badgeText.textContent = planningStateCode(rt);
+    }
+    if (ref.flowText) {
+      ref.flowText.textContent = planningRoute
+        ? planningCompactLabel(rt, rt.baseRateTph, true)
+        : ratePair(rt.flowTph, rt.capacityTph);
+      ref.flowText.setAttribute('fill', planningRoute ? baselineColor(rt) : '#8b939a');
+      ref.flowText.setAttribute('font-weight', DATA.planningMode ? 700 : 500);
+      ref.flowText.setAttribute('display', ref.configurationOnly ? 'none' : 'block');
+    }
+  });
+
+  DATA.hoppers.forEach(function (h) {
+    var ref = REF.hopper[h.id]; if (!ref) return;
+    var on = hl('hopper', h.id);
+    ref.shape.setAttribute('stroke', on ? NAVY : '#4e565d');
+    ref.shape.setAttribute('stroke-width', on ? 3 : 1.8);
+    ref.lamp.setAttribute('fill', stateColor(h.state));
+    ref.lampT.textContent = stateCode(h.state);
+    ref.g.setAttribute('opacity', dimIf(on || !anySel));
+  });
+
+  DATA.processLines.forEach(function (l) {
+    var ref = REF.processLine[l.id]; if (!ref) return;
+    var on = hl('processLine', l.id);
+    var planningLine = DATA.planningMode && l.baselineState;
+    ref.box.setAttribute('stroke', on ? NAVY : (planningLine ? baselineColor(l) : '#9aa2a8'));
+    ref.box.setAttribute('stroke-width', on ? 5 : (ROUTING_VIEW ? 4 : 1.6));
+    ref.box.setAttribute('stroke-dasharray', planningLine ? planningDash(l) : (l.state === 'Future' ? '6 5' : 'none'));
+    ref.box.setAttribute('fill', planningLine ? planningFill(l) : '#fff');
+    ref.bar.setAttribute('fill', planningLine ? baselineColor(l) : stateColor(l.state));
+    ref.bar.setAttribute('width', ROUTING_VIEW ? 12 : 7);
+    ref.name.setAttribute('fill', l.state === 'Future' ? '#7b6ba6' : NAVY);
+    ref.name.setAttribute('font-size', ROUTING_VIEW ? 21 : 19);
+    ref.sub.textContent = planningLine
+      ? planningCompactLabel(l, l.baseRateTph, true)
+      : l.state.toUpperCase() + (l.residenceMinutes != null ? ' · ' + l.residenceMinutes + ' min' : '');
+    ref.sub.setAttribute('fill', planningLine ? baselineColor(l) : '#8b939a');
+    ref.sub.setAttribute('font-weight', DATA.planningMode ? 700 : 500);
+    ref.g.setAttribute('opacity', dimIf(on || !anySel));
+  });
+
+  DATA.destinations.forEach(function (d) {
+    var ref = REF.destination[d.id]; if (!ref) return;
+    var on = hl('destination', d.id), s = d.lifecycleState;
+    var planningDestination = DATA.planningMode && d.baselineState;
+    var destinationColor = planningDestination ? baselineColor(d) : '#7c858c';
+    ref.box.setAttribute('fill', planningDestination ? planningFill(d) : (s === 'Future' ? '#eeeaf6' : s === 'Disabled' ? '#e6e8ea' : '#dfe4e8'));
+    ref.box.setAttribute('stroke', on ? NAVY : destinationColor);
+    ref.box.setAttribute('stroke-width', on ? 5 : (ROUTING_VIEW ? 4 : 1.6));
+    ref.box.setAttribute('stroke-dasharray', planningDestination ? planningDash(d) : (s === 'Future' ? '7 5' : 'none'));
+    ref.headTop.setAttribute('fill', planningDestination ? destinationColor : '#3d464e');
+    ref.headBottom.setAttribute('fill', planningDestination ? destinationColor : '#3d464e');
+    ref.st.textContent = planningDestination
+      ? planningCompactLabel(d, null, false).toUpperCase() : s.toUpperCase();
+    ref.st.setAttribute('fill', planningDestination ? '#fff' : (s === 'Disabled' ? '#cfd4d8' : '#c9e3d3'));
+    ref.name.setAttribute('fill', s === 'Disabled' ? '#8c9399' : NAVY);
+    ref.name.setAttribute('font-size', ROUTING_VIEW ? 24 : 22);
+    ref.g.setAttribute('opacity', dimIf(on || !anySel));
+  });
+
+  LAYOUT.corridors.forEach(function (c) {
+    var ref = REF.corridor[c.id], rt = byId(DATA.routes, c.route);
+    var on = hl('corridor', c.id);
+    ref.box.setAttribute('stroke', on ? NAVY : '#7c858c');
+    ref.box.setAttribute('stroke-width', on ? 3 : 1.6);
+    ref.box.setAttribute('stroke-dasharray', rt && rt.state === 'Future' ? '6 4' : 'none');
+    ref.g.setAttribute('opacity', dimIf(on || !anySel));
+  });
+
+  if (UI.sel) renderDetails(conn.path); else document.getElementById('details').classList.remove('open');
+  var pap2 = byId(DATA.destinations, 'PAP-2');
+  if (pap2) document.getElementById('pap2State').value = pap2.lifecycleState;
+}
+
+/* ---------- 3d. hover / selection content ---------- */
+function fieldsFor(kind, id, full) {
+  var f = [];
+  if (kind === 'pile') {
+    var p = byId(DATA.piles, id); if (!p) return f;
+    var pct = p.fillPct != null ? p.fillPct : Math.round(p.massT / p.capacityT * 100);
+    f.push({ k: 'Inventory', v: kt(p.massT) + ' / ' + kt(p.capacityT) + ' kt physical (' + pct + '%)' });
+    if (p.tsmEquivalentT != null && p.tsmLabel)
+      f.push({ k: p.tsmLabel, v: kt(p.tsmEquivalentT) + ' kt' });
+    if (p.grades.length) {
+      p.grades.forEach(function (b) {
+        var share = b.inventoryShare != null ? Number(b.inventoryShare) : 0;
+        var gradeMass = b.massT != null ? Number(b.massT) : p.massT * share;
+        f.push({ k: 'Grade', v: b.grade + ' · ' + kt(gradeMass) + ' kt (' + Math.round(share * 100) + '%)' });
+      });
+    } else {
+      f.push({ k: 'Grade', v: 'EMPTY' });
+    }
+    f.push({ k: 'Material stage', v: p.materialClass || '—' });
+    if (p.blendLocation) {
+      f.push({ k: 'Blending location', v: 'M16 · ' + displayId('pile', p.id) },
+             { k: 'Blend status', v: p.blendStatus || 'Configured' },
+             { k: 'Blend recipe', v: p.blendRecipe || 'Recipe not set' });
+    }
+    if (full) {
+      var r = rowOfPile(id), g = r ? group(r.group) : null;
+      f.push({ k: 'Position', v: p.massT ? 'R' + p.repereFrom + ' → R' + p.repereTo : '—' },
+             { k: 'Site', v: p.site }, { k: 'Bay / group', v: g ? g.label : '—' },
+             { k: 'Stacker', v: r ? displayId('machine', r.stacker) : '—' },
+             { k: 'Reclaimer', v: r ? displayId('machine', r.reclaimer) : '—' });
+    }
+  } else if (kind === 'machine') {
+    var m = byId(DATA.machines, id); if (!m) return f;
+    if (DATA.planningMode && m.baselineState)
+      f.push({ k: 'Configured state', v: baselineState(m) },
+             { k: 'Configured cap', v: num(m.baseRateTph) + ' physical t/h' },
+             { k: 'Timed changes', v: Number(m.timedChangeCount || 0) });
+    f.push({ k: 'Type', v: m.type }, { k: 'Activity now', v: m.state },
+           { k: 'Job', v: m.jobId || 'none' }, { k: 'Target', v: m.targetId || '—' },
+           { k: 'Position', v: 'R' + m.positionRepere },
+           { k: 'Rate', v: num(m.rateTph) + ' / ' + num(m.maximumRateTph) + ' physical t/h' });
+    if (full) {
+      var rr = rowOfRail(m.railId);
+      f.push({ k: 'Rail', v: m.canonicalRailId || m.railId },
+             { k: 'Serves', v: rr ? rr.piles.map(function (p) { return displayId('pile', p.id); }).join(' · ') : '—' });
+    }
+  } else if (kind === 'route') {
+    var rt = byId(DATA.routes, id); if (!rt) return f;
+    if (DATA.planningMode && rt.baselineState)
+      f.push({ k: 'Configured state', v: baselineState(rt) },
+             { k: 'Configured cap', v: num(rt.baseRateTph) + ' physical t/h' },
+             { k: 'Timed changes', v: Number(rt.timedChangeCount || 0) });
+    f.push({ k: 'Route', v: rt.memberLinkIds && rt.memberLinkIds.length ? rt.memberLinkIds.join(' + ') : (rt.canonicalIds && rt.canonicalIds.length ? rt.canonicalIds.join(' + ') : (LAYOUT.routeCaptions[id] || id)) }, { k: 'Activity now', v: rt.state },
+           { k: 'Flow', v: ratePair(rt.flowTph, rt.capacityTph, true) });
+    if (full) f.push({ k: 'From', v: rt.fromId }, { k: 'To', v: rt.toId },
+                     { k: 'Utilisation', v: utilisation(rt.flowTph, rt.capacityTph) });
+  } else if (kind === 'rail') {
+    var gm = railGeom(id), r3 = rowOfRail(id); if (!gm) return f;
+    f.push({ k: 'Machine type', v: gm.kind + ' rail' },
+           { k: 'Machine', v: displayId('machine', gm.kind === 'Stacker' ? r3.stacker : r3.reclaimer) },
+           { k: 'Served stockpiles', v: r3.piles.map(function (p) { return displayId('pile', p.id); }).join(' · ') },
+           { k: 'Travel range', v: 'R0 – R1000' });
+    if (full) f.push({ k: 'Group', v: group(r3.group).label });
+  } else if (kind === 'processLine') {
+    var l = byId(DATA.processLines, id); if (!l) return f;
+    if (DATA.planningMode && l.baselineState)
+      f.push({ k: 'Configured state', v: baselineState(l) },
+             { k: 'Configured cap', v: num(l.baseRateTph) + ' physical t/h' },
+             { k: 'Timed changes', v: Number(l.timedChangeCount || 0) });
+    f.push({ k: 'Line', v: l.canonicalId || l.id }, { k: 'Activity now', v: l.state },
+           { k: 'Residence time', v: l.residenceMinutes != null ? l.residenceMinutes + ' min' : '—' });
+    if (full) {
+      var feed = DATA.routes.filter(function (r) { return r.toId === id; }).map(function (r) { return r.fromId; }).join(', ');
+      var out = DATA.routes.filter(function (r) { return r.fromId === id; }).map(function (r) { return r.toId; }).join(', ');
+      f.push({ k: 'Feed from', v: feed || '—' }, { k: 'Product to', v: out || '—' });
+    }
+  } else if (kind === 'destination') {
+    var d = byId(DATA.destinations, id); if (!d) return f;
+    if (DATA.planningMode && d.baselineState)
+      f.push({ k: 'Configured state', v: baselineState(d) },
+             { k: 'Configured cap', v: num(d.baseRateTph) + ' physical t/h' },
+             { k: 'Timed changes', v: Number(d.timedChangeCount || 0) });
+    f.push({ k: 'Unit', v: d.canonicalId || d.id }, { k: 'Lifecycle', v: d.lifecycleState },
+           { k: 'Requested grade', v: d.requestedGrade },
+           { k: 'Demand', v: d.demandT != null ? num(d.demandT) + ' physical t/h' : '—' },
+           { k: 'Planned delivery', v: d.plannedDeliveryT != null ? kt(d.plannedDeliveryT) + ' kt' : '—' });
+  } else if (kind === 'hopper') {
+    var h = byId(DATA.hoppers, id); if (!h) return f;
+    f.push({ k: 'Type', v: h.interfaceOnly ? 'Mine feed interface' : 'Mine hopper' }, { k: 'State', v: h.state },
+           { k: 'Rate', v: num(h.rateTph) + ' / ' + num(h.maximumRateTph) + ' physical t/h' },
+           { k: 'Feeds', v: h.feedsId });
+  } else if (kind === 'corridor') {
+    var c = byId(LAYOUT.corridors, id), crt = c ? byId(DATA.routes, c.route) : null;
+    f.push({ k: 'Interface', v: c ? c.label + ' → MPH M16' : id },
+           { k: 'Route', v: c ? c.route : '—' },
+           { k: 'State', v: crt ? crt.state : '—' },
+           { k: 'Flow', v: crt ? ratePair(crt.flowTph, crt.capacityTph, true) : '—' });
+  }
+  return f;
+}
+function stateOf(kind, id) {
+  if (kind === 'machine') { var m = byId(DATA.machines, id); return m ? (DATA.planningMode && m.baselineState ? planningStateTitle(m) : m.state) : 'Idle'; }
+  if (kind === 'route') { var r = byId(DATA.routes, id); return r ? (DATA.planningMode && r.baselineState ? planningStateTitle(r) : r.state) : 'Idle'; }
+  if (kind === 'processLine') { var l = byId(DATA.processLines, id); return l ? (DATA.planningMode && l.baselineState ? planningStateTitle(l) : l.state) : 'Available'; }
+  if (kind === 'destination') { var d = byId(DATA.destinations, id); return d ? (DATA.planningMode && d.baselineState ? planningStateTitle(d) : d.lifecycleState) : 'Available'; }
+  if (kind === 'hopper') { var h = byId(DATA.hoppers, id); return h ? h.state : 'Idle'; }
+  if (kind === 'pile') { var p = byId(DATA.piles, id); return p && p.massT > 0 ? 'Available' : 'Idle'; }
+  if (kind === 'corridor') { var c = byId(LAYOUT.corridors, id), rt = c ? byId(DATA.routes, c.route) : null; return rt ? rt.state : 'Idle'; }
+  return 'Available';
+}
+function titleOf(kind, id) {
+  if (kind === 'rail') { var gm = railGeom(id); return (gm.kind === 'Stacker' ? 'STACKER RAIL · ' : 'RECLAIMER RAIL · ') + group(rowOfRail(id).group).label; }
+  return displayId(kind, id);
+}
+function esc(value) {
+  return String(value == null ? '—' : value).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;',
+             '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function kvHtml(fields) {
+  return fields.map(function (f) {
+    return '<span class="k">' + esc(f.k) + '</span><span class="v">' + esc(f.v) + '</span>';
+  }).join('');
+}
+var hoverCard = document.getElementById('hoverCard');
+function showHover(kind, id, mx, my) {
+  var fields = fieldsFor(kind, id, false);
+  hoverCard.querySelector('.hc-id').textContent = titleOf(kind, id);
+  hoverCard.querySelector('.hc-kind').textContent = KIND_LABEL[kind] || kind;
+  hoverCard.querySelector('.kv').innerHTML = kvHtml(fields);
+  hoverCard.style.borderLeftColor = stateColor(stateOf(kind, id));
+  hoverCard.style.display = 'block';
+  var r = stage.getBoundingClientRect(), cw = hoverCard.offsetWidth, ch = hoverCard.offsetHeight;
+  var x = mx + 16, y = my + 14;
+  if (x + cw > r.width) x = mx - cw - 12;
+  if (y + ch > r.height) y = r.height - ch - 10;
+  hoverCard.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+}
+function hideHover() { hoverCard.style.display = 'none'; }
+
+var details = document.getElementById('details');
+function renderDetails(path) {
+  var sel = UI.sel, s = stateOf(sel.kind, sel.id);
+  details.classList.add('open');
+  details.querySelector('.dp-kind').textContent = KIND_LABEL[sel.kind] || sel.kind;
+  details.querySelector('.dp-id').textContent = titleOf(sel.kind, sel.id);
+  details.querySelector('.dp-state i').style.background = stateColor(s);
+  details.querySelector('.dp-state b').textContent = s;
+  details.querySelector('.dp-state span').textContent = s === 'Future' ? 'dashed outline' : s === 'Disabled' ? 'muted fill' : 'lamp ' + stateCode(s);
+  details.querySelector('.dp-body .kv').innerHTML = kvHtml(fieldsFor(sel.kind, sel.id, true));
+  details.querySelector('.tags').innerHTML = path.map(function (p) { return '<span>' + esc(p) + '</span>'; }).join('');
+}
+
+/* ---------- 3e. view: zoom / pan / fit ---------- */
+function bboxFor(siteId) {
+  if (!siteId) return { x: 20, y: 20, w: LAYOUT.world.w - 20, h: LAYOUT.world.h - 20 };
+  var s = byId(LAYOUT.sites, siteId), pad = 60;
+  return { x: s.x - pad, y: s.y - pad, w: s.w + (siteId === 'MPH' ? 420 : 320), h: s.h + pad * 2 };
+}
+function fitTo(siteId) {
+  var r = stage.getBoundingClientRect(), b = bboxFor(siteId);
+  var k = Math.min(r.width / b.w, r.height / b.h) * .96;
+  VIEW = { k: k, x: (r.width - b.w * k) / 2 - b.x * k, y: (r.height - b.h * k) / 2 - b.y * k };
+  applyView();
+}
+function applyView() {
+  world.setAttribute('transform', 'translate(' + VIEW.x + ',' + VIEW.y + ') scale(' + VIEW.k + ')');
+  document.getElementById('zoomLabel').textContent = Math.round(VIEW.k * 100) + '%';
+}
+stage.addEventListener('wheel', function (e) {
+  e.preventDefault();
+  var r = stage.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+  var k = Math.max(.14, Math.min(3, VIEW.k * Math.exp(-e.deltaY * .0016)));
+  VIEW = { k: k, x: mx - (mx - VIEW.x) * (k / VIEW.k), y: my - (my - VIEW.y) * (k / VIEW.k) };
+  applyView();
+}, { passive: false });
+
+var moved = false;
+stage.addEventListener('mousedown', function (e) {
+  var sx = e.clientX, sy = e.clientY, v = { x: VIEW.x, y: VIEW.y, k: VIEW.k };
+  moved = false;
+  function mv(ev) {
+    if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 3) { moved = true; UI.dragging = true; stage.classList.add('dragging'); hideHover(); }
+    VIEW = { k: v.k, x: v.x + ev.clientX - sx, y: v.y + ev.clientY - sy };
+    applyView();
+  }
+  function up() { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up); UI.dragging = false; stage.classList.remove('dragging'); }
+  document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up);
+});
+function assetAt(e) {
+  var n = e.target.closest ? e.target.closest('[data-asset-id]') : null;
+  if (!n) return null;
+  var kind = n.getAttribute('data-asset-kind');
+  if (kind === 'site') return null;
+  return { kind: kind, id: n.getAttribute('data-asset-id') };
+}
+stage.addEventListener('mousemove', function (e) {
+  if (UI.dragging) return;
+  var a = assetAt(e);
+  if (!a) { hideHover(); UI.hover = null; return; }
+  var r = stage.getBoundingClientRect();
+  UI.hover = a;
+  showHover(a.kind, a.id, e.clientX - r.left, e.clientY - r.top);
+});
+stage.addEventListener('mouseleave', hideHover);
+stage.addEventListener('click', function (e) {
+  if (moved) return;
+  UI.sel = assetAt(e);
+  applyState();
+});
+stage.addEventListener('dblclick', function () { fitTo(null); });
+document.getElementById('detailsClose').onclick = function () { UI.sel = null; applyState(); };
+
+/* ---------- 3f. toolbar ---------- */
+function uniquePlanningResources(items) {
+  var seen = {}, out = [];
+  (items || []).forEach(function (item) {
+    if (!item || item.configurable === false) return;
+    var key = item.canonicalId || item.id;
+    if (!key || seen[key]) return;
+    seen[key] = 1; out.push(item);
+  });
+  return out;
+}
+function resourceSummary(label, items) {
+  items = uniquePlanningResources(items);
+  var available = items.filter(function (item) { return baselineState(item) === 'AVAILABLE'; }).length;
+  var severe = items.some(function (item) {
+    var state = baselineState(item);
+    return state === 'UNAVAILABLE' || state === 'MAINTENANCE';
+  });
+  var warning = items.some(function (item) { return baselineState(item) !== 'AVAILABLE'; });
+  var timed = items.filter(function (item) { return Number(item.timedChangeCount || 0) > 0; }).length;
+  var cls = severe ? ' bad' : warning ? ' warn' : '';
+  var color = severe ? STATE.Unavailable[0] : warning ? STATE.Partial[0] : STATE.Available[0];
+  var timedText = timed ? ' / ' + timed + ' timed' : '';
+  return '<span class="resource-summary' + cls + '"><i style="background:' + color + '"></i>' +
+    label + ' ' + available + '/' + items.length + ' available' + timedText + '</span>';
+}
+function buildPlanningSummary() {
+  if (!ROUTING_VIEW) return;
+  var plants = (DATA.processLines || []).concat(DATA.destinations || []);
+  document.getElementById('planningSummary').innerHTML =
+    resourceSummary('Machines', DATA.machines) +
+    resourceSummary('Conveyors', DATA.routes) +
+    resourceSummary('Plants', plants);
+}
+(function buildToolbar() {
+  var tabs = [{ id: null, label: 'All' }, { id: 'LOUTA', label: 'Louta' }, { id: 'BENGUERIR', label: 'Benguerir' }, { id: 'MPH', label: 'MPH M16' }];
+  var host = document.getElementById('siteTabs');
+  var initialSite = DATA.initialSite || null;
+  tabs.forEach(function (t) {
+    var b = document.createElement('button');
+    b.className = 'btn tab' + (t.id === initialSite ? ' on' : '');
+    b.textContent = t.label;
+    b.onclick = function () {
+      host.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      fitTo(t.id);
+    };
+    host.appendChild(b);
+  });
+
+  var chips = document.getElementById('gradeChips');
+  Object.keys(GRADE_COLOR).forEach(function (g) {
+    var b = document.createElement('button');
+    b.className = 'chip' + (UI.grades.indexOf(g) >= 0 ? '' : ' off');
+    b.innerHTML = '<i style="background:' + GRADE_COLOR[g] + '"></i>' + g;
+    b.onclick = function () {
+      var i = UI.grades.indexOf(g);
+      if (i >= 0) { UI.grades.splice(i, 1); b.classList.add('off'); } else { UI.grades.push(g); b.classList.remove('off'); }
+      applyState();
+    };
+    chips.appendChild(b);
+  });
+
+  var sel = document.getElementById('stateFilter');
+  ['All states', 'Running', 'Stacking', 'Reclaiming', 'Travelling', 'Idle', 'Maintenance', 'Unavailable', 'Future'].forEach(function (s) {
+    var o = document.createElement('option'); o.textContent = s; sel.appendChild(o);
+  });
+  sel.onchange = function () { UI.stateFilter = sel.value; applyState(); };
+
+  document.getElementById('fitBtn').onclick = function () { fitTo(null); };
+  var lb = document.getElementById('legendBtn');
+  lb.onclick = function () { UI.legend = !UI.legend; lb.classList.toggle('on', UI.legend); document.getElementById('legend').classList.toggle('open', UI.legend); };
+
+  buildPlanningSummary();
+
+})();
+
+/* ---------- 3g. legend ---------- */
+(function buildLegend() {
+  var g = Object.keys(GRADE_COLOR).map(function (k) {
+    return '<div class="lg-item"><span class="sw" style="background:' + GRADE_COLOR[k] + '"></span><code>' + k + '</code></div>';
+  }).join('');
+  var states = ['Running', 'Stacking', 'Reclaiming', 'Travelling', 'Idle', 'Maintenance', 'Unavailable', 'Future'].map(function (k) {
+    return '<div class="lg-item"><span class="lamp" style="background:' + STATE[k][0] + '">' + STATE[k][1] + '</span>' + k + '</div>';
+  }).join('');
+  var sym = [
+    ['Stockpile footprint', '<rect x="1" y="3" width="24" height="10" fill="#fdfdfd" stroke="#6b747b" stroke-width="1.4"/>'],
+    ['Machine rail', '<line x1="1" y1="8" x2="25" y2="8" stroke="#7c858c" stroke-width="2.4"/><path d="M1 4V12M25 4V12" stroke="#7c858c" stroke-width="1.6"/>'],
+    ['Stacker / reclaimer', '<rect x="4" y="5" width="16" height="8" rx="1.5" fill="#d6dbdf" stroke="#4e565d"/><circle cx="21" cy="5" r="3.4" fill="#2f7d4f"/>'],
+    ['Conveyor (running)', '<line x1="1" y1="8" x2="25" y2="8" stroke="#aab1b7" stroke-width="6"/><line x1="1" y1="8" x2="25" y2="8" stroke="#2f7d4f" stroke-width="2.4"/>'],
+    ['Idle conveyor', '<line x1="1" y1="8" x2="25" y2="8" stroke="#aab1b7" stroke-width="6"/><line x1="1" y1="8" x2="25" y2="8" stroke="#9aa1a7" stroke-width="2.4" stroke-dasharray="2 4"/>'],
+    ['Future asset (dashed)', '<rect x="1" y="3" width="24" height="10" fill="#eeeaf6" stroke="#6b4fa8" stroke-width="1.4" stroke-dasharray="4 3"/>'],
+    ['Mine hopper', '<path d="M2 3H24L17 13H9Z" fill="#d6dbdf" stroke="#4e565d" stroke-width="1.4"/>'],
+    ['Corridor C1 / C2', '<path d="M1 12H13V4H25" fill="none" stroke="#aab1b7" stroke-width="6"/><path d="M1 12H13V4H25" fill="none" stroke="#2f7d4f" stroke-width="2.4"/>']
+  ].map(function (s) {
+    return '<div class="lg-item"><svg width="26" height="16">' + s[1] + '</svg>' + s[0] + '</div>';
+  }).join('');
+  document.getElementById('legend').innerHTML =
+    '<div class="lg-head"><b>Legend</b><span>colour never carries state alone · text or pattern always paired</span></div>' +
+    '<div class="lg-cols">' +
+      '<div><div class="lg-cap">Material grade</div><div class="lg-items">' + g + '</div></div>' +
+      '<div><div class="lg-cap">Equipment state (lamp + code)</div><div class="lg-items">' + states + '</div></div>' +
+      '<div class="lg-sym">' + sym + '</div>' +
+    '</div>';
+})();
+
+/* =========================================================================
+   PUBLIC API
+   ========================================================================= */
+/**
+ * Merge an operating-state snapshot into the view and repaint.
+ * Static layout is untouched; arrays are merged by id, so partial patches work.
+ * @param {Object} data see file header for the accepted shape
+ */
+window.updateStockyardState = function (data) {
+  if (!data) { applyState(); return DATA; }
+  if (data.stateTime) DATA.stateTime = data.stateTime;
+  ['piles', 'machines', 'routes', 'processLines', 'destinations', 'hoppers'].forEach(function (coll) {
+    (data[coll] || []).forEach(function (incoming) {
+      var target = byId(DATA[coll], incoming.id);
+      if (!target) { DATA[coll].push(clone(incoming)); return; }
+      for (var k in incoming) if (k !== 'id') target[k] = clone({ v: incoming[k] }).v;
+      if (coll === 'piles' && incoming.massT != null && incoming.fillPct == null)
+        target.fillPct = Math.round(target.massT / target.capacityT * 100);
+    });
+  });
+  applyState();
+  buildPlanningSummary();
+  return DATA;
+};
+/** @returns {Object} read-only copy of the current merged snapshot */
+window.getStockyardState = function () { return clone(DATA); };
+
+/* =========================================================================
+   BOOT
+   ========================================================================= */
+buildStaticLayout();
+applyState();
+fitTo(DATA.initialSite || null);
+window.addEventListener('resize', function () { fitTo(null); });
+</script>
+</body>
+</html>

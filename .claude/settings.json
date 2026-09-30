@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Legion/OneDrive/Desktop/**)",
+      "Bash(python -)",
+      "Bash(python report_sources/_merge.py)",
+      "Bash(python report_sources/_mergemd.py)",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python -c ' *)",
+      "Bash(awk 'NR>=290 && NR<=442' hmi/svg_mimic.py)",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python -m pytest simulator_preview/tests/test_svg_mimic.py -q -p no:cacheprovider)",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python -m pytest simulator_preview/tests -q -p no:cacheprovider)",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python -m pytest \"simulator_preview/tests/test_svg_mimic.py::test_each_grade_band_is_labelled_not_the_whole_pile\" \"simulator_preview/tests/test_flow_diagram.py::test_a_stage_with_no_modelled_link_is_empty_not_zero\" -q -p no:cacheprovider)",
+      "Bash(xargs echo \"scratch files remaining:\")",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python -m pytest \"simulator_preview/tests/test_svg_mimic.py::test_every_layer_option_changes_the_svg\" -x -p no:cacheprovider)",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python -m pytest simulator_preview/tests/test_svg_mimic.py -p no:cacheprovider)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://127.0.0.1:8606/?page=flow)",
+      "Bash(curl -s http://127.0.0.1:8606/_stcore/health)",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/render_blocks.py\")",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 python \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/raster.py\")",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python __TRACKED_VAR__/render_blocks.py)",
+      "Bash(curl -s -o /dev/null -w \"app HTTP %{http_code}\\\\n\" http://127.0.0.1:8606/?page=flow)",
+      "Bash(rm -f \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/_blk_\"*.svg)",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 python -m streamlit run app_preview.py --server.port 8606 --server.headless true --browser.gatherUsageStats false)",
+      "Bash(echo \"launched pid $!\")",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python __TRACKED_VAR__/render_chain.py)",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 python __TRACKED_VAR__/crop.py)",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/diag.py\")",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/compare_singlesite.py\")",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/build_compare.py\")",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(sed -i 's/harmonize=True\\)/harmonize=False\\)/' __TRACKED_VAR__/render_chain.py)",
+      "Bash(sed -i 's/\"beng_prod\":  {\"x\": 300, \"y\": 800, \"width\": 260, \"height\": 300}/\"beng_prod\":  {\"x\": 280, \"y\": 780, \"width\": 620, \"height\": 320}/' __TRACKED_VAR__/crop.py)",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/dump_geo.py\")",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/render_replica.py\")",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python -m pytest simulator_preview/tests -q -p no:cacheprovider --durations=8)",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python -m pytest simulator_preview/tests -q -p no:cacheprovider --durations=10)",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8 python \"C:/Users/Legion/AppData/Local/Temp/claude/c--Users-Legion-OneDrive-Desktop-SMS-MPH-OSBL-Solid-Handling-Layout-and-Technical-Design-Note-for-Analysis/4c4e0577-f4f6-47ef-96ab-19d85e126395/scratchpad/build_replica_compare.py\")"
+    ]
+  }
+}

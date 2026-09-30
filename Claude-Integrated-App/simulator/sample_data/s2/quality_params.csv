@@ -1,0 +1,11 @@
+name,unit,description
+BPL,%,Bone Phosphate of Lime
+Cd,ppm,cadmium
+MgO,%,magnesium oxide
+SiO2,%,silica
+SiO2_R,%,reactive silica
+F,%,fluorine
+P2O5_SC,%,"P2O5 S,C (source-table assay)"
+CO2,%,carbon dioxide
+CaO_CO2,ratio,CaO/CO2 ratio
+moisture,%,H2O

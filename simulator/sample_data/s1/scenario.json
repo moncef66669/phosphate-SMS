@@ -1,0 +1,377 @@
+{
+ "name": "S1 \u2014 Sulphur minimal (M17)",
+ "description": "Domain B closed-storage reclaim to melting. Confirmed: storage sizes, RC01 1100 tph, payloaders 300 tph manual, 8 start-stops/h. Demand & qualities are ASSUMED placeholders.",
+ "quality_params": [
+  {
+   "name": "S",
+   "unit": "%",
+   "description": "sulphur purity"
+  },
+  {
+   "name": "moisture",
+   "unit": "%",
+   "description": "H2O"
+  }
+ ],
+ "sites": [
+  {
+   "id": "MPH",
+   "name": "M'zinda Phosphate Hub",
+   "role": "hub",
+   "sms_endpoint": "simulated",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": ""
+   },
+   "same_pile_concurrency_allowed": true,
+   "concurrency_evidence": "USER_CONFIRMED (project team, 15-Jul-2026): stacking and reclaiming may occur simultaneously on the same stockpile; the scheduler prevents collisions/overlapping work zones, never same-pile concurrency categorically. Numerical separation limits TBC (demonstration values ASSUMED)",
+   "min_machine_separation_m": 50.0,
+   "work_zone_buffer_m": 25.0,
+   "travel_clearance_m": 10.0,
+   "machine_envelope_m": 15.0,
+   "concurrent_route_allowed": true,
+   "exclusive_machine_groups": [],
+   "exclusivity_evidence": "",
+   "material_profiles": {}
+  }
+ ],
+ "grades": [
+  {
+   "id": "S-STD",
+   "name": "Solid sulphur (standard)",
+   "quality": {
+    "S": 99.5,
+    "moisture": 0.5
+   },
+   "rock_value": 0.0,
+   "material_class": "",
+   "profile_id": "",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "purity/moisture placeholder \u2014 no sulphur assay on file"
+   }
+  }
+ ],
+ "material_profiles": [],
+ "spaces": [
+  {
+   "id": "M17-OPEN-1",
+   "site": "MPH",
+   "area": "M17-open",
+   "kind": "open",
+   "capacity_t": 100000,
+   "mass_t": 60000,
+   "grade": "S-STD",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 400,
+   "safety_stock_t": 0.0,
+   "node_id": "",
+   "material_class": "",
+   "profile_id": "",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "capacity 2\u00d7100,000 t confirmed; initial mass ASSUMED"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "M17-OPEN-2",
+   "site": "MPH",
+   "area": "M17-open",
+   "kind": "open",
+   "capacity_t": 100000,
+   "mass_t": 40000,
+   "grade": "S-STD",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 400,
+   "safety_stock_t": 0.0,
+   "node_id": "",
+   "material_class": "",
+   "profile_id": "",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "capacity confirmed; initial mass ASSUMED"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  },
+  {
+   "id": "M17-CLOSED-1",
+   "site": "MPH",
+   "area": "M17-closed",
+   "kind": "closed",
+   "capacity_t": 100000,
+   "mass_t": 55000,
+   "grade": "S-STD",
+   "quality": {},
+   "state": "mixed",
+   "reserved_t": 0.0,
+   "designated_grade": "",
+   "x_from": 0,
+   "x_to": 350,
+   "safety_stock_t": 20000,
+   "node_id": "",
+   "material_class": "",
+   "profile_id": "",
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "capacity confirmed; initial mass & safety stock ASSUMED"
+   },
+   "repere_at_x_from": 0,
+   "repere_at_x_to": 1000
+  }
+ ],
+ "segments": [],
+ "pile_zones": [],
+ "machines": [
+  {
+   "id": "M17-RC01",
+   "site": "MPH",
+   "kind": "reclaimer",
+   "rate_min_tph": 200,
+   "rate_max_tph": 1100,
+   "reachable_spaces": [
+    "M17-CLOSED-1"
+   ],
+   "rail": "closed-store",
+   "travel_speed_m_min": 30.0,
+   "setup_min": 10.0,
+   "min_separation_m": 50.0,
+   "start_stop_limit_per_h": 8,
+   "available": true,
+   "position_x": 100,
+   "work_area": {},
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "1100 tph confirmed; min stable 200 ASSUMED"
+   },
+   "physical_tag": "",
+   "lifecycle": "EXISTING",
+   "planning_enabled": true,
+   "rate_design_tph": 0.0
+  },
+  {
+   "id": "M17-ST01",
+   "site": "MPH",
+   "kind": "stacker",
+   "rate_min_tph": 300,
+   "rate_max_tph": 2500,
+   "reachable_spaces": [
+    "M17-OPEN-1",
+    "M17-OPEN-2"
+   ],
+   "rail": "open-store",
+   "travel_speed_m_min": 30.0,
+   "setup_min": 10.0,
+   "min_separation_m": 50.0,
+   "start_stop_limit_per_h": 0.0,
+   "available": true,
+   "position_x": 0.0,
+   "work_area": {},
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "open-store stacker; tripper \u22482500 tph"
+   },
+   "physical_tag": "",
+   "lifecycle": "EXISTING",
+   "planning_enabled": true,
+   "rate_design_tph": 0.0
+  }
+ ],
+ "nodes": [
+  {
+   "id": "SPACE:M17-CLOSED-1",
+   "site": "MPH",
+   "kind": "space",
+   "label": "Closed store",
+   "x": 1,
+   "y": 1
+  },
+  {
+   "id": "DEST:MOLTEN-S",
+   "site": "MPH",
+   "kind": "dest",
+   "label": "Sulphur melting units",
+   "x": 2,
+   "y": 1
+  }
+ ],
+ "links": [
+  {
+   "id": "L-M17-RECLAIM",
+   "src": "SPACE:M17-CLOSED-1",
+   "dst": "DEST:MOLTEN-S",
+   "capacity_tph": 1100,
+   "min_stable_tph": 100,
+   "transit_buckets": 0,
+   "available": true,
+   "shared_group": "",
+   "conflict_group": "",
+   "gate_id": "",
+   "gate_position": "",
+   "changeover_min": 0.0,
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0004[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "closed reclaim \u22481100 tph + lime dosing"
+   },
+   "lifecycle": "EXISTING",
+   "capacity_design_tph": 0.0,
+   "material_class": ""
+  }
+ ],
+ "destinations": [
+  {
+   "id": "MOLTEN-S",
+   "site": "MPH",
+   "node_id": "DEST:MOLTEN-S",
+   "priority": 1,
+   "spec": [
+    {
+     "param": "moisture",
+     "pmin": null,
+     "pmax": 2.0,
+     "target": null,
+     "hard": false,
+     "averaging_h": 1.0,
+     "margin": 0.0
+    }
+   ],
+   "demand_default_tph": 800,
+   "requested_grade": "S-STD",
+   "evidence": {
+    "source": "placeholder (this MVP)",
+    "status": "ASSUMED",
+    "confidence": "L",
+    "note": "melting demand 800 tph & moisture spec are placeholders"
+   },
+   "demand_kind": "delivery",
+   "process_stage": ""
+  }
+ ],
+ "demand": [],
+ "calendars": [
+  {
+   "scope": "M17-RC01",
+   "start_bucket": 10,
+   "end_bucket": 11,
+   "reason": "planned maintenance (demo)"
+  }
+ ],
+ "exogenous": [
+  {
+   "id": "PAYLOAD-1",
+   "target_space": "M17-CLOSED-1",
+   "rate_tph": 300,
+   "grade": "S-STD",
+   "source_space": "M17-OPEN-1",
+   "start_bucket": 0,
+   "end_bucket": 1000000,
+   "quality": {},
+   "evidence": {
+    "source": "Q80130-MZI-M16-PR-PRO-0001 / PFD-0001[3]",
+    "status": "CONFIRMED",
+    "confidence": "H",
+    "note": "payloaders 300 tph, manual \u2014 exogenous, not commanded"
+   }
+  }
+ ],
+ "process_transfers": [],
+ "belt_profile": [],
+ "fixed_jobs": [],
+ "weights": {
+  "w1_unmet": 1000.0,
+  "w2_offspec": 200.0,
+  "w3_process_cost": 0.0,
+  "w4_giveaway": 5.0,
+  "w5_moves": 2.0,
+  "w6_safety": 20.0,
+  "w7_utilisation": 0.0
+ },
+ "sim": {
+  "dt_h": 1.0,
+  "horizon_buckets": 24,
+  "frozen_buckets": 2,
+  "seed": 42,
+  "start_iso": "2026-07-13T00:00:00",
+  "max_solve_s": 20.0,
+  "deviation_tolerance": 0.1,
+  "replan_on_deviation": true
+ },
+ "assumptions": [
+  {
+   "id": "S1-A1",
+   "text": "Melting-unit demand = 800 tph constant",
+   "module": "M17/demand",
+   "status": "OPEN",
+   "source": "placeholder",
+   "confidence": "L",
+   "placeholder": "800 tph",
+   "impact": "drives whole plan",
+   "owner": "OCP project team",
+   "action": "obtain melting feed plan"
+  },
+  {
+   "id": "S1-A2",
+   "text": "Sulphur purity/moisture vector (99.5 % S / 0.5 % H2O)",
+   "module": "M17/quality",
+   "status": "OPEN",
+   "source": "placeholder",
+   "confidence": "L",
+   "placeholder": "S-STD grade",
+   "impact": "moisture spec compliance",
+   "owner": "OCP project team",
+   "action": "reception assay data"
+  },
+  {
+   "id": "S1-A3",
+   "text": "Initial pile masses (60/40/55 kt)",
+   "module": "M17/inventory",
+   "status": "OPEN",
+   "source": "placeholder",
+   "confidence": "L",
+   "placeholder": "see spaces table",
+   "impact": "autonomy calculations",
+   "owner": "OCP project team",
+   "action": "SMS SpaceValue snapshot"
+  },
+  {
+   "id": "S1-A4",
+   "text": "8 start-stops/h is sub-bucket behaviour: with 1 h buckets the model can only penalise job switching (w5), not enforce the intra-hour limit",
+   "module": "M17/constraints",
+   "status": "OPEN",
+   "source": "report \u00a715.4",
+   "confidence": "L",
+   "placeholder": "w5 penalty",
+   "impact": "dispatcher-level constraint deferred",
+   "owner": "OCP project team",
+   "action": "enforce in sub-hourly dispatcher iteration"
+  }
+ ],
+ "notes": "",
+ "config": {}
+}

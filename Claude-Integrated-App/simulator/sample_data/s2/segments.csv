@@ -1,0 +1,5 @@
+space_id,x_from,x_to,mass_t,grade,quality,age_days
+HP-02,0,150,45000,HWP-10,{},20
+HP-02,150,300,45000,HWP-10,{},5
+HP-05,0,300,74000,HWP-10,{},12
+HP-01,0,300,80000,HWP-22,{},30

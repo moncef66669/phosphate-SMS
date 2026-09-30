@@ -1,0 +1,1891 @@
+{
+  "schema_version": "1.0",
+  "project": {
+    "id": "mph-stockyard",
+    "name": "Phosphate Value-Chain Job-Allocation Simulator",
+    "model_type": "optimization",
+    "package_version": "1.15.0",
+    "last_verified": "2026-09-22"
+  },
+  "documents": {
+    "formulation": "model_knowledge/MODEL_FORMULATION.md",
+    "code_map": "model_knowledge/CODE_MAP.md"
+  },
+  "implementation": {
+    "fingerprint_algorithm": "sha256-source-set-v1",
+    "fingerprint": "acaec445f77a7e8145ab6a1f228dcb753d554ed4a1b7214ffe1dabcb918826de",
+    "sources": [
+      {
+        "path": "mph_sim/grade_ids.py",
+        "role": "canonical raw-grade identities and backward-compatible grade migration",
+        "sha256": "9b61903632584e0a43501dc42457a2135b99bb495c6fa0cd62034f7dc15435f1"
+      },
+      {
+        "path": "mph_sim/mine_arrivals.py",
+        "role": "daily external mine supply, operating inventory and persistent configuration",
+        "sha256": "e68a1abd91c37936518de641a2183054754d85c0582428ec6a0a6d20d8d8fb48"
+      },
+      {
+        "path": "ui/pages_mine_arrivals.py",
+        "role": "editable daily grade arrivals and transactional persistence",
+        "sha256": "e9605c60198a71220d0613734f29bb0a05db9bca58b375ca245a24a9afeb457a"
+      },
+      {
+        "path": "mph_sim/domain.py",
+        "role": "domain and result contracts",
+        "sha256": "2da213750d43e2329b28f28edec727261cf8588d61b82b6a4c81bfead16b7a18"
+      },
+      {
+        "path": "mph_sim/datasets.py",
+        "role": "built-in scenario data and train-export specifications",
+        "sha256": "b6c9a0fccec165391c1427387da00a5a676e22454a9952befe3339b7be6de1cb"
+      },
+      {
+        "path": "mph_sim/blending.py",
+        "role": "shared MPH blend catalogue, campaign state, quality and receiving reachability",
+        "sha256": "e45c70827241ba76959365463132b1d9c6f21fdee3fdcc4f90b2c3a7d3dfddc9"
+      },
+      {
+        "path": "mph_sim/optimizer.py",
+        "role": "candidate generation and CP-SAT model",
+        "sha256": "b63aa221935e2c6cedd0b012ddf5e46d74b20243df5b6ba91f072524bec7c934"
+      },
+      {
+        "path": "mph_sim/dynamic_blending.py",
+        "role": "optional variable-throughput blend construction, physical readiness and used-receiver quality",
+        "sha256": "6f36b9255f59b3f94d75c4dc4d96c3f34ea587f90ed63959a20f890762c03479"
+      },
+      {
+        "path": "mph_sim/scheduling_objective.py",
+        "role": "protected objective passes and minimum job volume",
+        "sha256": "f5084878ff0c0eeff69d1a64c427a084f53e6ece8799cac18e172b00dc9e2cf7"
+      },
+      {
+        "path": "mph_sim/objective_config.py",
+        "role": "objective defaults and validation",
+        "sha256": "d00a6e435ed5852e38f2d1809b680fee1ef7f2e157990f005f1b64d1e00ac1e5"
+      },
+      {
+        "path": "mph_sim/washing.py",
+        "role": "washing transformations and G10",
+        "sha256": "430516572d676f55d909e91477e6424c8bdc7759b6d114d480868a96e48e4624"
+      },
+      {
+        "path": "mph_sim/prewash_blending.py",
+        "role": "stockpile-enabled site-level pre-washing matrix catalogues, optimized shares and validation",
+        "sha256": "669106f8b877d7b0502bb207c47305cfae1909a7a2b355f09b5dfb3abbe1e4c7"
+      },
+      {
+        "path": "mph_sim/blend_preferences.py",
+        "role": "atomic scenario-keyed blending enablement persistence without physical-state changes",
+        "sha256": "1d8ef9d48919bb7fa7685bccbe99d508dea043fc3caa4e105ad155a5078181cb"
+      },
+      {
+        "path": "mph_sim/washing_seed.py",
+        "role": "quality-aware physical washing feasibility seed",
+        "sha256": "3dd5a16e160d2429e484c3136cda7e0c9b55c474912d208b2dc7db9acb7717c6"
+      },
+      {
+        "path": "mph_sim/kpis.py",
+        "role": "KPI definitions",
+        "sha256": "1e62e778c6d58f035879cda2eff0d37b1d1f2953ec08f08586a3f9a9f80cc8ff"
+      },
+      {
+        "path": "mph_sim/persistence.py",
+        "role": "scenario and nested specification serialization",
+        "sha256": "be5bbf908316862d915634c5773872f85b9ff5724f2fe0ad6f9a770944d9ee4d"
+      },
+      {
+        "path": "mph_sim/simulator.py",
+        "role": "closed-loop execution and hard quality holds",
+        "sha256": "04675d3ae05dce0ae6411af78efd321d91ac38360f23bf40f6e458588bf05a5c"
+      },
+      {
+        "path": "mph_sim/validation.py",
+        "role": "model input and specification validation",
+        "sha256": "9666ff1ca53e51c6dd6273758b37bac7475d98d6060d9d708b3d586d5266bb64"
+      },
+      {
+        "path": "mph_sim/runs.py",
+        "role": "minute execution and physical runs",
+        "sha256": "572c9e6834d87e773aad10af629d18d0195d8cacb2c72dc6c99a21d800fdcbf7"
+      },
+      {
+        "path": "mph_sim/planning_time.py",
+        "role": "mixed-resolution resampling, boundary and merge",
+        "sha256": "1725af61cd8b8f41af9fa2382f2f83ae014141513eede291e5d4ffd1b794266a"
+      },
+      {
+        "path": "mph_sim/parcel_consolidation.py",
+        "role": "protected parcel consolidation refinement",
+        "sha256": "aec6fe4085f71e00b85226542538557608e9a82aa74e2372fe76d6bbc87cc03b"
+      }
+    ]
+  },
+  "sets": [
+    {
+      "id": "candidates",
+      "symbol": "C",
+      "meaning": "generated movement candidates"
+    },
+    {
+      "id": "time",
+      "symbol": "T",
+      "meaning": "native planning buckets"
+    },
+    {
+      "id": "activity-groups",
+      "symbol": "G",
+      "meaning": "machine/space/destination activity groups"
+    },
+    {
+      "id": "machines",
+      "symbol": "M",
+      "meaning": "handling or process machines"
+    },
+    {
+      "id": "spaces",
+      "symbol": "S",
+      "meaning": "stock and process spaces"
+    },
+    {
+      "id": "destinations",
+      "symbol": "D",
+      "meaning": "demand destinations"
+    },
+    {
+      "id": "links",
+      "symbol": "L",
+      "meaning": "directed network links"
+    },
+    {
+      "id": "materials",
+      "symbol": "R",
+      "meaning": "grade-resolved material pools"
+    },
+    {
+      "id": "quality-parameters",
+      "symbol": "P",
+      "meaning": "assay characteristics"
+    }
+  ],
+  "parameters": [
+    {
+      "id": "mine-arrivals",
+      "name": "Daily mine arrivals",
+      "meaning": "Prescribed external raw-grade supply by site/civil day, converted to conserved whole-tonne bucket inflows at existing finite buffers; obsolete RAW-BT-NOMINAL records are mass-preservingly folded into RAW-BT; optional operating versus legacy exact closing stock policy.",
+      "unit": "physical t/day",
+      "basis": "as-handled wet mass, civil days and absolute bucket offsets",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/mine_arrivals.py",
+          "symbol": "refresh"
+        },
+        {
+          "path": "mph_sim/mine_arrivals.py",
+          "symbol": "_stock_policy"
+        },
+        {
+          "path": "mph_sim/simulator.py",
+          "symbol": "_execute_mine_arrivals_interval"
+        }
+      ],
+      "notes": "Default volume/mix are assumptions, not measurements. Custom terminal commitments and WIP closure survive. Execution distinguishes scheduled, accepted and rejected arrivals. Prewash shares remain source-pile, not individual grade, shares.",
+      "run_paths": [
+        "snapshots.scenario.config.MINE_ARRIVALS",
+        "snapshots.scenario.exogenous"
+      ]
+    },
+    {
+      "id": "objective-mode",
+      "name": "Objective mode",
+      "symbol": "mode",
+      "meaning": "Selects protected service-first refinement or one weighted sum.",
+      "unit": "category",
+      "basis": "scenario configuration",
+      "status": "code-verified",
+      "run_paths": [
+        "objective.mode",
+        "snapshots.scenario.config.OBJECTIVE_MODE"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/objective_config.py",
+          "symbol": "SCHEDULING_DEFAULTS"
+        }
+      ]
+    },
+    {
+      "id": "minimum-job-volume",
+      "name": "Minimum complete job volume",
+      "symbol": "V_min",
+      "meaning": "Hard mass floor on a complete contiguous job; zero disables it.",
+      "unit": "t input",
+      "basis": "complete contiguous job",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.config.MIN_JOB_VOLUME_T"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/scheduling_objective.py",
+          "symbol": "add_minimum_job_volume"
+        }
+      ]
+    },
+    {
+      "id": "service-degradation",
+      "name": "Qualified-service degradation allowance",
+      "symbol": "delta_service",
+      "meaning": "Maximum deterioration allowed when protecting primary qualified service during refinement.",
+      "unit": "priority-weighted t",
+      "basis": "secondary objective passes",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.config.SERVICE_DEGRADATION_T"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "primary_service_ceiling"
+        }
+      ]
+    },
+    {
+      "id": "washing-dry-yield",
+      "name": "Washing dry-solids yield",
+      "symbol": "eta_k",
+      "meaning": "Fraction of feed dry solids retained in product for washing option k; defaults are 0.85 for Simple and 0.65 for Full.",
+      "unit": "product dry t/feed dry t",
+      "basis": "treatment mode",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.config.WASHING_TREATMENTS.modes"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "DEFAULT_MODES"
+        }
+      ]
+    },
+    {
+      "id": "washing-quality-change",
+      "name": "Washing characteristic change",
+      "symbol": "alpha_kp",
+      "meaning": "Relative percentage change applied to each known feed characteristic. Default vectors [BPL,Cd,MgO,SiO2,CO2,moisture] are [+12,-5,-30,-28,-26,+20]% for Simple and [+23,-20,-64,-50,-27,+20]% for Full.",
+      "unit": "% relative",
+      "basis": "treatment mode and characteristic",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.config.WASHING_TREATMENTS.modes"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "treated_quality"
+        }
+      ]
+    },
+    {
+      "id": "washing-unit-cost",
+      "name": "Washing treatment unit cost",
+      "symbol": "cost_k",
+      "meaning": "Cost per product dry-solids tonne for washing option k.",
+      "unit": "$/product dry t",
+      "basis": "treatment product",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.config.WASHING_TREATMENTS.modes"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "washing_cost_expression"
+        }
+      ]
+    },
+    {
+      "id": "g10-limits",
+      "name": "Provisional G10 receiving limits",
+      "symbol": "[L_p,U_p]",
+      "meaning": "Hard assay intervals applied to the permanent G10 demand contract at configured PAP receiving destinations.",
+      "unit": "characteristic-specific",
+      "basis": "delivered blend",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.config.WASHING_TREATMENTS.g10_limits"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "g10_spec"
+        }
+      ]
+    },
+    {
+      "id": "raw-tbt-assay",
+      "name": "RAW-TBT planning assay",
+      "symbol": "q_RAW-TBT",
+      "meaning": "Configured raw-TBT vector BPL 54.10%, Cd 16 ppm, MgO 1.52%, SiO2 14.39%, CO2 8.32%, and retained prior moisture 12%; the separately supplied 5% H2O value is explicitly excluded.",
+      "unit": "characteristic-specific",
+      "basis": "raw screened feed planning grade",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.grades[RAW-TBT]"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/datasets.py",
+          "anchor": "RAW-TBT"
+        },
+        {
+          "path": "config/grade_catalog.json",
+          "anchor": "RAW-TBT"
+        }
+      ]
+    },
+    {
+      "id": "prewash-blend-policy",
+      "name": "Pre-washing feed blend policy",
+      "symbol": "m_b, r_i, [l_i,u_i], K_b",
+      "meaning": "Version 4 selects one shared mode and reusable matrix catalogue or optimized envelope per site, with enabled_source_spaces switches per stockpile applying across physical washing stages. A disabled required input excludes a whole matrix without renormalization. Insufficient/infeasible enabled sources leave blending inactive while ordinary washing remains available. Legacy points without the new source key retain line scoping.",
+      "unit": "fraction and category",
+      "basis": "blend point, washing stage and civil day",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.config.PRE_WASHING_BLENDING"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/prewash_blending.py",
+          "symbol": "default_config"
+        },
+        {
+          "path": "mph_sim/prewash_blending.py",
+          "symbol": "configuration_errors"
+        }
+      ]
+    },
+    {
+      "id": "mph-shared-blend-policy",
+      "name": "Shared MPH humid-stockpile blend policy",
+      "symbol": "m_MPH, K_MPH, e_h",
+      "meaning": "Version 7 defines one global blend mode, reusable matrix catalogue or optimized share envelope, and a 500 t adjustable minimum per selected input grade. A pile enable flag permits optional construction, with variable quantity and resulting grade, calculated completion time and derived passes. Legacy v5/v6 policies retain their fixed campaign contract.",
+      "unit": "fraction, category and t",
+      "basis": "MPH M16 humid-phosphate stockpile family",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.config.CHEVRON_STACKING",
+        "plan.blend_campaigns"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/blending.py",
+          "symbol": "chevron_settings"
+        },
+        {
+          "path": "mph_sim/blending.py",
+          "symbol": "chevron_matrix_catalog"
+        }
+      ]
+    },
+    {
+      "id": "mph-minimum-input-tonnes",
+      "name": "Minimum contribution per used blend input grade",
+      "symbol": "L",
+      "meaning": "Default 500 physical tonnes, adjustable globally; aggregate input-grade tonnes per constructed pile, not a minimum per job or time bucket. Integer scheduling uses max(ceil(L),1) when a grade is selected.",
+      "unit": "physical t",
+      "basis": "selected input grade and pile construction",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/blending.py",
+          "symbol": "chevron_minimum_input_t"
+        },
+        {
+          "path": "mph_sim/dynamic_blending.py",
+          "symbol": "add_dynamic_pile"
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "id": "mph-dynamic-input-tonnes",
+      "name": "Demand-driven pile activity and composition",
+      "symbol": "A[h], Q[h], q[h,g], U[h,g], Z[h,k], Ready[h,t]",
+      "meaning": "Optional pile construction selects a variable physical total and at least two input grades, each meeting the absolute floor. Fixed-matrix ratios scale exactly with total or optimized shares follow common bounds. Readiness becomes true at the first boundary at which all selected tonnes were stacked.",
+      "unit": "physical t and boolean",
+      "basis": "enabled stockpile, input grade, catalogue entry and boundary",
+      "domain": "nonnegative integer tonnes and binary indicators",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/dynamic_blending.py",
+          "symbol": "add_dynamic_pile"
+        }
+      ],
+      "run_paths": [
+        "plan.blend_campaigns"
+      ]
+    },
+    {
+      "id": "flow-input",
+      "name": "Candidate input flow",
+      "symbol": "X[c,t]",
+      "meaning": "Selected physical/as-handled input mass for candidate c in bucket t.",
+      "unit": "t",
+      "basis": "candidate and native bucket",
+      "domain": "nonnegative integer",
+      "status": "code-verified",
+      "run_paths": [
+        "measurements decision:job_input_mass:*"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "X ="
+        }
+      ]
+    },
+    {
+      "id": "flow-output",
+      "name": "Candidate output flow",
+      "symbol": "Y[c,t]",
+      "meaning": "Yield-adjusted process output mass.",
+      "unit": "t",
+      "basis": "candidate and native bucket",
+      "domain": "nonnegative integer",
+      "status": "code-verified",
+      "run_paths": [
+        "measurements decision:job_output_mass:*"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "Y ="
+        }
+      ]
+    },
+    {
+      "id": "activity",
+      "name": "Activity group state",
+      "symbol": "A[g,t]",
+      "meaning": "One when an activity group owns its machine in a bucket.",
+      "unit": "boolean",
+      "basis": "activity group and native bucket",
+      "domain": "binary",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "AG:"
+        }
+      ]
+    },
+    {
+      "id": "inventory",
+      "name": "Physical inventory",
+      "symbol": "I[s,t]",
+      "meaning": "Physical mass present at a stock/process space boundary.",
+      "unit": "t",
+      "basis": "space and bucket boundary",
+      "domain": "nonnegative integer",
+      "status": "code-verified",
+      "run_paths": [
+        "measurements state:inventory:space:*"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "inventory mass balance"
+        }
+      ]
+    },
+    {
+      "id": "material-inventory",
+      "name": "Material-pool inventory",
+      "symbol": "I_material[s,r,t]",
+      "meaning": "Grade-resolved mass under the physical inventory total when washing is enabled.",
+      "unit": "t",
+      "basis": "space, material pool and bucket boundary",
+      "domain": "nonnegative integer",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.plan.material_inventory"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "material_inv"
+        },
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "prepare_materials"
+        }
+      ]
+    },
+    {
+      "id": "unmet-demand",
+      "name": "Unmet demand",
+      "symbol": "U[d,t]",
+      "meaning": "Explicit shortage slack in the demand balance.",
+      "unit": "t",
+      "basis": "destination due bucket or process-feed campaign",
+      "domain": "nonnegative integer",
+      "status": "code-verified",
+      "run_paths": [
+        "measurements output:unmet_mass:destination:*",
+        "kpis.unmet_t"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "demand with unmet slack"
+        }
+      ]
+    },
+    {
+      "id": "quality-slack",
+      "name": "Soft quality slack",
+      "symbol": "QSlack",
+      "meaning": "Violation of a soft delivered-quality limit after model scaling.",
+      "unit": "t.quality_unit",
+      "basis": "destination quality window",
+      "domain": "nonnegative integer",
+      "status": "code-verified",
+      "run_paths": [
+        "measurements diagnostic:offspec_slack:destination:*"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "quality constraints"
+        }
+      ]
+    },
+    {
+      "id": "safety-shortfall",
+      "name": "Safety-stock shortfall",
+      "symbol": "SafetyShort[s,t]",
+      "meaning": "Positive deficit below configured safety stock.",
+      "unit": "t",
+      "basis": "space and bucket",
+      "domain": "nonnegative integer",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.plan.safety_short"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "safety stock (soft"
+        }
+      ]
+    },
+    {
+      "id": "feed-gap",
+      "name": "Continuous-feed gap",
+      "symbol": "Gap[d,t]",
+      "meaning": "One when delivery is below the configured service threshold in a demand-active bucket.",
+      "unit": "boolean",
+      "basis": "destination and native bucket",
+      "domain": "binary",
+      "status": "code-verified",
+      "run_paths": [
+        "measurements state:feed_gap:destination:*"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "continuous-feed interruptions"
+        }
+      ]
+    },
+    {
+      "id": "machine-state",
+      "name": "Machine transition and hold state",
+      "symbol": "Start/Stop/Changeover/Hold[m,t]",
+      "meaning": "Exact bucket transition events and running-without-flow state.",
+      "unit": "boolean",
+      "basis": "machine and native bucket",
+      "domain": "binary",
+      "status": "code-verified",
+      "run_paths": [
+        "objective.breakdown",
+        "kpis.schedule_fragmentation"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "machine_starts"
+        }
+      ]
+    },
+    {
+      "id": "short-parcel",
+      "name": "Below-floor parcel exception",
+      "symbol": "ShortParcel[g,t]",
+      "meaning": "One when an active bucket moves less than its configured parcel floor and pays a penalty.",
+      "unit": "boolean",
+      "basis": "activity group and bucket",
+      "domain": "binary",
+      "status": "code-verified",
+      "run_paths": [
+        "objective.breakdown.short_parcel_buckets",
+        "kpis.schedule_fragmentation"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "short_parcel"
+        }
+      ]
+    }
+  ],
+  "objective_terms": [
+    {
+      "id": "emergency",
+      "name": "Emergency slack",
+      "symbol": "Emergency",
+      "meaning": "Spill, unstacked/surge slack, and process-stage target shortfall.",
+      "unit": "scaled t",
+      "basis": "planning window",
+      "status": "code-verified",
+      "objective_mode": "all",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "emergency_expression"
+        }
+      ]
+    },
+    {
+      "id": "qualified-service",
+      "name": "Qualified service shortfall",
+      "symbol": "QualifiedServiceShortfall",
+      "meaning": "Priority-weighted demand not served by material credited as quality-qualified.",
+      "unit": "priority-weighted t",
+      "basis": "final-product demand",
+      "status": "code-verified",
+      "objective_mode": "service_first",
+      "priority": 1,
+      "run_paths": [
+        "objective.passes"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "qualified_service_expression"
+        }
+      ]
+    },
+    {
+      "id": "unqualified-dispatch",
+      "name": "Unqualified dispatch",
+      "symbol": "UnqualifiedDispatch",
+      "meaning": "Delivered mass that does not reduce quality-qualified shortage.",
+      "unit": "t",
+      "basis": "final-product demand",
+      "status": "code-verified",
+      "objective_mode": "service_first",
+      "priority": 2,
+      "run_paths": [
+        "objective.passes"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "unqualified_dispatch_expression"
+        }
+      ]
+    },
+    {
+      "id": "washing-raw-feed",
+      "name": "Raw washing-feed dry mass",
+      "symbol": "RawFeedDry",
+      "meaning": "Dry mass sent to washing; minimizing it favors higher recovery for a protected product requirement.",
+      "unit": "dry t",
+      "basis": "washing inputs",
+      "status": "code-verified",
+      "objective_mode": "service_first",
+      "priority": 3,
+      "run_paths": [
+        "objective.passes",
+        "objective.breakdown.washing_raw_feed_dry_t"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "raw_feed_expression"
+        }
+      ]
+    },
+    {
+      "id": "washing-treatment-cost",
+      "name": "Washing treatment cost",
+      "symbol": "TreatmentCost",
+      "meaning": "Nominal recovered-dry-product treatment-cost proxy expressed through input flow and a rounded per-input-tonne coefficient.",
+      "unit": "$",
+      "basis": "nominal washing product dry mass before integer output rounding",
+      "status": "code-verified",
+      "objective_mode": "all",
+      "priority": 4,
+      "formula": "sum X_wet_t * round(1000 * cost_per_tsm_t * input_dry_fraction * nominal_dry_yield) / 1000",
+      "notes": "Nominal-yield objective proxy precedes whole-tonne output rounding; distinguish from cost computed on serialized physical product flows.",
+      "run_paths": [
+        "objective.passes",
+        "kpis.washing_treatment_cost"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "washing_cost_expression"
+        }
+      ]
+    },
+    {
+      "id": "continuity",
+      "name": "Continuous-feed interruptions",
+      "symbol": "Continuity",
+      "meaning": "Penalty on gap minutes and new interruption episodes.",
+      "unit": "configured penalty units",
+      "basis": "continuous-feed destinations",
+      "status": "code-verified",
+      "objective_mode": "all",
+      "priority": 5,
+      "run_paths": [
+        "objective.passes",
+        "objective.breakdown"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "continuity_terms"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "Equipment operating events",
+      "symbol": "Operations",
+      "meaning": "Penalty on starts, stops, group changeovers, and held buckets.",
+      "unit": "configured penalty units",
+      "basis": "machine bucket state",
+      "status": "code-verified",
+      "objective_mode": "all",
+      "priority": 6,
+      "run_paths": [
+        "objective.passes",
+        "objective.breakdown"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "equipment_terms"
+        }
+      ]
+    },
+    {
+      "id": "preferences",
+      "name": "Remaining planning preferences",
+      "symbol": "Preferences",
+      "meaning": "Protected last-tier aggregate of remaining weighted and tie-breaker terms.",
+      "unit": "scaled objective units",
+      "basis": "planning window",
+      "status": "code-verified",
+      "objective_mode": "service_first",
+      "priority": 7,
+      "run_paths": [
+        "objective.passes"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "preference_expression"
+        }
+      ]
+    },
+    {
+      "id": "weighted-unmet",
+      "name": "Weighted unmet demand",
+      "symbol": "w1*U",
+      "meaning": "Priority-weighted unmet demand contribution in the legacy weighted objective.",
+      "unit": "scaled objective units",
+      "basis": "destination and bucket",
+      "status": "code-verified",
+      "objective_mode": "weighted",
+      "run_paths": [
+        "objective.weights.w1_unmet",
+        "objective.breakdown.unmet_t"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "w1_unmet"
+        }
+      ]
+    },
+    {
+      "id": "weighted-quality",
+      "name": "Weighted quality violation",
+      "symbol": "w2*QSlack",
+      "meaning": "Soft destination and blend quality slack contribution.",
+      "unit": "scaled objective units",
+      "basis": "quality window",
+      "status": "code-verified",
+      "objective_mode": "weighted",
+      "run_paths": [
+        "objective.weights.w2_offspec",
+        "objective.breakdown.offspec_t_unit"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "w2_offspec"
+        }
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "candidate-eligibility",
+      "name": "Candidate eligibility and reachability",
+      "meaning": "Only validated routes, machines, materials, lifecycle states, and known required assays become candidates.",
+      "unit": "boolean",
+      "basis": "candidate generation",
+      "hardness": "hard/pre-solve",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "symbol": "build_candidates"
+        }
+      ]
+    },
+    {
+      "id": "flow-activity-capacity",
+      "name": "Flow, activity and machine-rate linkage",
+      "meaning": "Active candidates respect per-bucket feasible rate bounds; inactive candidates move zero.",
+      "unit": "t per bucket",
+      "basis": "candidate/activity group",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "grouping: one activity bool"
+        }
+      ]
+    },
+    {
+      "id": "machine-calendar",
+      "name": "Machine exclusivity, calendars and fixed jobs",
+      "meaning": "A machine has at most one activity group per bucket and respects availability and fixed assignments.",
+      "unit": "boolean",
+      "basis": "machine and bucket",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "operator-fixed jobs"
+        }
+      ]
+    },
+    {
+      "id": "route-capacity",
+      "name": "Link/shared/conflict capacity",
+      "meaning": "Candidate flow respects link capacities, shared envelopes, corridor confluence, and conflict groups.",
+      "unit": "t per bucket",
+      "basis": "network resource",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "link capacities / shared / conflict groups"
+        }
+      ]
+    },
+    {
+      "id": "inventory-balance",
+      "name": "Physical inventory balance",
+      "meaning": "Closing inventory equals opening inventory plus inflows minus outflows and loss/spill terms.",
+      "unit": "t",
+      "basis": "space and bucket boundary",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "inventory mass balance"
+        }
+      ]
+    },
+    {
+      "id": "material-balance",
+      "name": "Grade-resolved material balance",
+      "meaning": "Material-pool inventories conserve reachable material and sum to physical inventory.",
+      "unit": "t",
+      "basis": "space/material/bucket",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "Grade-resolved balances"
+        },
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "prepare_materials"
+        }
+      ]
+    },
+    {
+      "id": "demand-balance",
+      "name": "Demand balance with unmet slack",
+      "meaning": "Credited delivered mass plus explicit unmet mass equals requested mass on the applicable due basis.",
+      "unit": "t",
+      "basis": "destination bucket or daily process campaign",
+      "hardness": "soft via explicit slack",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "demand with unmet slack"
+        }
+      ]
+    },
+    {
+      "id": "quality-limits",
+      "name": "Mass-weighted quality limits",
+      "meaning": "Delivered blends satisfy hard limits; soft limits may use penalized quality slack. Version 7 pile chemistry is qualified against each destination/specification profile actually supplied, using selected component assays. Legacy fixed campaigns retain reachable-receiver checks even in a zero-demand construction window.",
+      "unit": "characteristic-specific",
+      "basis": "destination quality window",
+      "hardness": "hard or soft by specification",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "quality constraints"
+        }
+      ]
+    },
+    {
+      "id": "campaign-receiving-spec",
+      "name": "Campaign-selected receiving specification",
+      "meaning": "A demand specification grade selects its receiving envelope by bucket without requiring the physical source-grade label to match; quality windows split at contract changes and unknown required assays are excluded.",
+      "unit": "characteristic-specific",
+      "basis": "destination, demand campaign and quality window",
+      "hardness": "hard or soft by selected specification",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/domain.py",
+          "symbol": "demand_spec"
+        },
+        {
+          "path": "mph_sim/datasets.py",
+          "symbol": "_train_export_grades"
+        },
+        {
+          "path": "mph_sim/optimizer.py",
+          "symbol": "demand_specs_at"
+        }
+      ]
+    },
+    {
+      "id": "pap-g10-demand-contract",
+      "name": "Permanent PAP G10 demand contract",
+      "meaning": "PAP-1 and PAP-2 destination defaults and every explicit demand bucket request G10; presets and the washing-treatment toggle cannot replace it with a physical stream grade.",
+      "unit": "category",
+      "basis": "PAP destination and demand bucket",
+      "hardness": "hard pre-solve contract plus hard G10 assay limits",
+      "status": "code-verified",
+      "run_paths": [
+        "snapshots.scenario.destinations",
+        "snapshots.scenario.demand"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "synchronize_pap"
+        },
+        {
+          "path": "mph_sim/datasets.py",
+          "symbol": "apply_planning_demand_profile"
+        },
+        {
+          "path": "mph_sim/validation.py",
+          "anchor": "PAP_REQUIRES_G10"
+        }
+      ]
+    },
+    {
+      "id": "washing-conversion",
+      "name": "Washing quality and yield conversion",
+      "meaning": "Output assays use relative changes and wet output follows dry-solids yield and moisture conversion.",
+      "unit": "assay and t",
+      "basis": "treatment candidate",
+      "hardness": "hard deterministic transformation",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "treated_quality"
+        },
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "output_factor"
+        }
+      ]
+    },
+    {
+      "id": "prewash-blend-campaign",
+      "name": "Daily pre-washing source-share and mode constraints",
+      "meaning": "For every effective physical washing stage and civil day, MATRIX selects at most one eligible recipe whose positive source inputs are enabled and enforces its exact percentages; OPTIMIZED uses only enabled source bounds. All nonzero blend-participating feed uses one common allowed washing mode; ordinary nonblend feed is separate.",
+      "unit": "t and boolean",
+      "basis": "blend point, washing stage and civil day",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "pre-washing feed blend campaigns"
+        },
+        {
+          "path": "mph_sim/prewash_blending.py",
+          "symbol": "enabled_points"
+        }
+      ]
+    },
+    {
+      "id": "mph-matrix-catalog-selection",
+      "name": "MPH shared matrix catalogue selection",
+      "meaning": "For each active unresolved v7 M16 construction in MATRIX mode, one shared catalogue recipe is selected and its rational percentages scale with the chosen total whole tonnes. Enabled piles may remain inactive. No recipe is a permanent pile assignment; legacy fixed campaigns retain their configured total allocation.",
+      "unit": "boolean and t",
+      "basis": "enabled M16 pile campaign and catalogue matrix",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "blend_matrix_selection_vars_by_space"
+        },
+        {
+          "path": "mph_sim/dynamic_blending.py",
+          "symbol": "add_dynamic_pile"
+        }
+      ]
+    },
+    {
+      "id": "mph-physical-readiness",
+      "name": "Blend completion and reclaim gate",
+      "meaning": "A new v7 construction has no configured deadline. Reclaim requires complete selected component tonnes. Execution freezes the exact recipe/quantity and verifies lot identity; a planned timestamp alone cannot release it. A completed/depleted empty pile may reopen for a later lot, while prior job accounting remains preserved across snapshots and actual shortfalls hold the next lot.",
+      "unit": "physical t, min and boolean",
+      "basis": "stockpile construction and bucket boundary",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/dynamic_blending.py",
+          "symbol": "add_dynamic_pile"
+        },
+        {
+          "path": "mph_sim/blending.py",
+          "symbol": "update_chevron_campaign_state"
+        },
+        {
+          "path": "mph_sim/simulator.py",
+          "symbol": "_blend_withdrawal_issue"
+        }
+      ]
+    },
+    {
+      "id": "continuity-policy",
+      "name": "Continuous-feed gap policy",
+      "meaning": "Defines gap state from minimum service threshold and can enforce a configured hard maximum gap.",
+      "unit": "min",
+      "basis": "continuous-feed destination",
+      "hardness": "soft objective; optional hard duration",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "continuous-feed interruptions"
+        }
+      ]
+    },
+    {
+      "id": "safety-stock",
+      "name": "Safety-stock target",
+      "meaning": "Inventory below safety stock creates an integrated penalized shortfall.",
+      "unit": "t",
+      "basis": "space and bucket",
+      "hardness": "soft",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "safety stock (soft"
+        }
+      ]
+    },
+    {
+      "id": "minimum-complete-job",
+      "name": "Minimum complete contiguous job volume",
+      "meaning": "If enabled, every completed contiguous job must accumulate at least the configured mass.",
+      "unit": "t input",
+      "basis": "complete contiguous job",
+      "hardness": "hard",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/scheduling_objective.py",
+          "symbol": "add_minimum_job_volume"
+        }
+      ]
+    },
+    {
+      "id": "minute-execution-acceptance",
+      "name": "Minute execution acceptance",
+      "meaning": "A candidate solution is accepted only when its minute placement and physical validation contracts pass.",
+      "unit": "boolean",
+      "basis": "extracted plan",
+      "hardness": "post-solve acceptance",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "accept_execution_candidate"
+        },
+        {
+          "path": "mph_sim/runs.py",
+          "anchor": "execution"
+        }
+      ]
+    }
+  ],
+  "algorithms": [
+    {
+      "id": "solve-entry-routing",
+      "name": "Planning strategy routing",
+      "meaning": "Validates global model state and selects the mixed-resolution, weekly rolling, or uniform execution strategy.",
+      "unit": "n/a",
+      "basis": "one solve request",
+      "status": "code-verified",
+      "inputs": [
+        "scenario",
+        "SolveOptions",
+        "progress callback"
+      ],
+      "outputs": [
+        "PlanResult with blend campaigns attached"
+      ],
+      "steps": [
+        "validate washing and initial state",
+        "prepare blend design",
+        "route by resolution and horizon flags",
+        "attach authoritative blend campaigns"
+      ],
+      "termination": "Returns explicit ERROR for invalid input or the selected strategy's result.",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "symbol": "_solve_plan_impl"
+        }
+      ]
+    },
+    {
+      "id": "uniform-cp-sat-solve",
+      "name": "Uniform-grid CP-SAT solve",
+      "meaning": "Builds and solves one complete CP-SAT model, validates minute execution, applies protected refinements, and extracts the accepted result.",
+      "unit": "n/a",
+      "basis": "one uniform planning window",
+      "status": "code-verified",
+      "inputs": [
+        "validated scenario",
+        "uniform time grid",
+        "SolveOptions"
+      ],
+      "outputs": [
+        "accepted jobs",
+        "inventories",
+        "slacks",
+        "terminal state",
+        "solver and objective evidence"
+      ],
+      "steps": [
+        "prepare materials and candidates",
+        "construct variables and constraints",
+        "seed or hint search",
+        "if the physical washing seed is absent, attempt bounded feasibility on an unrestricted clone of the original hard typed model",
+        "solve primary objective",
+        "validate or repair minute execution",
+        "run protected objective levels",
+        "optionally consolidate parcels",
+        "extract result and diagnostics"
+      ],
+      "termination": "Returns OPTIMAL or FEASIBLE only with an accepted incumbent; a rejected executable candidate can be PARTIAL, while absent incumbents return INFEASIBLE, UNKNOWN, or ERROR. PARTIAL is not a usable replacement plan.",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "symbol": "_solve_uniform_plan"
+        }
+      ]
+    },
+    {
+      "id": "washing-physical-seed",
+      "name": "Quality-aware physical washing seed",
+      "meaning": "First verifies a no-command incumbent against the unchanged hard model, then attempts a richer typed washing/dispatch hint while preferring the highest-yield treatment that individually satisfies G10. The mapper replays grade-specific exogenous flows at the authoritative bucket boundary and retains legitimate bounded external overflow. Typed-only PAP certification and chevron construction remain authoritative in the full model.",
+      "unit": "n/a",
+      "basis": "one uniform planning window with washing enabled",
+      "status": "code-verified",
+      "inputs": [
+        "prepared material pools and candidate variants",
+        "source assays and G10 limits",
+        "managed dispatch requirements",
+        "typed exogenous-flow material map and explicit slack/overflow contracts"
+      ],
+      "outputs": [
+        "verified emergency incumbent",
+        "candidate flow seed or explicit unmapped diagnostic"
+      ],
+      "steps": [
+        "verify a no-command incumbent on a clone of the complete hard model",
+        "zero PAP demand and disable chevron construction only on the label-only precursor copy",
+        "identify treatment variants whose transformed assays satisfy G10",
+        "select the highest-yield qualifying mode or highest-yield fallback and apply the conservative capacity/yield envelope across reachable materials",
+        "replay typed exogenous flows after commanded bucket work and allocate bounded external overflow",
+        "map available opening pools to managed dispatches",
+        "clamp satisfied dispatch requirements at zero",
+        "use inconsistent mapped restrictions only as repairable hints or retain the verified emergency incumbent"
+      ],
+      "termination": "Every richer seed is advisory and bounded. The authoritative objective search may alter all decisions. If that search times out, the same-hard-model emergency incumbent may be returned as FEASIBLE with all unmet demand, target shortfall and overflow visible; this is not a service-quality or optimality certificate.",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "finding a material-balanced washing incumbent"
+        },
+        {
+          "path": "mph_sim/washing_seed.py",
+          "symbol": "_g10_seed_variant"
+        },
+        {
+          "path": "mph_sim/washing_seed.py",
+          "symbol": "physical_seed"
+        }
+      ]
+    },
+    {
+      "id": "service-first-refinement",
+      "name": "Protected lexicographic refinement",
+      "meaning": "Optimizes secondary levels sequentially while constraining every previously accepted level to its permitted ceiling.",
+      "unit": "n/a",
+      "basis": "accepted service-first incumbent",
+      "status": "code-verified",
+      "inputs": [
+        "primary incumbent",
+        "ordered level expressions",
+        "degradation ceilings",
+        "acceptance callbacks"
+      ],
+      "outputs": [
+        "last accepted incumbent",
+        "per-level pass records"
+      ],
+      "steps": [
+        "protect emergency and qualified service",
+        "solve each level within remaining budgets",
+        "validate execution and quality",
+        "accept or retain prior incumbent"
+      ],
+      "termination": "A failed, timed-out, or rejected level retains the previous accepted incumbent; later levels cannot degrade protected ceilings.",
+      "code_refs": [
+        {
+          "path": "mph_sim/scheduling_objective.py",
+          "symbol": "refine_objectives"
+        },
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "levels = ["
+        }
+      ]
+    },
+    {
+      "id": "weekly-rolling-plan",
+      "name": "State-coupled weekly rolling solve",
+      "meaning": "Partitions a long horizon into civil-day windows, solves them sequentially, carries physical and operational state, and merges the results.",
+      "unit": "n/a",
+      "basis": "multi-day native-grid horizon",
+      "status": "code-verified",
+      "inputs": [
+        "long-horizon scenario",
+        "weekly target profiles",
+        "total and per-window budgets"
+      ],
+      "outputs": [
+        "merged weekly PlanResult or explicit partial/failed result"
+      ],
+      "steps": [
+        "form civil-day windows",
+        "coalesce unresolved legacy fixed-deadline blend lookahead; v7 has no preset readiness boundary",
+        "allocate boundary targets and budgets",
+        "solve each window uniformly",
+        "carry inventory, delayed material, belt, machine and feed-gap state, plus exact selected blend composition, total, matrix, label and calculated completion",
+        "merge windows"
+      ],
+      "termination": "Stops on first non-usable window or exhausted total wall budget; optimality is not a monolithic whole-week certificate.",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "symbol": "solve_weekly_rolling_plan"
+        },
+        {
+          "path": "mph_sim/optimizer.py",
+          "symbol": "_merge_weekly_windows"
+        }
+      ]
+    },
+    {
+      "id": "mixed-resolution-plan",
+      "name": "Tactical plus fine-prefix solve",
+      "meaning": "Solves a complete tactical plan, resamples and re-optimizes its near-term prefix, then merges the accepted prefix with the tactical tail.",
+      "unit": "n/a",
+      "basis": "mixed-resolution horizon",
+      "status": "code-verified",
+      "inputs": [
+        "native tactical grid",
+        "fine near-term step",
+        "near horizon",
+        "commit and replan windows"
+      ],
+      "outputs": [
+        "merged mixed-resolution result or feasible tactical fallback"
+      ],
+      "steps": [
+        "solve tactical horizon",
+        "align canonical minutes",
+        "configure boundary inventory",
+        "solve resampled fine prefix",
+        "merge prefix and tail"
+      ],
+      "termination": "Tactical failure is returned; resample, wall, or fine-prefix failure after a feasible tactical solve retains a labelled tactical fallback.",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "symbol": "solve_mixed_resolution_plan"
+        },
+        {
+          "path": "mph_sim/planning_time.py",
+          "symbol": "merge_mixed_resolution_results"
+        }
+      ]
+    },
+    {
+      "id": "minute-execution-repair",
+      "name": "Minute-execution acceptance and repair",
+      "meaning": "Tests whether bucket decisions can be placed into valid minute execution windows and adds incompatibility cuts when repair is needed.",
+      "unit": "n/a",
+      "basis": "candidate solver incumbent",
+      "status": "code-verified",
+      "inputs": [
+        "solver incumbent",
+        "bucket allocations",
+        "machine and route timing rules"
+      ],
+      "outputs": [
+        "accepted execution windows or repair constraints"
+      ],
+      "steps": [
+        "extract minute placement",
+        "validate windows",
+        "accept valid incumbent or add cuts",
+        "re-solve within bounded refinement"
+      ],
+      "termination": "Only validated execution is accepted; failure of a later repair attempt retains a previously accepted incumbent where one exists.",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "accept_execution_candidate"
+        },
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "repair_execution_constraints"
+        }
+      ]
+    },
+    {
+      "id": "parcel-consolidation",
+      "name": "Protected parcel consolidation",
+      "meaning": "Optionally reduces short command buckets while fixing selected mass, service, inventory, slack, and protected objective quantities.",
+      "unit": "n/a",
+      "basis": "feasible primary plan with short parcels",
+      "status": "code-verified",
+      "inputs": [
+        "accepted incumbent",
+        "short-parcel flags",
+        "fixed expressions",
+        "bounded polish budgets"
+      ],
+      "outputs": [
+        "accepted consolidated incumbent or unchanged primary incumbent"
+      ],
+      "steps": [
+        "freeze protected expressions",
+        "minimize parcel flags",
+        "validate candidate execution",
+        "accept only non-degrading result"
+      ],
+      "termination": "Any exception, rejection, or non-improvement leaves the valid primary incumbent unchanged.",
+      "code_refs": [
+        {
+          "path": "mph_sim/parcel_consolidation.py",
+          "symbol": "consolidate_parcels"
+        },
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "consolidating buffered residual parcels"
+        }
+      ]
+    }
+  ],
+  "kpis": [
+    {
+      "id": "mph-derived-chevron-passes",
+      "name": "Derived chevron equivalent traversals",
+      "meaning": "Display estimate of one-way stacking traversals from validated flow duration, or scheduled tonnes divided by flow rate, multiplied by explicitly configured stacking traverse speed and divided by supported pile/work-area length. The displayed integer rounds upward; missing physical inputs leave the estimate unavailable.",
+      "unit": "equivalent passes and integer passes",
+      "basis": "chevron stack job",
+      "formula": "equivalent_passes = flow_duration_min * stacking_traverse_speed_m_min / traverse_length_m",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/blending.py",
+          "symbol": "chevron_job_pass_estimate"
+        },
+        {
+          "path": "mph_sim/blending.py",
+          "symbol": "update_chevron_job_passes"
+        }
+      ]
+    },
+    {
+      "id": "service-pct",
+      "name": "Demand service",
+      "symbol": "Service%",
+      "meaning": "Credited delivered mass divided by requested demand over the evaluated horizon.",
+      "unit": "%",
+      "basis": "due bucket; daily grade campaign for process-feed",
+      "formula": "100*credited/requested",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.service_pct"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "unmet-t",
+      "name": "Unmet demand",
+      "symbol": "Unmet",
+      "meaning": "Requested demand minus credited delivery.",
+      "unit": "t",
+      "basis": "evaluated horizon",
+      "formula": "requested-credited",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.unmet_t"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "final-product-service-pct",
+      "name": "Final-product service",
+      "meaning": "On-time final-product delivery divided by final-product demand, excluding process-feed campaigns.",
+      "unit": "%",
+      "basis": "final-product destinations",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.final_product_service_pct"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "onspec-pct",
+      "name": "On-spec delivered observations",
+      "meaning": "Share of positive-delivery destination/bucket observations satisfying every configured quality limit.",
+      "unit": "%",
+      "basis": "positive-delivery quality observations",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.onspec_pct"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "on-spec-mass-pct",
+      "name": "On-spec evaluated final-product mass",
+      "meaning": "On-spec final-product delivered mass divided by quality-evaluated final-product delivered mass.",
+      "unit": "%",
+      "basis": "quality-evaluated final-product mass",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.on_spec_mass_pct"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "washing-dry-yield-pct",
+      "name": "Actual washing dry yield",
+      "meaning": "Product dry mass divided by feed dry mass for one treatment mode.",
+      "unit": "%",
+      "basis": "treatment mode",
+      "formula": "100*product_dry/feed_dry",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.washing_simple_actual_dry_yield_pct",
+        "kpis.washing_full_actual_dry_yield_pct"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "washing-treatment-cost-kpi",
+      "name": "Washing treatment cost",
+      "meaning": "Planned KPI copies the coefficient-rounded nominal-yield objective proxy. Simulated KPI recomputes recovered physical product dry mass times option cost. These bases can differ after integer output rounding.",
+      "unit": "$",
+      "basis": "washing product dry mass",
+      "formula": "planned: washing-treatment-cost objective proxy; simulated: sum actual_product_dry_t*cost_per_tsm_t",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.washing_treatment_cost"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "safety-shortfall-t-h",
+      "name": "Integrated safety-stock shortfall",
+      "meaning": "Time integral of positive safety-stock deficit.",
+      "unit": "t.h",
+      "basis": "spaces and evaluated horizon",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.safety_shortfall_t_h"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "machine-utilisation-pct",
+      "name": "Machine utilisation",
+      "meaning": "Share of evaluated native buckets in which a machine is active.",
+      "unit": "%",
+      "basis": "native planning buckets",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.machine_utilisation_pct"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "route-utilisation-pct",
+      "name": "Average route utilisation",
+      "meaning": "Average transported rate divided by route capacity.",
+      "unit": "%",
+      "basis": "evaluated horizon",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.route_utilisation_pct"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "transition-reconciliation-residual",
+      "name": "Schedule transition reconciliation residual",
+      "meaning": "Unexplained difference between bucket-state and executed-minute transition identities; must be zero.",
+      "unit": "count",
+      "basis": "evaluated plan",
+      "status": "code-verified",
+      "run_paths": [
+        "kpis.schedule_fragmentation.transition_reconciliation_residual"
+      ],
+      "code_refs": [
+        {
+          "path": "mph_sim/runs.py",
+          "anchor": "transition_reconciliation_residual"
+        },
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    }
+  ],
+  "code_mappings": [
+    {
+      "id": "mph-dynamic-blending-model",
+      "name": "Demand-driven MPH blending",
+      "meaning": "Constructs optional variable-volume pile blends, activates quality gates for used receiving profiles, and carries exact proposals into measured completion gates.",
+      "unit": "physical t and min",
+      "basis": "v7 pile construction and execution",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/dynamic_blending.py",
+          "symbol": "add_dynamic_pile"
+        },
+        {
+          "path": "mph_sim/dynamic_blending.py",
+          "symbol": "add_receiving_quality"
+        },
+        {
+          "path": "mph_sim/simulator.py",
+          "symbol": "_adopt_blend_plan"
+        },
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "prepare_materials"
+        }
+      ]
+    },
+    {
+      "id": "solver-build",
+      "name": "CP-SAT model construction",
+      "meaning": "Candidate generation, variables, constraints, objectives, solve and extraction.",
+      "unit": "n/a",
+      "basis": "planner implementation",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "symbol": "solve_plan"
+        }
+      ]
+    },
+    {
+      "id": "objective-refinement",
+      "name": "Protected objective refinement",
+      "meaning": "Sequential secondary solves with explicit incumbent ceilings.",
+      "unit": "n/a",
+      "basis": "service-first objective",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/scheduling_objective.py",
+          "symbol": "refine_objectives"
+        }
+      ]
+    },
+    {
+      "id": "washing-model",
+      "name": "Washing material and quality model",
+      "meaning": "Settings, transformations, G10 synchronization, and material expansion.",
+      "unit": "n/a",
+      "basis": "optional washing feature",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/washing.py",
+          "symbol": "prepare_materials"
+        }
+      ]
+    },
+    {
+      "id": "prewash-blending-model",
+      "name": "Pre-washing feed blending model",
+      "meaning": "Validates physical source-to-line mappings and source-stockpile switches, filters eligible matrices or bounds, gates alternate feed routes, and constructs daily source-share/common-treatment-mode constraints only for active blend policies.",
+      "unit": "n/a",
+      "basis": "optional pre-washing blending feature",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/prewash_blending.py",
+          "symbol": "configuration_errors"
+        },
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "pre-washing feed blend campaigns"
+        }
+      ]
+    },
+    {
+      "id": "washing-seed-selection",
+      "name": "Quality-aware washing seed selection",
+      "meaning": "Verifies a same-hard-model emergency incumbent, maps grade-typed exogenous arrivals and conservative multi-material treatment limits in the richer seed, selects a G10-capable treatment before yield tie-breaking, and never treats a failed advisory mapping as proof of full-model infeasibility.",
+      "unit": "n/a",
+      "basis": "bounded physical feasibility seed",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/optimizer.py",
+          "anchor": "finding a material-balanced washing incumbent"
+        },
+        {
+          "path": "mph_sim/washing_seed.py",
+          "symbol": "_g10_seed_variant"
+        },
+        {
+          "path": "mph_sim/washing_seed.py",
+          "symbol": "physical_seed"
+        }
+      ]
+    },
+    {
+      "id": "campaign-receiving-spec-implementation",
+      "name": "Campaign receiving-specification mapping",
+      "meaning": "Resolves demand-grade contracts into optimizer, execution and KPI quality semantics while preserving physical source identity.",
+      "unit": "n/a",
+      "basis": "demand bucket",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/domain.py",
+          "symbol": "demand_spec"
+        },
+        {
+          "path": "mph_sim/simulator.py",
+          "symbol": "_hard_delivery_quality_issue"
+        },
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "minute-overlay",
+      "name": "Minute execution and physical runs",
+      "meaning": "Transforms bucket allocations into validated execution windows and run identities.",
+      "unit": "min",
+      "basis": "post-solve schedule",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/runs.py",
+          "anchor": "execution"
+        }
+      ]
+    },
+    {
+      "id": "kpi-engine",
+      "name": "KPI computation",
+      "meaning": "Calculates planned or executed performance on the evaluated horizon.",
+      "unit": "various",
+      "basis": "run result",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/kpis.py",
+          "symbol": "compute_kpis"
+        }
+      ]
+    },
+    {
+      "id": "run-evidence",
+      "name": "Run evidence bundle",
+      "meaning": "Normalizes exact inputs, decisions, state, outputs, KPIs and model context for analysis.",
+      "unit": "n/a",
+      "basis": "immutable stored run",
+      "status": "code-verified",
+      "code_refs": [
+        {
+          "path": "mph_sim/analysis_tools.py",
+          "symbol": "build_run_bundle"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    {
+      "id": "washing-emergency-incumbent-quality",
+      "meaning": "The verified no-command washing fallback is a feasibility guarantee only. It retains explicit unmet demand, planning-target shortfall and bounded external overflow and can therefore be operationally poor. FEASIBLE with this bootstrap reason does not establish adequate service, calibrated mine supply, or optimality."
+    },
+    {
+      "id": "mph-dynamic-construction-scope",
+      "meaning": "The current uniform v7 solve supports one new construction lot per enabled pile; physical composition and selected total freeze on first actual stacking. An enabled completed/depleted pile with zero physical inventory can reopen at a later solve boundary and execute a subsequent lot. Incomplete blends cannot be reclaimed or treated as selective constituent pools. Rolling windows optimize locally, without a configured batch or readiness deadline; no whole-week optimality or detailed spatial homogenization is implied."
+    },
+    {
+      "id": "chevron-traversal-evidence",
+      "meaning": "Chevron equivalent passes are derived display metadata from validated flow duration (or tonnes/rate), explicit stacking traverse speed and configured geometry. Missing inputs leave the count unavailable. Repositioning speed is not used as stacking speed; this calculation is not a layer-by-layer stockpile model or plant validation."
+    },
+    {
+      "id": "prewash-blend-commissioning",
+      "meaning": "Pre-washing represents daily feed shares through explicit common reclaim routes, not spatial stockpile-face homogenization. Sites support shared matrices or optimized envelopes and per-source-stockpile enablement. Default all-source enablement, optimized 5-95% bounds and both treatment modes are commissioning assumptions. Treated component pools remain selectively reclaimable downstream; G10 receipt chemistry need not match the complete daily campaign. Legacy imported points without source switches retain earlier line-scoped policies."
+    },
+    {
+      "id": "washing-demo",
+      "meaning": "RAW-TBT chemistry and the G10 profile were supplied by the project team but are not independently approved here. Washing yields and quality changes remain a provisional behavior calibration. TBT-to-Full and low-Cd-to-Simple selectivity is code-verified, but the numeric process response is not plant validated."
+    },
+    {
+      "id": "cost-scope",
+      "meaning": "Treatment cost excludes unmodelled transport, energy, water, reagents, disposal and capital effects."
+    },
+    {
+      "id": "pile-geometry",
+      "meaning": "Material pools do not predict reclaim-face geometry or stockpile layer progression."
+    },
+    {
+      "id": "candidate-scope",
+      "meaning": "Generated candidate evidence does not prove force-feasibility of an unused alternative."
+    },
+    {
+      "id": "reported-constraints",
+      "meaning": "Evidence-bundle residuals are not a complete dump of all internal CP-SAT constraints."
+    },
+    {
+      "id": "export-profile-boundaries",
+      "meaning": "The source table's strict '<' limits are preserved in provenance but the current SpecRange contract implements inclusive numeric maxima; BG11 and BG AD also require distinct assays that current stock vectors may not provide."
+    }
+  ]
+}
